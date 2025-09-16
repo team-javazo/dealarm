@@ -12,6 +12,7 @@
     이름: <input type="text" name="name" required><br>
     이메일: <input type="email" name="email"><br>
     생년월일: <input type="date" name="birth_date"><br>
+    성별: <input type="text" name="gender"><br>
     지역: <input type="text" name="region"><br>
     <button type="submit">가입하기</button>
 </form>
