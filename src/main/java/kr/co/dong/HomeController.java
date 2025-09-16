@@ -35,6 +35,7 @@ public class HomeController {
 		
 		logger.info("정신차려 이친구야~~~~`");
 		logger.info("import->git->clone URI->주소지정");
+		logger.info("니가넣어");
 		
 		return "home";
 	}
