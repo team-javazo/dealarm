@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.dong.member.MemberDAO">
+
+	<!-- 로그인 -->
+	<select id="login" parameterType="kr.co.dong.member.MemberDTO"
+		resultType="kr.co.dong.member.MemberDTO">
+		SELECT id, name, email, birth_date, region, role, is_active, created_at
+		FROM users
+		WHERE id = #{id} AND password = #{password}
+	</select>
+
+	<!-- 회원가입 -->
+	<insert id="insertMember"
+		parameterType="kr.co.dong.member.MemberDTO">
+		INSERT INTO users
+		(id, password, name, email, birth_date, region, role, is_active,
+		created_at)
+		VALUES
+		(#{id}, #{password}, #{name}, #{email}, #{birth_date}, #{region}, #{role}, #{is_active}, NOW())
+	</insert>
+
+	<!-- 아이디 중복 체크 -->
+	<select id="idCheck" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM users WHERE id = #{id}
+	</select>
+
+</mapper>
