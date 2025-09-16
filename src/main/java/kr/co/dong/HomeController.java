@@ -34,6 +34,7 @@ public class HomeController {
 		model.addAttribute("serverTime", formattedDate );
 		
 		logger.info("정신차려 이친구야~~~~`");
+		logger.info("import->git->clone URI->주소지정");
 		
 		return "home";
 	}
