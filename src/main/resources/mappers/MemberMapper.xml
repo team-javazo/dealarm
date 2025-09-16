@@ -7,24 +7,24 @@
 	<!-- 로그인 -->
 	<select id="login" parameterType="kr.co.dong.member.MemberDTO"
 		resultType="kr.co.dong.member.MemberDTO">
-		SELECT id, name, email, birth_date, region, role, is_active, created_at
+		SELECT id, password, name, email, birth_date, gender, region, role,
+		is_active, created_at
 		FROM users
 		WHERE id = #{id} AND password = #{password}
 	</select>
 
 	<!-- 회원가입 -->
-	<insert id="insertMember"
-		parameterType="kr.co.dong.member.MemberDTO">
-		INSERT INTO users
-		(id, password, name, email, birth_date, region, role, is_active,
-		created_at)
-		VALUES
-		(#{id}, #{password}, #{name}, #{email}, #{birth_date}, #{region}, #{role}, #{is_active}, NOW())
-	</insert>
+	<insert id="insertMember" parameterType="kr.co.dong.member.MemberDTO">
+    INSERT INTO users
+    (id, password, name, email, birth_date, gender, region)
+    VALUES
+    (#{id}, #{password}, #{name}, #{email}, #{birth_date}, #{gender}, #{region})
+</insert>
 
 	<!-- 아이디 중복 체크 -->
 	<select id="idCheck" parameterType="String" resultType="int">
-		SELECT COUNT(*) FROM users WHERE id = #{id}
+		SELECT
+		COUNT(*) FROM users WHERE id = #{id}
 	</select>
 
 </mapper>
