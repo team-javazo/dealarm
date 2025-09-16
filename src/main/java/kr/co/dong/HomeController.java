@@ -33,6 +33,8 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
+		logger.info("정신차려 이친구야~~~~`");
+		
 		return "home";
 	}
 	
