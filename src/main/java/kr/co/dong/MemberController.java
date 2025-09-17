@@ -72,7 +72,6 @@ public class MemberController {
 //	관리자 회원관리 페이지
 	@RequestMapping("/members")
 	public String members(Model model) {
-		
 		// 전체회원 목록
 		List<MemberDTO> list = memberService.allList();
 		model.addAttribute("list", list);
