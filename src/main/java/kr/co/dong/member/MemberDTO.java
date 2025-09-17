@@ -6,12 +6,12 @@ public class MemberDTO {
 	private String id;
 	private String password;
 	private String name;
+	private	String phone;
 	private String email;
 	private Date birth_date;
 	private String gender;
-
-
-
+	private int notification;
+	
 	private String region;
 	private String role;
 	private int is_active;
@@ -100,27 +100,47 @@ public class MemberDTO {
 		this.created_at = created_at;
 	}
 
-	public MemberDTO(String id, String password, String name, String email, Date birth_date, String gender,
-			String region, String role, int is_active, String created_at) {
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public int getNotification() {
+		return notification;
+	}
+
+	public void setNotification(int notification) {
+		this.notification = notification;
+	}
+
+	@Override
+	public String toString() {
+		return "MemberDTO [id=" + id + ", password=" + password + ", name=" + name + ", phone=" + phone + ", email="
+				+ email + ", birth_date=" + birth_date + ", gender=" + gender + ", notification=" + notification
+				+ ", region=" + region + ", role=" + role + ", is_active=" + is_active + ", created_at=" + created_at
+				+ "]";
+	}
+
+	public MemberDTO(String id, String password, String name, String phone, String email, Date birth_date,
+			String gender, int notification, String region, String role, int is_active, String created_at) {
 		super();
 		this.id = id;
 		this.password = password;
 		this.name = name;
+		this.phone = phone;
 		this.email = email;
 		this.birth_date = birth_date;
 		this.gender = gender;
+		this.notification = notification;
 		this.region = region;
 		this.role = role;
 		this.is_active = is_active;
 		this.created_at = created_at;
 	}
 
-	@Override
-	public String toString() {
-		return "MemberDTO [id=" + id + ", password=" + password + ", name=" + name + ", email=" + email
-				+ ", birth_date=" + birth_date + ", gender=" + gender + ", region=" + region + ", role=" + role
-				+ ", is_active=" + is_active + ", created_at=" + created_at + "]";
-	}
-
+	
 	
 }

@@ -7,7 +7,7 @@
 	<!-- 로그인 -->
 	<select id="login" parameterType="kr.co.dong.member.MemberDTO"
 		resultType="kr.co.dong.member.MemberDTO">
-		SELECT id, password, name, email, birth_date, gender, region, role,
+		SELECT id, password, name, phone, email, birth_date, gender, notification, region, role,
 		is_active, created_at
 		FROM users
 		WHERE id = #{id} AND password = #{password}
@@ -16,9 +16,9 @@
 	<!-- 회원가입 -->
 	<insert id="insertMember" parameterType="kr.co.dong.member.MemberDTO">
     INSERT INTO users
-    (id, password, name, email, birth_date, gender, region)
+    (id, password, name, phone, email, birth_date, gender, notification, region)
     VALUES
-    (#{id}, #{password}, #{name}, #{email}, #{birth_date}, #{gender}, #{region})
+    (#{id}, #{password}, #{name}, #{phone}, #{email}, #{birth_date}, #{gender}, #{notification}, #{region})
 </insert>
 
 	<!-- 아이디 중복 체크 -->
