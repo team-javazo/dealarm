@@ -8,6 +8,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-야이 쓰레기야
+야이 최고야
 </body>
 </html>
