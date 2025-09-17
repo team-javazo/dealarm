@@ -27,4 +27,18 @@
 		COUNT(*) FROM users WHERE id = #{id}
 	</select>
 
+	<!-- 내정보 불러오기 -->
+	<select id="myDTO" parameterType="String"  resultType="kr.co.dong.member.MemberDTO">
+		select id, password, name, phone, email, birth_date, gender, notification, region, role,
+		is_active, created_at
+		FROM users
+		WHERE id = #{id}
+	</select>
+	<select id="allDTO" resultType="kr.co.dong.member.MemberDTO">
+		select id, password, name, phone, email, birth_date, gender, notification, region, role,
+		is_active, created_at
+		FROM users 
+	</select>
+	
+	
 </mapper>

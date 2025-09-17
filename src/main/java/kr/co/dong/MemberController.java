@@ -1,5 +1,7 @@
 package kr.co.dong;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
@@ -58,4 +60,28 @@ public class MemberController {
         session.invalidate(); // 세션 초기화
         return "redirect:/"; // 홈으로 이동
     }
+//	마이페이지 띄우기
+	@RequestMapping("/mypage")
+	public String mypage(HttpSession session, Model model) {
+//		String id = (String) session.getAttribute("loginUser");		//로그인세션에서 id 추출
+		String id = "hubizuk";										//test ID
+		MemberDTO user = memberService.myDTO(id);					//내 정보객체 생성
+		model.addAttribute("user", user);							//user를 view로 보냄
+		return "member/mypage";
+	}
+//	관리자 회원관리 페이지
+	@RequestMapping("/members")
+	public String members(Model model) {
+		
+		// 전체회원 목록
+		List<MemberDTO> list = memberService.allList();
+		model.addAttribute("list", list);
+		return "admin/members";
+		
+		
+	}
+	
+	
+	
+    
 }
