@@ -7,4 +7,6 @@ public interface MemberService {
     int userupdate(MemberDTO update);
     int adminupdate(MemberDTO update);
 	MemberDTO selectone(String id);
+	int updatePassword(MemberDTO member);
+	int deleteUser(String id);
 }

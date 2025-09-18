@@ -1,5 +1,8 @@
 package kr.co.dong;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
@@ -8,8 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.dong.member.MemberDTO;
 import kr.co.dong.member.MemberService;
@@ -96,4 +101,71 @@ public class MemberController {
 
 	     return "redirect:/";  
 	}
+	
+	@PostMapping("/user/change-password")
+	@ResponseBody
+	public Map<String, Object> changePassword(@RequestBody Map<String, Object> data) {
+	    String id = (String) data.get("id");
+	    String currentPw = (String) data.get("currentPw");
+	    String newPw = (String) data.get("newPw");
+
+	    Map<String, Object> response = new HashMap<>();
+
+	    MemberDTO member = memberService.selectone(id);
+	    if (member == null) {
+	        response.put("success", false);
+	        response.put("message", "사용자를 찾을 수 없습니다.");
+	        return response;
+	    }
+
+	    if (!member.getPassword().equals(currentPw)) {
+	        response.put("success", false);
+	        response.put("message", "현재 비밀번호가 올바르지 않습니다.");
+	        return response;
+	    }
+
+	    member.setPassword(newPw);
+	    int result = memberService.updatePassword(member);
+
+	    response.put("success", result > 0);
+	    if (result <= 0) {
+	        response.put("message", "비밀번호 변경 실패");
+	    }
+
+	    return response;
+	}
+
+	@PostMapping("/user/delete")
+	@ResponseBody
+	public Map<String, Object> deleteUser(@RequestBody Map<String, Object> data) {
+	    String id = (String) data.get("id");
+	    String password = (String) data.get("password");
+
+	    Map<String, Object> response = new HashMap<>();
+
+	    MemberDTO member = memberService.selectone(id);
+	    if (member == null) {
+	        response.put("success", false);
+	        response.put("message", "사용자를 찾을 수 없습니다.");
+	        return response;
+	    }
+
+	    if (!member.getPassword().equals(password)) {
+	        response.put("success", false);
+	        response.put("message", "비밀번호가 일치하지 않습니다.");
+	        return response;
+	    }
+
+	    // 탈퇴 처리 - 보통은 is_active = 0으로 처리하거나 실제 삭제 처리
+	    int result = memberService.deleteUser(id);
+
+	    response.put("success", result > 0);
+	    if (result <= 0) {
+	        response.put("message", "회원 탈퇴 처리에 실패했습니다.");
+	    }
+	    return response;
+	}
+	
+	
+	
 }

@@ -41,6 +41,18 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public MemberDTO selectone(String id) {
 		// TODO Auto-generated method stub
-		return null;
+		return memberDAO.selectone(id);
+	}
+
+	@Override
+	public int updatePassword(MemberDTO member) {
+		// TODO Auto-generated method stub
+		return memberDAO.updatePassword(member);
+	}
+
+	@Override
+	public int deleteUser(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.deleteUser(id);
 	}
 }

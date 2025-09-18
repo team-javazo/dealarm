@@ -6,5 +6,7 @@ public interface MemberDAO {
     MemberDTO login(MemberDTO member); // 추가
     int userupdate(MemberDTO update);
     int adminupdate(MemberDTO update);
-    
+    int updatePassword(MemberDTO member);
+    MemberDTO selectone(String id);
+    int deleteUser(String id);
 }
