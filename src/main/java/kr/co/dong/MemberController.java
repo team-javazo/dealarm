@@ -1,5 +1,6 @@
 package kr.co.dong;
 
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import kr.co.dong.member.MemberDTO;
 import kr.co.dong.member.MemberService;
 
@@ -69,6 +69,44 @@ public class MemberController {
         session.invalidate(); // 세션 초기화
         return "redirect:/"; // 홈으로 이동
     }
+//	마이페이지 띄우기
+	@RequestMapping("/mypage")
+	public String mypage(HttpSession session, Model model) {
+//		String id = (String) session.getAttribute("loginUser");		//로그인세션에서 id 추출
+		String id = "hubizuk";										//test ID
+		MemberDTO user = memberService.myDTO(id);					//내 정보객체 생성
+		model.addAttribute("user", user);							//user를 view로 보냄
+		return "member/mypage";
+	}
+//	마이페이지 수정모달 비밀번호 체크 
+	@PostMapping("/mypage_pass")
+	public String checkPass(@RequestParam String id, @RequestParam String password, Model model) {
+		MemberDTO user = memberService.myDTO(id);
+		System.out.println("패스체크까지 오나??");
+		if(!memberService.checkPassword(id, password)){
+			model.addAttribute("passFail", true);
+			System.out.println("비번실패");
+			model.addAttribute("user", user);
+			return "member/mypage";
+		}
+		model.addAttribute("userId", id);
+		System.out.println("비번체크성공");
+
+		return "member/mypage";
+	}
+	
+	
+	
+	//	관리자 회원관리 페이지
+	@RequestMapping("/members")
+	public String members(Model model) {
+		// 전체회원 목록
+		List<MemberDTO> list = memberService.allList();
+		model.addAttribute("list", list);
+		return "admin/members";
+	}
+
+	
     
     // 회원정보 수정 페이지 띄우기
     @GetMapping(value = "/userupdate")
@@ -177,7 +215,5 @@ public class MemberController {
 	    }
 	    return response;
 	}
-	
-	
-	
+
 }
