@@ -48,30 +48,6 @@ public class HomeController {
 		return "Update";
 		
 	}
-	@PostMapping(value = "/Update")
-	public String selectonePost(@RequestParam("id") String id, Model model) {
-	     DTO list = service.selectone(id);
-	     model.addAttribute("user", list);  
-	     return "Update";  
-	}
-	
-	@PostMapping(value = "/userupdate")
-	public String userdelete(@ModelAttribute DTO update) {
-		 service.update(update);
-	     return "redirect:/Update";  
-	}
-	
-	@PostMapping(value = "/adminupdate")
-	public String admindelete(@ModelAttribute DTO update) {
-		 service.update(update);
-	     return "redirect:/Update";  
-	}
-	
-	@PostMapping("/user/delete")
-	public String delete(@RequestParam("id") String id) {
-		 service.delete(id);
-	     return "redirect:/Update";  
-	}
 	
 	
 }
