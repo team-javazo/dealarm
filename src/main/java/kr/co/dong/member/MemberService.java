@@ -9,5 +9,6 @@ public interface MemberService {
 	
 	MemberDTO myDTO(String id);	//내정보
 	List<MemberDTO> allList();	//모든회원
+	boolean checkPassword(String id, String password);
 	
 }

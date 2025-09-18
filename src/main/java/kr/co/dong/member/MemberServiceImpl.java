@@ -37,4 +37,14 @@ public class MemberServiceImpl implements MemberService {
 	public List<MemberDTO> allList() {
 		return memberDAO.allList();
 	}
+
+	@Override
+	public boolean checkPassword(String id, String password) {
+		MemberDTO user = memberDAO.myDTO(id);
+		if(user != null && password.equals(user.getPassword())) {
+		    System.out.println("비밀번호 일치 DAO");
+			return true;
+		}
+		return false;
+	}
 }
