@@ -13,23 +13,27 @@
 <div class="container mt-4">
 
     <h2 class="mb-3">회원관리 페이지</h2>
-
+	<h3>총 회원수 : ${count} 명</h3>
+	<a href="${pageContext.request.contextPath}/admin/members" class="btn btn-outline-primary btn-sm ms-3"
+	   onclick="document.querySelector('input[name=searchValue]').value = '';
+       			document.querySelector('select[name=searchType]').value = 'all';">총 회원리스트</a>
+	
     <!-- 검색 폼 -->
-    <form action="${pageContext.request.contextPath}/admin/members" method="post" class="d-flex mb-3" role="search">
+    <form action="${pageContext.request.contextPath}/admin/membersSearch" method="post" class="d-flex mb-3" role="search">
         <select class="form-select me-2" style="max-width: 120px;" name="searchType">
-            <option value="all" selected>전체</option>
-            <option value="id">아이디</option>
-            <option value="name">이름</option>
-            <option value="phone">전화번호</option>
-            <option value="birth_date">생년월일</option>
-            <option value="gender">성별</option>
-            <option value="notification">알림동의</option>
-            <option value="region">지역</option>
-            <option value="role">권한</option>
-            <option value="is_active">계정상태</option>
-            <option value="created_at">가입일</option>
+            <option value="all" <c:if test="${empty param.searchType or param.searchType == 'all'}">selected</c:if>>전체</option>
+            <option value="id" <c:if test="${param.searchType == 'id'}">selected</c:if>>아이디</option>
+            <option value="name" <c:if test="${param.searchType == 'name'}">selected</c:if>>이름</option>
+            <option value="phone" <c:if test="${param.searchType == 'phone'}">selected</c:if>>전화번호</option>
+            <option value="birth_date" <c:if test="${param.searchType == 'birth_date'}">selected</c:if>>생년월일</option>
+            <option value="gender" <c:if test="${param.searchType == 'gender'}">selected</c:if>>성별</option>
+            <option value="notification" <c:if test="${param.searchType == 'notification'}">selected</c:if>>알림동의</option>
+            <option value="region" <c:if test="${param.searchType == 'region'}">selected</c:if>>지역</option>
+            <option value="role" <c:if test="${param.searchType == 'role'}">selected</c:if>>권한</option>
+            <option value="is_active" <c:if test="${param.searchType == 'is_active'}">selected</c:if>>계정상태</option>
+            <option value="created_at" <c:if test="${param.searchType == 'created_at'}">selected</c:if>>가입일</option>
         </select>
-        <input type="text" name="searchValue" class="form-control me-2" style="max-width: 300px;" placeholder="검색어를 입력하세요">
+        <input type="text" name="searchValue" class="form-control me-2" style="max-width: 300px;" placeholder="검색어를 입력하세요" value="$param.searchValue}">
         <input type="submit" class="btn btn-primary" value="검색">
     </form>
 
@@ -83,12 +87,7 @@
             </tbody>
         </table>
     </div>
-
-    <div class="mt-3">
-        <a href="${pageContext.request.contextPath}/admin/members" class="btn btn-outline-primary">회원 전체보기</a>
-        <a href="${pageContext.request.contextPath}/" class="btn btn-outline-secondary">홈으로</a>
-    </div>
-
+    
 </div>
 
 
