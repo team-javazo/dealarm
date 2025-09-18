@@ -4,15 +4,6 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.dong.empMapper">
 
-	<update id="userupdate" parameterType="kr.co.dong.db.DTO">
-		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region} 
-		where id = #{id}
-	</update>
-	
-	<update id="adminupdate" parameterType="kr.co.dong.db.DTO">
-		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} 
-		where id = #{id}
-	</update>
 
 	
 
