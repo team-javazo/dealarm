@@ -31,4 +31,34 @@ public class MemberDAOImpl implements MemberDAO {
 		return sqlSession.selectOne(namespace + ".login", member);
 	}
 
+	@Override
+	public int userupdate(MemberDTO update) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(namespace + ".userupdate", update);
+	}
+
+	@Override
+	public int adminupdate(MemberDTO update) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(namespace + ".adminupdate", update);
+	}
+
+	@Override
+	public int updatePassword(MemberDTO member) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(namespace + ".updatePassword", member);
+	}
+
+	@Override
+	public MemberDTO selectone(String id) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + ".selectone", id);
+	}
+
+	@Override
+	public int deleteUser(String id) {
+		// TODO Auto-generated method stub
+		  return sqlSession.update(namespace + ".deleteUser", id);
+	}
+
 }

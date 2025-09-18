@@ -26,5 +26,33 @@
 		SELECT
 		COUNT(*) FROM users WHERE id = #{id}
 	</select>
+	
+	<!-- 회원 업데이트 -->
+	<update id="userupdate" parameterType="kr.co.dong.member.MemberDTO">
+		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region} 
+		where id = #{id}
+	</update>
+	
+	<!-- 관리자 회원 업데이트 -->
+	<update id="adminupdate" parameterType="kr.co.dong.member.MemberDTO">
+		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} 
+		where id = #{id}
+		
+	</update>
+	<!-- 회원 비밀번호 업데이트 -->
+	<update id="updatePassword" parameterType="kr.co.dong.member.MemberDTO">
+    UPDATE users SET password = #{password}
+    WHERE id = #{id}
+	</update>
 
+	<select id="selectone" parameterType="String" resultType="kr.co.dong.member.MemberDTO">
+	    SELECT id, password, name, email, birth_date, gender, region, role, is_active, created_at
+	    FROM users
+	    WHERE id = #{id}
+	</select>
+	
+	<!-- 회원 탈퇴  -->
+	<update id="deleteUser" parameterType="String">
+	    UPDATE users SET is_active = 0 WHERE id = #{id}
+	</update>
 </mapper>
