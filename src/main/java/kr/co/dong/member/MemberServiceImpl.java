@@ -25,4 +25,22 @@ public class MemberServiceImpl implements MemberService {
 		// TODO Auto-generated method stub
 		return memberDAO.login(member);
 	}
+
+	@Override
+	public int userupdate(MemberDTO update) {
+		// TODO Auto-generated method stub
+		return memberDAO.userupdate(update);
+	}
+
+	@Override
+	public int adminupdate(MemberDTO update) {
+		// TODO Auto-generated method stub
+		return memberDAO.adminupdate(update);
+	}
+
+	@Override
+	public MemberDTO selectone(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -6,8 +6,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.dong.member.MemberDTO;
 import kr.co.dong.member.MemberService;
@@ -58,4 +60,40 @@ public class MemberController {
         session.invalidate(); // 세션 초기화
         return "redirect:/"; // 홈으로 이동
     }
+    
+    // 정보 수정 페이지 띄우기
+    @GetMapping(value = "/Update")
+	public String Update() {
+		return "Update";
+		
+	}
+    
+    // 정보 수정 페이지 내용 삽입
+	@PostMapping(value = "/Update")
+	public String selectonePost(@RequestParam("id") String id, Model model) {
+	    MemberDTO list = memberService.selectone(id);
+	     model.addAttribute("user", list);  
+	     return "Update";  
+	}
+	
+	// 회원 정보 수정 액션
+	@PostMapping(value = "/userupdate")
+	public String userupdate(@ModelAttribute MemberDTO update) {
+		memberService.userupdate(update);
+	     return "redirect:/";  
+	}
+	
+	// 관리자 회원 정보 수정 액션
+	@PostMapping(value = "/adminupdate")
+	public String adminupdate(@ModelAttribute MemberDTO update) {
+		memberService.adminupdate(update);
+	     return "redirect:/";  
+	}
+	
+	// 회원 탈퇴 정보 수정 is_Active 1->0
+	@PostMapping("/user/delete")
+	public String delete(@RequestParam("id") String id) {
+
+	     return "redirect:/";  
+	}
 }
