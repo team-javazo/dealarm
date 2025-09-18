@@ -70,38 +70,51 @@ public class MemberController {
         return "redirect:/"; // 홈으로 이동
     }
     
-    // 정보 수정 페이지 띄우기
-    @GetMapping(value = "/Update")
-	public String Update() {
-		return "Update";
+    // 회원정보 수정 페이지 띄우기
+    @GetMapping(value = "/userupdate")
+	public String userupdate() {
+		return "userupdate";
 		
 	}
     
-    // 정보 수정 페이지 내용 삽입
-	@PostMapping(value = "/Update")
-	public String selectonePost(@RequestParam("id") String id, Model model) {
+    // 회원정보 수정 페이지 내용 삽입
+	@PostMapping(value = "/userupdate")
+	public String userpdate(@RequestParam("id") String id, Model model) {
 	    MemberDTO list = memberService.selectone(id);
 	     model.addAttribute("user", list);  
-	     return "Update";  
+	     return "userpdate";  
 	}
 	
-	// 회원 정보 수정 액션
+    // 관리자 회원정보 수정 페이지 띄우기
+    @GetMapping(value = "/adminupdate")
+	public String adminupdate() {
+		return "adminupdate";
+		
+	}
+    
+    // 관리자 회원정보 수정 페이지 내용 삽입
+	@PostMapping(value = "/userpdate")
+	public String adminupdate(@RequestParam("id") String id, Model model) {
+	    MemberDTO list = memberService.selectone(id);
+	     model.addAttribute("user", list);  
+	     return "adminupdate";  
+	}
+	
+	// 회원 정보 수정
 	@PostMapping(value = "/userupdate")
 	public String userupdate(@ModelAttribute MemberDTO update) {
 		memberService.userupdate(update);
 	     return "redirect:/";  
 	}
 	
-	// 관리자 회원 정보 수정 액션
+	// 관리자 회원 정보 수정
 	@PostMapping(value = "/adminupdate")
 	public String adminupdate(@ModelAttribute MemberDTO update) {
 		memberService.adminupdate(update);
 	     return "redirect:/";  
 	}
-	
-
-	
-	@PostMapping("/user/change-password")
+	// 비밀번호 변경 
+	@PostMapping("/change-password")
 	@ResponseBody
 	public Map<String, Object> changePassword(@RequestBody Map<String, Object> data) {
 	    String id = (String) data.get("id");
@@ -133,7 +146,7 @@ public class MemberController {
 
 	    return response;
 	}
-
+	//회원 탈퇴 요청
 	@PostMapping("/user/delete")
 	@ResponseBody
 	public Map<String, Object> deleteUser(@RequestBody Map<String, Object> data) {
@@ -155,7 +168,7 @@ public class MemberController {
 	        return response;
 	    }
 
-	    // 탈퇴 처리 - 보통은 is_active = 0으로 처리하거나 실제 삭제 처리
+	    // 탈퇴 처리
 	    int result = memberService.deleteUser(id);
 
 	    response.put("success", result > 0);
