@@ -51,7 +51,11 @@ public class MemberController {
         MemberDTO loginUser = memberService.login(member);
 
         if (loginUser != null) {
-            session.setAttribute("loginUser", loginUser);
+//            session.setAttribute("loginUser", loginUser);
+            session.setAttribute("id", loginUser.getId());
+            session.setAttribute("role", loginUser.getRole());
+            session.setAttribute("name", loginUser.getName());
+            
             return "redirect:/"; // 로그인 성공 → 홈으로
         } else {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");

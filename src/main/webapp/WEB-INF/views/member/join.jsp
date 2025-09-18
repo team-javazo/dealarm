@@ -10,9 +10,11 @@
     아이디: <input type="text" name="id" required><br>
     비밀번호: <input type="password" name="password" required><br>
     이름: <input type="text" name="name" required><br>
+    휴대폰 번호: <input type="text" name="phone" required><br>
     이메일: <input type="email" name="email"><br>
     생년월일: <input type="date" name="birth_date"><br>
     성별: <input type="text" name="gender"><br>
+    수신동의: <input type="int" name="notification"><br>    
     지역: <input type="text" name="region"><br>
     <button type="submit">가입하기</button>
 </form>
