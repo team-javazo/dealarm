@@ -10,10 +10,8 @@
 <body>
 
 	<!-- 회원 정보 수정 폼 -->
-	<%
-	if (session.getAttribute("role").equals("admin")) {
-	%>
-	<form action="/userupdate" method="post">
+
+	<form action="/userupdate_ok" method="post">
 		<table border="1">
 			<tr>
 				<th>이름</th>
@@ -192,82 +190,7 @@
       });
   });
 </script>
-	<%
-	} else {
-	%>
-	<!-- 관리자 회원 정보 수정 폼 -->
-	<form action="/adminupdate" method="post">
-		<table border="1" style="margin-bottom: 20px;">
-			<tr>
-			    <th>계정 상태</th>
-			    <td>
-			        <label>
-			            <input type="radio" name="is_active" value="1"
-			                <c:if test="${user.is_active == 1}">checked</c:if> >
-			            활성화
-			        </label>
-			        &nbsp;&nbsp;
-			        <label>
-			            <input type="radio" name="is_active" value="0"
-			                <c:if test="${user.is_active != 1}">checked</c:if> >
-			            비활성화
-			        </label>
-			    </td>
-			</tr>
-			<tr>
-			    <th>권한</th>
-			    <td>
-			        <label>
-			            <input type="radio" name="role" value="USER"
-			                <c:if test="${user.role == 'USER'}">checked</c:if> >
-			            회원
-			        </label>
-			        &nbsp;&nbsp;
-			        <label>
-			            <input type="radio" name="role" value="ADMIN"
-			                <c:if test="${user.role == 'ADMIN'}">checked</c:if> >
-			            관리자
-			        </label>
-			    </td>
-			</tr>
-			<tr>
-				<th>이름 :</th>
-				<td><input type="text" name="name" value="${user.name}"></td>
-			</tr>
-			<tr>
-				<th>핸드폰 번호</th>
-				<td><input type="text" name="phone" value="${user.phone}"></td>
-			</tr>
-			<tr>
-				<th>이메일 :</th>
-				<td><input type="email" name="email" value="${user.email}"></td>
-			</tr>
-			<tr>
-				<th>나이 :</th>
-				<td><input type="text" name="birth_date" value="${user.birth_date}"></td>
-			</tr>
-			<tr>
-				<th>성별 :</th>
-				<td><input type="text" name="gender" value="${user.gender}"></td>
-			</tr>
-			<tr>
-				<th>지역 :</th>
-				<td><input type="text" name="region" value="${user.region}"></td>
-			</tr>
-			<tr>
-				<th>가입일 :</th>
-				<td><input type="text" name="created_at" value="${user.created_at}"></td>
-			</tr>
-			<tr>
-				<td colspan="2" style="text-align: center;"><input
-					type="hidden" name="id" value="${user.id}">
-					<button type="submit" class="btn btn-success">수정</button>
-			</tr>
-		</table>
-	</form>
-	<%
-	}
-	%>
+
 
 </body>
 </html>
