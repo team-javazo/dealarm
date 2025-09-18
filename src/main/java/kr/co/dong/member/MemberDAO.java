@@ -8,6 +8,9 @@ public interface MemberDAO {
     MemberDTO login(MemberDTO member); // 추가
 	MemberDTO myDTO(String id); // 정보 불러오기
 	List<MemberDTO> allList();	//모든회원
-
-
+    int userupdate(MemberDTO update);
+    int adminupdate(MemberDTO update);
+    int updatePassword(MemberDTO member);
+    MemberDTO selectone(String id);
+    int deleteUser(String id);
 }

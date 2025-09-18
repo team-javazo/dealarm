@@ -47,4 +47,32 @@ public class MemberServiceImpl implements MemberService {
 		}
 		return false;
 	}
+	public int userupdate(MemberDTO update) {
+		// TODO Auto-generated method stub
+		return memberDAO.userupdate(update);
+	}
+
+	@Override
+	public int adminupdate(MemberDTO update) {
+		// TODO Auto-generated method stub
+		return memberDAO.adminupdate(update);
+	}
+
+	@Override
+	public MemberDTO selectone(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.selectone(id);
+	}
+
+	@Override
+	public int updatePassword(MemberDTO member) {
+		// TODO Auto-generated method stub
+		return memberDAO.updatePassword(member);
+	}
+
+	@Override
+	public int deleteUser(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.deleteUser(id);
+	}
 }
