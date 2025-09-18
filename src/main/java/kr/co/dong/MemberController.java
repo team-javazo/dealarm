@@ -99,12 +99,7 @@ public class MemberController {
 	     return "redirect:/";  
 	}
 	
-	// 회원 탈퇴 정보 수정 is_Active 1->0
-	@PostMapping("/user/delete")
-	public String delete(@RequestParam("id") String id) {
 
-	     return "redirect:/";  
-	}
 	
 	@PostMapping("/user/change-password")
 	@ResponseBody
