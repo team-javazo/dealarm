@@ -11,15 +11,15 @@
 
 </head>
 <body>
-	<!-- 로그인세션확인 -->
+	<!-- 로그인세션확인 
 	<script>
-		var loginUser = "${sessionScope.loginUser}";
+		var loginUser = "${sessionScope.id}";
 		if(loginUser == null){
 			alert("로그인이 필요합니다");
 			location.href = "/login";
 		}
 	</script>
- 
+ -->
 
 	<div class="container mt-5">
 	    <h1>마이페이지</h1>

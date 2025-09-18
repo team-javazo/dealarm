@@ -18,6 +18,7 @@
     <c:otherwise>
         <p><b>${sessionScope.name}</b> 님, 환영합니다!</p>
         <a href="<c:url value='/member/logout'/>">로그아웃</a>
+        <a href="<c:url value='/member/mypage'/>">마이페이지</a>
     </c:otherwise>
 </c:choose>
 

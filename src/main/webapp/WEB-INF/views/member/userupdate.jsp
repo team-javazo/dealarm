@@ -10,10 +10,8 @@
 <body>
 
 	<!-- 회원 정보 수정 폼 -->
-	<%
-	if (session.getAttribute("role").equals("admin")) {
-	%>
-	<form action="/userupdate" method="post">
+
+	<form action="/userupdate_ok" method="post">
 		<table border="1">
 			<tr>
 				<th>이름</th>
@@ -192,13 +190,7 @@
       });
   });
 </script>
-	<%
-	} else {
-	%>
-	
-	<%
-	}
-	%>
+
 
 </body>
 </html>

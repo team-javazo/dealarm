@@ -10,7 +10,7 @@
 <body>
 <h1>관리자 회원 정보 수정</h1>
 	<!-- 관리자 회원 정보 수정 폼 -->
-	<form action="/adminupdate" method="post">
+	<form action="/adminupdate_ok" method="post">
 		<table border="1" style="margin-bottom: 20px;">
 			<tr>
 			    <th>계정 상태</th>

@@ -72,8 +72,7 @@ public class MemberController {
 //	마이페이지 띄우기
 	@RequestMapping("/mypage")
 	public String mypage(HttpSession session, Model model) {
-//		String id = (String) session.getAttribute("loginUser");		//로그인세션에서 id 추출
-		String id = "hubizuk";										//test ID
+	String id = (String) session.getAttribute("id");		//로그인세션에서 id 추출
 		MemberDTO user = memberService.myDTO(id);					//내 정보객체 생성
 		model.addAttribute("user", user);							//user를 view로 보냄
 		return "member/mypage";
@@ -92,7 +91,7 @@ public class MemberController {
 		model.addAttribute("userId", id);
 		System.out.println("비번체크성공");
 
-		return "member/mypage";
+		return "member/userupdate";
 	}
 	
 	
@@ -106,32 +105,18 @@ public class MemberController {
 		return "admin/members";
 	}
 
-	
-    
-    // 회원정보 수정 페이지 띄우기
-    @GetMapping(value = "/userupdate")
-	public String userupdate() {
-		return "userupdate";
-		
-	}
-    
+
     // 회원정보 수정 페이지 내용 삽입
 	@PostMapping(value = "/userupdate")
-	public String userpdate(@RequestParam("id") String id, Model model) {
+	public String userpdate(@RequestParam("userId") String id, Model model) {
 	    MemberDTO list = memberService.selectone(id);
 	     model.addAttribute("user", list);  
-	     return "userpdate";  
+	     return "member/userupdate";  
 	}
 	
-    // 관리자 회원정보 수정 페이지 띄우기
-    @GetMapping(value = "/adminupdate")
-	public String adminupdate() {
-		return "adminupdate";
-		
-	}
-    
+
     // 관리자 회원정보 수정 페이지 내용 삽입
-	@PostMapping(value = "/userpdate")
+	@PostMapping(value = "/adminupdate")
 	public String adminupdate(@RequestParam("id") String id, Model model) {
 	    MemberDTO list = memberService.selectone(id);
 	     model.addAttribute("user", list);  
@@ -139,14 +124,14 @@ public class MemberController {
 	}
 	
 	// 회원 정보 수정
-	@PostMapping(value = "/userupdate")
+	@PostMapping(value = "/userupdate_ok")
 	public String userupdate(@ModelAttribute MemberDTO update) {
 		memberService.userupdate(update);
 	     return "redirect:/";  
 	}
 	
 	// 관리자 회원 정보 수정
-	@PostMapping(value = "/adminupdate")
+	@PostMapping(value = "/adminupdate_ok")
 	public String adminupdate(@ModelAttribute MemberDTO update) {
 		memberService.adminupdate(update);
 	     return "redirect:/";  
