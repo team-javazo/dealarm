@@ -29,13 +29,13 @@
 	
 	<!-- 회원 업데이트 -->
 	<update id="userupdate" parameterType="kr.co.dong.member.MemberDTO">
-		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region} 
+		update users set phone = ${phone}, email = #{email}, notification = #{notification},  region = #{region}
 		where id = #{id}
 	</update>
 	
 	<!-- 관리자 회원 업데이트 -->
 	<update id="adminupdate" parameterType="kr.co.dong.member.MemberDTO">
-		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} 
+		update users set name = #{name}, phone = ${phone}, email = #{email}, notification = #{notification}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} is_active = #{is_active}
 		where id = #{id}
 		
 	</update>
@@ -58,6 +58,7 @@
 	</select>
 	
 	<!-- 모든 회원 리스트 -->
+
 	<select id="allDTO" resultType="kr.co.dong.member.MemberDTO">
 		select id, password, name, phone, email, birth_date, gender, notification, region, role,
 		is_active, created_at
@@ -109,8 +110,9 @@
 	</select>
 	
 	<select id="selectone" parameterType="String" resultType="kr.co.dong.member.MemberDTO">
-	    SELECT id, password, name, email, birth_date, gender, region, role, is_active, created_at
-	    FROM users
+		select id, password, name, phone, email, birth_date, gender, notification, region, role,
+		is_active, created_at
+		FROM users
 	    WHERE id = #{id}
 	</select>
 	

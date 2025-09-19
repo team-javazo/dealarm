@@ -66,6 +66,7 @@ public class MemberDAOImpl implements MemberDAO {
 
 	@Override
 	public int updatePassword(MemberDTO member) {
+	    System.out.println("비밀번호 넘어옴");
 		return sqlSession.update(namespace + ".updatePassword", member);
 	}
 
