@@ -11,7 +11,6 @@ public class MemberDTO {
 	private Date birth_date;
 	private String gender;
 	private int notification;
-	
 	private String region;
 	private String role;
 	private int is_active;

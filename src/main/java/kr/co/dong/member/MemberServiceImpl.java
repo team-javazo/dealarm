@@ -75,6 +75,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int updatePassword(MemberDTO member) {
 		// TODO Auto-generated method stub
+	    System.out.println("비밀번호 넘어옴");
 		return memberDAO.updatePassword(member);
 	}
 

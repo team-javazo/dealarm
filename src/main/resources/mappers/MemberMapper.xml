@@ -29,13 +29,13 @@
 	
 	<!-- 회원 업데이트 -->
 	<update id="userupdate" parameterType="kr.co.dong.member.MemberDTO">
-		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region} 
+		update users set phone = ${phone}, email = #{email}, notification = #{notification},  region = #{region}
 		where id = #{id}
 	</update>
 	
 	<!-- 관리자 회원 업데이트 -->
 	<update id="adminupdate" parameterType="kr.co.dong.member.MemberDTO">
-		update users set name = #{name}, email = #{email}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} 
+		update users set name = #{name}, phone = ${phone}, email = #{email}, notification = #{notification}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} is_active = #{is_active}
 		where id = #{id}
 		
 	</update>

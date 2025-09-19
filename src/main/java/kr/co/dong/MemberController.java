@@ -88,7 +88,7 @@ public class MemberController {
 			model.addAttribute("user", user);
 			return "member/mypage";
 		}
-		model.addAttribute("userId", id);
+		model.addAttribute("user", user);
 		System.out.println("비번체크성공");
 
 		return "member/userupdate";
@@ -99,7 +99,6 @@ public class MemberController {
 
 	//	관리자 회원관리 전체 리스트
 	@RequestMapping("/members")
-
 	public String members(Model model) {
 		int totalCount = memberService.memberCount(); // 총 회원 수
 		model.addAttribute("totalCount", totalCount);
@@ -123,11 +122,11 @@ public class MemberController {
 
 
     // 회원정보 수정 페이지 내용 삽입
-	@PostMapping(value = "/userupdate")
-	public String userpdate(@RequestParam("id") String id, Model model) {
-	    MemberDTO list = memberService.selectone(id);
-	     model.addAttribute("user", list);  
-	     return "member/userupdate";  
+	@PostMapping("/userupdate")
+	public String userupdate(MemberDTO member, Model model) {
+	    memberService.userupdate(member); // 수정 처리
+	    model.addAttribute("user", memberService.selectone(member.getId()));
+	    return "member/mypage";
 	}
 	
 
@@ -155,66 +154,76 @@ public class MemberController {
 	// 비밀번호 변경 
 	@PostMapping("/change-password")
 	@ResponseBody
-	public Map<String, Object> changePassword(@RequestBody Map<String, Object> data) {
-	    String id = (String) data.get("id");
-	    String currentPw = (String) data.get("currentPw");
-	    String newPw = (String) data.get("newPw");
+	public String changePassword(
+	        @RequestParam("id") String id,
+	        @RequestParam("currentPw") String currentPw,
+	        @RequestParam("newPw") String newPw) {
 
-	    Map<String, Object> response = new HashMap<>();
+	    StringBuilder json = new StringBuilder();
+	    json.append("{");
 
 	    MemberDTO member = memberService.selectone(id);
 	    if (member == null) {
-	        response.put("success", false);
-	        response.put("message", "사용자를 찾을 수 없습니다.");
-	        return response;
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"사용자를 찾을 수 없습니다.\"");
+	        json.append("}");
+	        return json.toString();
 	    }
 
 	    if (!member.getPassword().equals(currentPw)) {
-	        response.put("success", false);
-	        response.put("message", "현재 비밀번호가 올바르지 않습니다.");
-	        return response;
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"현재 비밀번호가 올바르지 않습니다.\"");
+	        json.append("}");
+	        return json.toString();
 	    }
 
 	    member.setPassword(newPw);
 	    int result = memberService.updatePassword(member);
 
-	    response.put("success", result > 0);
+	    json.append("\"success\":").append(result > 0);
 	    if (result <= 0) {
-	        response.put("message", "비밀번호 변경 실패");
+	        json.append(",\"message\":\"비밀번호 변경 실패\"");
+	    } else {
+	        json.append(",\"message\":\"비밀번호가 성공적으로 변경되었습니다.\"");
 	    }
+	    json.append("}");
 
-	    return response;
+	    return json.toString();
 	}
 	//회원 탈퇴 요청
-	@PostMapping("/user/delete")
+	@PostMapping(value="/delete", produces="application/json;charset=UTF-8")
 	@ResponseBody
-	public Map<String, Object> deleteUser(@RequestBody Map<String, Object> data) {
-	    String id = (String) data.get("id");
-	    String password = (String) data.get("password");
+	public String deleteUser(@RequestParam("id") String id,
+	                         @RequestParam("password") String password) {
 
-	    Map<String, Object> response = new HashMap<>();
+	    StringBuilder json = new StringBuilder();
+	    json.append("{");
 
 	    MemberDTO member = memberService.selectone(id);
 	    if (member == null) {
-	        response.put("success", false);
-	        response.put("message", "사용자를 찾을 수 없습니다.");
-	        return response;
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"사용자를 찾을 수 없습니다.\"");
+	        json.append("}");
+	        return json.toString();
 	    }
 
 	    if (!member.getPassword().equals(password)) {
-	        response.put("success", false);
-	        response.put("message", "비밀번호가 일치하지 않습니다.");
-	        return response;
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"비밀번호가 일치하지 않습니다.\"");
+	        json.append("}");
+	        return json.toString();
 	    }
 
-	    // 탈퇴 처리
 	    int result = memberService.deleteUser(id);
 
-	    response.put("success", result > 0);
+	    json.append("\"success\":").append(result > 0);
 	    if (result <= 0) {
-	        response.put("message", "회원 탈퇴 처리에 실패했습니다.");
+	        json.append(",\"message\":\"회원 탈퇴 처리에 실패했습니다.\"");
+	    } else {
+	        json.append(",\"message\":\"회원 탈퇴가 완료되었습니다.\"");
 	    }
-	    return response;
+	    json.append("}");
+	    return json.toString();
 	}
 
 }
