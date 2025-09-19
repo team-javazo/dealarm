@@ -48,12 +48,11 @@ public class MemberDAOImpl implements MemberDAO {
 		return sqlSession.selectList(namespace + ".allDTO");
 	}
 	@Override	// 검색회원리스트
-	public List<MemberDTO> searchMembers(String searchType, String searchValue) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("searchType", searchType);
-		params.put("searchValue", searchValue);
+//	public List<MemberDTO> searchMembers(String searchType, String searchValue) {	//예전꺼
+	public List<MemberDTO> searchMembers(Map<String, String> params) {
 		return sqlSession.selectList(namespace + ".searchMembers", params);
 	}
+
 	@Override
 	public int userupdate(MemberDTO update) {
 		return sqlSession.update(namespace + ".userupdate", update);
@@ -79,6 +78,7 @@ public class MemberDAOImpl implements MemberDAO {
 	public int deleteUser(String id) {
 		  return sqlSession.update(namespace + ".deleteUser", id);
 	}
+
 
 
 
