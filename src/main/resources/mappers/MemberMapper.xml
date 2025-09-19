@@ -77,7 +77,7 @@
 	                OR phone LIKE CONCAT('%', #{searchValue}, '%')
 	                OR email LIKE CONCAT('%', #{searchValue}, '%')
 	                OR DATE_FORMAT(birth_date, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
-	                OR gender LIKE CONCAT('%', #{searchValue}, '%')
+	                OR gender = #{searchValue}
 	                OR notification LIKE CONCAT('%', #{searchValue}, '%')
 	                OR region LIKE CONCAT('%', #{searchValue}, '%')
 	                OR role LIKE CONCAT('%', #{searchValue}, '%')
@@ -105,7 +105,12 @@
 	                </choose>
 	            </when>
 	        </choose>
-	    </where>
+	        <!--   필터 조건 	-->
+	        <if test="genderFilter != null and genderFilter != ''">and gender = #{genderFilter}</if>
+	        <if test="roleFilter != null and roleFilter != ''">and role = #{roleFilter}</if>
+	        <if test="notificationFilter != null and notificationFilter != ''">and notification = #{notificationFilter}</if>
+	        <if test="is_active != null and is_activeFilter != ''">and is_active = #{is_activeFilter}</if>
+		</where>
 	</select>
 	
 	<select id="selectone" parameterType="String" resultType="kr.co.dong.member.MemberDTO">

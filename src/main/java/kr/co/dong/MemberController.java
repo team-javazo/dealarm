@@ -106,10 +106,28 @@ public class MemberController {
 	}
 	// 관리자 회원검색 리스트
 	@RequestMapping("/members_search")
-	public String searchMembers(@RequestParam String searchType, @RequestParam String searchValue, Model model) {
+	public String searchMembers(@RequestParam(value="searchType", required=false) String searchType,
+								@RequestParam(value="searchValue", required=false) String searchValue,
+								@RequestParam(value="genderFilter", required=false) String genderFilter,
+								@RequestParam(value="roleFilter", required=false) String roleFilter,
+								@RequestParam(value="notificationFilter", required=false) String notificationFilter,
+								@RequestParam(value="is_activeFilter", required=false) String is_activeFilter,
+								Model model) {
 		int totalCount = memberService.memberCount(); // 총 회원 수
 		model.addAttribute("totalCount", totalCount);
-		List<MemberDTO> list= memberService.searchMembers(searchType, searchValue);
+		
+		//2. 검색 필터조건 Map 에 넣어 서비스로 보내기
+		Map<String, String> params = new HashMap<>();
+		params.put("searchType", searchType);
+		params.put("searchValue", searchValue);
+		params.put("genderFilter", genderFilter);
+		params.put("roleFilter", roleFilter);
+		params.put("notificationFilter", notificationFilter);		
+		
+		
+//		List<MemberDTO> list= memberService.searchMembers(searchType, searchValue); // 이전꺼
+		List<MemberDTO> list= memberService.searchMembers(params);	//
+		
 		model.addAttribute("list", list);
 		model.addAttribute("searchCount", list.size());
 		return "admin/members";
