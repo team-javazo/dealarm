@@ -97,7 +97,7 @@ public class MemberController {
 	
 	
 	//	관리자 회원관리 페이지
-	@RequestMapping("/members")
+	@RequestMapping("/admin/members")
 	public String members(Model model) {
 		// 전체회원 목록
 		List<MemberDTO> list = memberService.allList();
@@ -108,7 +108,7 @@ public class MemberController {
 
     // 회원정보 수정 페이지 내용 삽입
 	@PostMapping(value = "/userupdate")
-	public String userpdate(@RequestParam("userId") String id, Model model) {
+	public String userpdate(@RequestParam("id") String id, Model model) {
 	    MemberDTO list = memberService.selectone(id);
 	     model.addAttribute("user", list);  
 	     return "member/userupdate";  
