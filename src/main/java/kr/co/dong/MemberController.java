@@ -81,7 +81,7 @@ public class MemberController {
 	@PostMapping("/mypage_pass")
 	public String checkPass(@RequestParam String id, @RequestParam String password, Model model) {
 		MemberDTO user = memberService.myDTO(id);
-		System.out.println("패스체크까지 오나??");
+		System.out.println("비번체크comtroller");
 		if(!memberService.checkPassword(id, password)){
 			model.addAttribute("passFail", true);
 			System.out.println("비번실패");
@@ -93,17 +93,33 @@ public class MemberController {
 
 		return "member/userupdate";
 	}
+
 	
 	
-	
-	//	관리자 회원관리 페이지
-	@RequestMapping("/admin/members")
+
+	//	관리자 회원관리 전체 리스트
+	@RequestMapping("/members")
+
 	public String members(Model model) {
-		// 전체회원 목록
-		List<MemberDTO> list = memberService.allList();
+		int totalCount = memberService.memberCount(); // 총 회원 수
+		model.addAttribute("totalCount", totalCount);
+		List<MemberDTO> list = memberService.allList(); // 전체회원 목록
 		model.addAttribute("list", list);
+		model.addAttribute("searchCount", list.size());	// 검색카운트
 		return "admin/members";
 	}
+	// 관리자 회원검색 리스트
+	@RequestMapping("/members_search")
+	public String searchMembers(@RequestParam String searchType, @RequestParam String searchValue, Model model) {
+		int totalCount = memberService.memberCount(); // 총 회원 수
+		model.addAttribute("totalCount", totalCount);
+		List<MemberDTO> list= memberService.searchMembers(searchType, searchValue);
+		model.addAttribute("list", list);
+		model.addAttribute("searchCount", list.size());
+		return "admin/members";
+		
+	}
+	
 
 
     // 회원정보 수정 페이지 내용 삽입

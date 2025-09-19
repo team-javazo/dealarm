@@ -34,10 +34,18 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	public int memberCount() {
+		return memberDAO.memberCount();
+	}
+
+	@Override
 	public List<MemberDTO> allList() {
 		return memberDAO.allList();
 	}
-
+	@Override	//  검색회원리스트
+	public List<MemberDTO> searchMembers(String searchType, String searchValue) {
+		return memberDAO.searchMembers(searchType, searchValue);
+	}
 	@Override
 	public boolean checkPassword(String id, String password) {
 		MemberDTO user = memberDAO.myDTO(id);
@@ -75,4 +83,6 @@ public class MemberServiceImpl implements MemberService {
 		// TODO Auto-generated method stub
 		return memberDAO.deleteUser(id);
 	}
+
+
 }
