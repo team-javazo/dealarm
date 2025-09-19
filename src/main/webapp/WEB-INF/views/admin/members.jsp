@@ -19,7 +19,7 @@
        			document.querySelector('select[name=searchType]').value = 'all';">총 회원리스트</a>
 	
     <!-- 검색 폼 -->
-    <form action="${pageContext.request.contextPath}/admin/membersSearch" method="post" class="d-flex mb-3" role="search">
+    <form action="${pageContext.request.contextPath}/member/members_search" method="post" class="d-flex mb-3" role="search">
         <select class="form-select me-2" style="max-width: 120px;" name="searchType">
             <option value="all" <c:if test="${empty param.searchType or param.searchType == 'all'}">selected</c:if>>전체</option>
             <option value="id" <c:if test="${param.searchType == 'id'}">selected</c:if>>아이디</option>

@@ -67,7 +67,7 @@
 	<!-- 전체/조건 검색 -->
 	<select id="searchMembers" parameterType="map" resultType="kr.co.dong.member.MemberDTO">
 	    SELECT *
-	    FROM members
+	    FROM users
 	    <where>
 	        <choose>
 	            <!-- 전체 검색 -->
