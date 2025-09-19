@@ -52,14 +52,62 @@
 		FROM users
 		WHERE id = #{id}
 	</select>
+
+	<select id="memberCount" resultType="int">
+		select count(*) from users
+	</select>
+	
+	<!-- 모든 회원 리스트 -->
 	<select id="allDTO" resultType="kr.co.dong.member.MemberDTO">
 		select id, password, name, phone, email, birth_date, gender, notification, region, role,
 		is_active, created_at
 		FROM users 
 	</select>
 	
+	<!-- 전체/조건 검색 -->
+	<select id="searchMembers" parameterType="map" resultType="kr.co.dong.member.MemberDTO">
+	    SELECT *
+	    FROM users
+	    <where>
+	        <choose>
+	            <!-- 전체 검색 -->
+	            <when test="searchType == 'all' and searchValue != null and searchValue != ''">
+	                id LIKE CONCAT('%', #{searchValue}, '%')
+	                OR name LIKE CONCAT('%', #{searchValue}, '%')
+	                OR phone LIKE CONCAT('%', #{searchValue}, '%')
+	                OR email LIKE CONCAT('%', #{searchValue}, '%')
+	                OR DATE_FORMAT(birth_date, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
+	                OR gender LIKE CONCAT('%', #{searchValue}, '%')
+	                OR notification LIKE CONCAT('%', #{searchValue}, '%')
+	                OR region LIKE CONCAT('%', #{searchValue}, '%')
+	                OR role LIKE CONCAT('%', #{searchValue}, '%')
+	                OR is_active LIKE CONCAT('%', #{searchValue}, '%')
+	                OR DATE_FORMAT(created_at, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
+	            </when>
 	
-
+	            <!-- 특정 컬럼 검색 -->
+	            <when test="searchType != 'all' and searchValue != null and searchValue != ''">
+	                <choose>
+	                    <!-- 숫자 타입 컬럼 -->
+	                    <when test="searchType == 'notification' or searchType == 'is_active'">
+	                        CAST(${searchType} AS CHAR) LIKE CONCAT('%', #{searchValue}, '%')
+	                    </when>
+	
+	                    <!-- 날짜 타입 컬럼 -->
+	                    <when test="searchType == 'birth_date' or searchType == 'created_at'">
+	                        DATE_FORMAT(${searchType}, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
+	                    </when>
+	
+	                    <!-- 나머지 문자열 컬럼 -->
+	                    <otherwise>
+	                        ${searchType} LIKE CONCAT('%', #{searchValue}, '%')
+	                    </otherwise>
+	                </choose>
+	            </when>
+	        </choose>
+	    </where>
+	</select>
+	
 	<select id="selectone" parameterType="String" resultType="kr.co.dong.member.MemberDTO">
 	    SELECT id, password, name, email, birth_date, gender, region, role, is_active, created_at
 	    FROM users
