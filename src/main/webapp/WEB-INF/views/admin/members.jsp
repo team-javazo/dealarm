@@ -150,6 +150,102 @@
 				</tbody>
 			</table>
 		</form>
+			
+		<!-- 페이징 UI ver2 -->
+		<c:set var="limit" value="${limit}"/>
+		<c:set var="totalPages" value="${totalPages}"/>
+		<c:set var="startPage" value="${currentPage - 2 <= 0 ? 1 : currentPage - 2}"/>
+		<c:set var="endPage" value="${startPage + 4 > totalPages ? totalPages : startPage +4}"/>
+		<c:if test="${endPage > totalPages}">
+		    <c:set var="endPage" value="${totalPages}"/>
+		</c:if> 
+		
+		<!-- 페이징 네비게이션 -->
+		<nav aria-label="Page navigation">
+		    <ul class="pagination justify-content-center mt-3">
+		        <!-- 이전 페이지 -->
+		        <c:choose>
+		            <c:when test="${currentPage == 1}">
+		                <li class="page-item disabled">
+		                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">이전페이지</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="?currentPage=${currentPage - 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">이전페이지</a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		
+		        <!-- 페이지 번호 -->
+		        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+		            <li class="page-item ${i == currentPage ? 'active' : ''}">
+		                <a class="page-link" href="?currentPage=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">${i}</a>
+		            </li>
+		        </c:forEach>
+		
+		        <!-- 다음 페이지 -->
+		        <c:choose>
+		            <c:when test="${currentPage >= totalPages}">
+		                <li class="page-item disabled">
+		                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">다음페이지</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="?currentPage=${currentPage + 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">다음페이지</a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		    </ul>
+		</nav>
+		<div style="background:#f8f9fa; padding:10px; margin:10px 0; border:1px solid #ddd;">
+		    <strong>페이징 디버그</strong><br/>
+		    currentPage: ${currentPage}<br/>
+		    limit: ${limit}<br/>
+		    searchCount: ${searchCount}<br/>
+		    totalPages: ${totalPages}<br/>
+		    조건 (currentPage == totalPages): ${currentPage == totalPages}<br/>
+		    조건 (currentPage == totalPages): ${currentPage >= totalPages}<br/>
+		</div>
+		
+			
+			<!-- 페이징 UI ver1 -->
+<!--  
+			<c:set var="limit" value="10"/>
+			<c:set var="totalPages" value="${(totalCount / limit) + (totalCount % limit > 0 ? 1 : 0)}"/>
+			<c:set var="startPage" value="${currentPage - 2 <= 0 ? 1 : currentPage - 2}"/>
+			<c:set var="endPage" value="${startPage + 4 > totalPages ? totalPages : startPage + 4}"/>
+			
+			<nav aria-label="Page navigation example">
+			    <ul class="pagination justify-content-center mt-3">
+			        <!-- 이전 페이지 -->
+<!--
+ 			        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+			            <a class="page-link" href="?currentPage=${currentPage - 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">Previous</a>
+			        </li>
+			
+			        <!-- 페이지 번호 -->
+<!--
+			        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+			            <li class="page-item ${i == currentPage ? 'active' : ''}">
+			                <a class="page-link" href="?currentPage=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">${i}</a>
+			            </li>
+			        </c:forEach>
+			
+			        <!-- 다음 페이지 -->
+<!--
+			        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+			            <a class="page-link" href="?currentPage=${currentPage + 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">Next</a>
+			        </li>
+			    </ul>
+			</nav>
+			</div>
+ --> 		
+ 
+ 
+ 	
+
 
 		<!-- 					
 							<td>${member.is_active }
