@@ -8,10 +8,14 @@ public interface MemberService {
 	MemberDTO login(MemberDTO member);
 	boolean isIdAvailable(String id);
 	MemberDTO myDTO(String id);	//내정보
-	int memberCount();			//회원수
-	List<MemberDTO> allList();	//모든회원
+	
+	int memberCount();			// 총 회원수
+	List<MemberDTO> allList(Map<String,Object> params);	//모든회원
+
+	int searchMembersCount(Map<String,Object> params);	//페이징용 검색 카운트
+	List<MemberDTO> searchMembers(Map<String, Object> params);	// 검색회원
+	
 //	List<MemberDTO> searchMembers(String searchType, String searchValue);	// 예전 검색회원
-	List<MemberDTO> searchMembers(Map<String, String> params);	// 검색회원
 	boolean checkPassword(String id, String password);
     int userupdate(MemberDTO update);
     int adminupdate(MemberDTO update);
