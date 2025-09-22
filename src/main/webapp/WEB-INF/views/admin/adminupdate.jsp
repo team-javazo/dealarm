@@ -10,7 +10,7 @@
 <body>
 <h1>관리자 회원 정보 수정</h1>
 	<!-- 관리자 회원 정보 수정 폼 -->
-	<form action="/adminupdate_ok" method="post">
+	<form action="${pageContext.request.contextPath}/member/adminupdate_ok" method="post">
 		<table border="1" style="margin-bottom: 20px;">
 			<tr>
 			    <th>계정 상태</th>
@@ -45,6 +45,22 @@
 			    </td>
 			</tr>
 			<tr>
+			    <th>알림 수신 여부</th>
+			    <td>
+			        <label>
+			            <input type="radio" name="notification" value="1"
+			                <c:if test="${user.notification == 1}">checked</c:if> >
+			            동의
+			        </label>
+			        &nbsp;&nbsp;
+			        <label>
+			            <input type="radio" name="notification" value="0"
+			                <c:if test="${user.notification != 1}">checked</c:if> >
+			            동의하지 않음
+			        </label>
+			    </td>
+			</tr>
+			<tr>
 				<th>이름 :</th>
 				<td><input type="text" name="name" value="${user.name}"></td>
 			</tr>
@@ -73,9 +89,8 @@
 				<td><input type="text" name="created_at" value="${user.created_at}"></td>
 			</tr>
 			<tr>
-				<td colspan="2" style="text-align: center;"><input
-					type="hidden" name="id" value="${user.id}">
-					<button type="submit" class="btn btn-success">수정</button>
+					<td colspan="2" style="text-align: center;"><input type="hidden" name="id" value="${user.id}"> 
+					<input type="submit" value="수정">
 					<button type="button" onclick="openPwModal()">비밀번호 변경</button>
 			</tr>
 		</table>
@@ -124,26 +139,30 @@
       return;
     }
 
-    fetch("/change-password", {
+    // JSON → Form 방식으로 변경
+    const formData = new URLSearchParams();
+    formData.append("id", id);
+    formData.append("currentPw", currentPw);
+    formData.append("newPw", newPw);
+
+    fetch("${pageContext.request.contextPath}/member/change-password", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ id, currentPw, newPw })
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          alert("비밀번호가 성공적으로 변경되었습니다.");
-          closePwModal();
-        } else {
-          alert(data.message || "현재 비밀번호가 올바르지 않습니다.");
-        }
-      })
-      .catch(err => {
-        console.error("에러 발생:", err);
-        alert("서버 오류가 발생했습니다.");
-      });
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("비밀번호가 성공적으로 변경되었습니다.");
+        closePwModal();
+      } else {
+        alert("현재 비밀번호가 올바르지 않습니다.");
+      }
+    })
+    .catch(err => {
+      console.error("에러 발생:", err);
+      alert("서버 오류가 발생했습니다.");
+    });
   });
 </script>
 

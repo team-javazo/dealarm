@@ -15,7 +15,7 @@
 		
 			<tr>
 				<th>이름</th>
-				<td><input type="text" name="name" value="${user.name}"	readonly></td>
+				<td><input type="text" name="name" value="${user.name}"	disabled></td>
 			</tr>
 			<tr>
 				<th>번호</th>
@@ -27,12 +27,12 @@
 			</tr>
 			<tr>
 				<th>나이</th>
-				<td><input type="text" name="birth_date" value="${user.birth_date}" readonly></td>
+				<td><input type="text" name="birth_date" value="${user.birth_date}" disabled></td>
 			</tr>
 
 			<tr>
 				<th>성별</th>
-				<td><input type="text" name="gender" value="${user.gender}"	readonly></td>
+				<td><input type="text" name="gender" value="${user.gender}"	disabled></td>
 			</tr>
 			<tr>
 				<th>지역</th>
@@ -56,9 +56,8 @@
 			</tr>
 
 			<tr>
-				<td colspan="2" style="text-align: center;"><input
-					type="hidden" name="id" value="${user.id}"> <input
-					type="submit" value="수정">
+				<td colspan="2" style="text-align: center;"><input type="hidden" name="id" value="${user.id}"> 
+				<input type="submit" value="수정">
 					<button type="button" onclick="openPwModal()">비밀번호 변경</button>
 					<button type="button" onclick="openModal()">탈퇴</button></td>
 			</tr>

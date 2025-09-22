@@ -29,13 +29,14 @@
 	
 	<!-- 회원 업데이트 -->
 	<update id="userupdate" parameterType="kr.co.dong.member.MemberDTO">
-		update users set phone = ${phone}, email = #{email}, notification = #{notification},  region = #{region}
+		update users set phone = ${phone}, email = #{email}, notification = #{notification}, region = #{region}
 		where id = #{id}
 	</update>
 	
 	<!-- 관리자 회원 업데이트 -->
 	<update id="adminupdate" parameterType="kr.co.dong.member.MemberDTO">
-		update users set name = #{name}, phone = ${phone}, email = #{email}, notification = #{notification}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} is_active = #{is_active}
+		update users set name = #{name}, phone = ${phone}, email = #{email}, notification = #{notification}, 
+		birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role}, is_active = #{is_active}
 		where id = #{id}
 		
 	</update>
@@ -120,4 +121,9 @@
 	<update id="deleteUser" parameterType="String">
 	    UPDATE users SET is_active = 0 WHERE id = #{id}
 	</update>
+	
+	<!-- 관리자 회원 탈퇴  -->
+	<delete id="deleteadmin" parameterType="String">
+	    delete from users WHERE id = #{id}
+	</delete>
 </mapper>

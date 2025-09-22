@@ -16,5 +16,5 @@ public interface MemberService {
 	MemberDTO selectone(String id);
 	int updatePassword(MemberDTO member);
 	int deleteUser(String id);
-
+    int deleteadmin(String id);
 }

@@ -17,7 +17,7 @@
 	<a href="${pageContext.request.contextPath}/admin/members" class="btn btn-outline-primary btn-sm ms-3"
 	   onclick="document.querySelector('input[name=searchValue]').value = '';
        			document.querySelector('select[name=searchType]').value = 'all';">총 회원리스트</a>
-	
+	<button type="button" class="btn btn-outline-primary btn-sm ms-3" onclick="location.href='<c:url value="/"/>'">홈으로</button>
     <!-- 검색 폼 -->
     <form action="${pageContext.request.contextPath}/member/members_search" method="post" class="d-flex mb-3" role="search">
         <select class="form-select me-2" style="max-width: 120px;" name="searchType">
@@ -80,8 +80,22 @@
                         </td>
                         <td>${member.created_at}</td>
                         <td><button class="btn btn-secondary btn-sm" onclick="alert('상세조회: ${member.id}')">상세조회</button></td>
-                        <td><button class="btn btn-primary btn-sm" onclick="alert('수정: ${member.id}')">수정</button></td>
-                        <td><button class="btn btn-danger btn-sm" onclick="alert('삭제: ${member.id}')">삭제</button></td>
+						<form action="${pageContext.request.contextPath}/member/adminupdate" method="post">
+						    <input type="hidden" name="id" value="${member.id}">
+						    <td>
+						        <button type="submit" class="btn btn-secondary btn-sm">
+						            수정
+						        </button>
+						    </td>
+						</form>
+                       <form action="${pageContext.request.contextPath}/member/deleteadmin" method="post">
+						    <input type="hidden" name="id" value="${member.id}">
+						    <td>
+						        <button type="submit" class="btn btn-secondary btn-sm">
+						            삭제
+						        </button>
+						    </td>
+						</form>
                     </tr>
                 </c:forEach>
             </tbody>

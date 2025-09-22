@@ -135,23 +135,28 @@ public class MemberController {
 	public String adminupdate(@RequestParam("id") String id, Model model) {
 	    MemberDTO list = memberService.selectone(id);
 	     model.addAttribute("user", list);  
-	     return "adminupdate";  
+	     return "admin/adminupdate";  
 	}
 	
 	// 회원 정보 수정
-	@PostMapping(value = "/userupdate_ok")
-	public String userupdate(@ModelAttribute MemberDTO update) {
-		memberService.userupdate(update);
-	     return "redirect:/";  
-	}
+//	@PostMapping(value = "/userupdate_ok")
+//	public String userupdate(@ModelAttribute MemberDTO update) {
+//		memberService.userupdate(update);
+//	     return "redirect:/";  
+//	}
 	
 	// 관리자 회원 정보 수정
 	@PostMapping(value = "/adminupdate_ok")
 	public String adminupdate(@ModelAttribute MemberDTO update) {
 		memberService.adminupdate(update);
-	     return "redirect:/";  
+	     return "redirect:/member/members";  
 	}
-	// 비밀번호 변경 
+	// 관리자 삭제
+	@PostMapping(value = "/deleteadmin")
+	public String deleteadmin(@RequestParam("id") String id) {
+		memberService.deleteadmin(id);
+		return "redirect:/member/members";  
+	}
 	@PostMapping("/change-password")
 	@ResponseBody
 	public String changePassword(
@@ -225,5 +230,6 @@ public class MemberController {
 	    json.append("}");
 	    return json.toString();
 	}
+	
 
 }

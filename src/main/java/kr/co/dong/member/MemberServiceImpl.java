@@ -85,5 +85,11 @@ public class MemberServiceImpl implements MemberService {
 		return memberDAO.deleteUser(id);
 	}
 
+	@Override
+	public int deleteadmin(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.deleteadmin(id);
+	}
+
 
 }

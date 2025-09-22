@@ -15,6 +15,12 @@
         <a href="<c:url value='/member/join'/>">회원가입</a> |
         <a href="<c:url value='/member/login'/>">로그인</a>
     </c:when>
+    <c:when test="${sessionScope.role eq 'ADMIN'}">
+            <p><b>${sessionScope.role}</b> 님, 환영합니다!</p>
+        <a href="<c:url value='/member/members'/>">회원목록</a>
+        <a href="<c:url value='/member/logout'/>">로그아웃</a>
+        <a href="<c:url value='/member/mypage'/>">마이페이지</a>
+    </c:when>
     <c:otherwise>
         <p><b>${sessionScope.name}</b> 님, 환영합니다!</p>
         <a href="<c:url value='/member/logout'/>">로그아웃</a>
