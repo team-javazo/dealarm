@@ -6,15 +6,20 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 정보</title>
+<!-- Bootstrap CSS/JS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 	<!-- 회원 정보 수정 폼 -->
 
+<div class="container mt-5">
+		    <h1>내 정보 수정</h1>
 	<form action="${pageContext.request.contextPath}/member/userupdate" method="post">
-		<table border="1">
+		<table class="table table-bordered text-center" style="width: 500px; table-layout: fixed;">
 		
 			<tr>
-				<th>이름</th>
+				<th style="width: 150px;"class="text-center">이름</th>
 				<td><input type="text" name="name" value="${user.name}"	disabled></td>
 			</tr>
 			<tr>
@@ -54,16 +59,20 @@
 			        </label>
 			    </td>
 			</tr>
-
+	
+				    <div class="mt-3">
 			<tr>
-				<td colspan="2" style="text-align: center;"><input type="hidden" name="id" value="${user.id}"> 
+
+				<td colspan="2"><input type="hidden" name="id" value="${user.id}"> 
 				<input type="submit" value="수정">
 					<button type="button" onclick="openPwModal()">비밀번호 변경</button>
 					<button type="button" onclick="openModal()">탈퇴</button></td>
+							</div>
 			</tr>
+		
 		</table>
 	</form>
-
+	</div>
 	<br>
 
 	<!-- 탈퇴 모달 -->

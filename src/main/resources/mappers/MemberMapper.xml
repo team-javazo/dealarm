@@ -121,6 +121,10 @@
 	<update id="deleteUser" parameterType="String">
 	    UPDATE users SET is_active = 0 WHERE id = #{id}
 	</update>
+	<!-- 회원 복구  -->
+	<update id="activeUser" parameterType="String">
+	    UPDATE users SET is_active = 1 WHERE id = #{id}
+	</update>
 	
 	<!-- 관리자 회원 탈퇴  -->
 	<delete id="deleteadmin" parameterType="String">

@@ -55,7 +55,7 @@ public class MemberController {
             session.setAttribute("id", loginUser.getId());
             session.setAttribute("role", loginUser.getRole());
             session.setAttribute("name", loginUser.getName());
-            
+            session.setAttribute("is_active", loginUser.getIs_active());
             return "redirect:/"; // 로그인 성공 → 홈으로
         } else {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
@@ -231,5 +231,40 @@ public class MemberController {
 	    return json.toString();
 	}
 	
+	//회원 계정 활성화
+	@PostMapping(value="/active", produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String active(@RequestParam("id") String id,
+	                         @RequestParam("password") String password) {
+
+	    StringBuilder json = new StringBuilder();
+	    json.append("{");
+
+	    MemberDTO member = memberService.selectone(id);
+	    if (member == null) {
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"사용자를 찾을 수 없습니다.\"");
+	        json.append("}");
+	        return json.toString();
+	    }
+
+	    if (!member.getPassword().equals(password)) {
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"비밀번호가 일치하지 않습니다.\"");
+	        json.append("}");
+	        return json.toString();
+	    }
+
+	    int result = memberService.activeUser(id);
+
+	    json.append("\"success\":").append(result > 0);
+	    if (result <= 0) {
+	        json.append(",\"message\":\"계정 활성화에 실패했습니다.\"");
+	    } else {
+	        json.append(",\"message\":\"계정 활성화가 완료되었습니다. 재로그인 해주세요\"");
+	    }
+	    json.append("}");
+	    return json.toString();
+	}
 
 }

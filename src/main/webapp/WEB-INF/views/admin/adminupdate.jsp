@@ -6,14 +6,18 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 수정</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
+<div class="container mt-5">
 <h1>관리자 회원 정보 수정</h1>
 	<!-- 관리자 회원 정보 수정 폼 -->
 	<form action="${pageContext.request.contextPath}/member/adminupdate_ok" method="post">
-		<table border="1" style="margin-bottom: 20px;">
+		<table class="table table-bordered text-center" style="width: 500px; table-layout: fixed;">
 			<tr>
-			    <th>계정 상태</th>
+			    <th style="width: 150px;"class="text-center">계정 상태</th>
 			    <td>
 			        <label>
 			            <input type="radio" name="is_active" value="1"
@@ -95,7 +99,7 @@
 			</tr>
 		</table>
 	</form>
-	
+		</div>
 	<!-- 비밀번호 변경 모달 -->
 <div id="changePwModal"
      style="display: none; border: 1px solid #000; padding: 10px; background: #eee;">

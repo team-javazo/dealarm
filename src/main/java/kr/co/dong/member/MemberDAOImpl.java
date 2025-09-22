@@ -86,6 +86,12 @@ public class MemberDAOImpl implements MemberDAO {
 		return sqlSession.update(namespace + ".deleteadmin", id);
 	}
 
+	@Override
+	public int activeUser(String id) {
+		// TODO Auto-generated method stub
+	  return sqlSession.update(namespace + ".activeUser", id);
+	}
+
 
 
 }
