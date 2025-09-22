@@ -115,6 +115,8 @@ public class MemberController {
 								@RequestParam(value="roleFilter", required=false) String roleFilter,
 								@RequestParam(value="notificationFilter", required=false) String notificationFilter,
 								@RequestParam(value="is_activeFilter", required=false) String is_activeFilter,
+								@RequestParam(value="birth_orderType", required=false) String birth_orderType,
+								@RequestParam(value="created_orderType", required=false) String created_orderType,
 								Model model) {
 		int totalCount = memberService.memberCount(); // 총 회원 수
 		model.addAttribute("totalCount", totalCount);
@@ -126,7 +128,9 @@ public class MemberController {
 		params.put("genderFilter", genderFilter);
 		params.put("roleFilter", roleFilter);
 		params.put("notificationFilter", notificationFilter);		
-		
+		params.put("is_activeFilter", is_activeFilter);
+		params.put("birth_orderType", birth_orderType);
+		params.put("created_orderType", created_orderType);
 		
 //		List<MemberDTO> list= memberService.searchMembers(searchType, searchValue); // 이전꺼
 		List<MemberDTO> list= memberService.searchMembers(params);	//

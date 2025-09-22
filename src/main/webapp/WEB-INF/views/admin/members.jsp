@@ -25,8 +25,7 @@
 		<hr>
 
 		<!-- 검색 폼 -->
-		<form
-			action="${pageContext.request.contextPath}/member/members_search"
+	 	<form action="${pageContext.request.contextPath}/member/members_search"		
 			method="post" class="d-flex mb-3" role="search">
 			<select class="form-select me-2" style="max-width: 120px;"
 				name="searchType">
@@ -60,8 +59,7 @@
 
 		<!-- 회원 목록 테이블 -->
 
-		<form action="${pageContext.request.contextPath}/member/members_search" method="post">
-
+		<form action="${pageContext.request.contextPath}/member/members_search" method="post">			
 	        <!-- 타입불일치오류 제거용 searchType/searchValue hidden input 추가 -->
 	        <input type="hidden" name="searchType" value="${param.searchType}">
 	        <input type="hidden" name="searchValue" value="${param.searchValue}">
@@ -74,7 +72,14 @@
 						<th style="width: 30px; vertical-align: middle;">이름</th>
 <!--        			<th style="width: 100px;vertical-align: middle;">전화번호</th>  	 -->
 <!--         		  	<th style="width: 100px;vertical-align: middle;">이메일</th>		 -->
-						<th style="width: 25px; vertical-align: middle;">생년월일</th>
+<!--					<th style="width: 25px; vertical-align: middle;">생년월일</th>		-->
+						<th style="width: 25px; vertical-align: middle;">
+							<select name="birth_orderType" id="birth_orderType" class="form-select form-select-sm" onchange="this.form.submit()">
+								<option value="">생년월일</option>
+								<option value="birth_date_asc">오름차순</option>
+								<option value="birth_date_desc">내림차순</option>			 
+							</select>
+						</th>
 <!-- 	          		<th style="width: 20px;vertical-align: middle;">성별</th>		 -->
 						<th style="width: 20px; vertical-align: middle;">
 							<select name="genderFilter" class="form-select form-select-sm" onchange="this.form.submit()">
@@ -89,6 +94,8 @@
 	 							<option value="">알림</option>
 	 							<option value="1" <c:if test="${param.notificationFilter == '1'}">selected</c:if>>동의</option>
 	 							<option value="0" <c:if test="${param.notificationFilter == '0'}">selected</c:if>>거부</option>
+	 						</select>
+	 							
 	 					</th>			
 						<th style="width: 20px; vertical-align: middle;">지역</th>
 <!-- 					<th style="width: 20px; vertical-align: middle;">권한</th>		 -->	
@@ -107,7 +114,14 @@
 	 							<option value="0" <c:if test="${param.is_activeFilter == '0'}">selected</c:if>>탈퇴</option>
 							</select>
 	 					</th>						
-						<th style="width: 45px; vertical-align: middle;">가입일</th>
+<!--					<th style="width: 45px; vertical-align: middle;">가입일</th>	 -->
+						<th style="width: 45px; vertical-align: middle;">
+							<select name="created_orderType" id="created_orderType" class="form-select form-select-sm" onchange="this.form.submit()">
+								<option value="">가입일</option>
+								<option value="created_at_asc">오름차순</option>
+								<option value="created_at_desc">내림차순</option>			 
+							</select>	 
+						</th>
 						<th style="width: 28px; vertical-align: middle;">상세조회</th>
 						<th style="width: 20px; vertical-align: middle;">수정</th>
 						<th style="width: 20px; vertical-align: middle;">삭제</th>

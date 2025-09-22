@@ -35,7 +35,7 @@
 	
 	<!-- 관리자 회원 업데이트 -->
 	<update id="adminupdate" parameterType="kr.co.dong.member.MemberDTO">
-		update users set name = #{name}, phone = ${phone}, email = #{email}, notification = #{notification}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role} is_active = #{is_active}
+		update users set name = #{name}, phone = #{phone}, email = #{email}, notification = #{notification}, birth_date = #{birth_date}, gender = #{gender}, region = #{region}, role = #{role}, is_active = #{is_active}
 		where id = #{id}
 		
 	</update>
@@ -73,7 +73,8 @@
 	        <choose>
 	            <!-- 전체 검색 -->
 	            <when test="searchType == 'all' and searchValue != null and searchValue != ''">
-	                id LIKE CONCAT('%', #{searchValue}, '%')
+	               (
+	               	id LIKE CONCAT('%', #{searchValue}, '%')
 	                OR name LIKE CONCAT('%', #{searchValue}, '%')
 	                OR phone LIKE CONCAT('%', #{searchValue}, '%')
 	                OR email LIKE CONCAT('%', #{searchValue}, '%')
@@ -84,6 +85,7 @@
 	                OR role LIKE CONCAT('%', #{searchValue}, '%')
 	                OR is_active LIKE CONCAT('%', #{searchValue}, '%')
 	                OR DATE_FORMAT(created_at, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
+	                )
 	            </when>
 	
 	            <!-- 특정 컬럼 검색 -->
@@ -110,8 +112,21 @@
 	        <if test="genderFilter != null and genderFilter != ''">and gender = #{genderFilter}</if>
 	        <if test="roleFilter != null and roleFilter != ''">and role = #{roleFilter}</if>
 	        <if test="notificationFilter != null and notificationFilter != ''">and notification = #{notificationFilter}</if>
-	        <if test="is_active != null and is_activeFilter != ''">and is_active = #{is_activeFilter}</if>
+	        <if test="is_activeFilter != null and is_activeFilter != ''">and is_active = #{is_activeFilter}</if>
 		</where>
+		<!-- 정렬조건 -->
+		<if test="birth_orderType != null and birth_orderType !=''">
+			<choose>
+				<when test="birth_orderType == 'birth_date_asc'">order by birth_date asc</when>
+				<when test="birth_orderType == 'birth_date_desc'">order by birth_date desc</when>
+			</choose>
+		</if>
+		<if test="created_orderType != null and created_orderType !=''">
+			<choose>
+				<when test="created_orderType == 'created_at_asc'">order by created_at asc</when>
+				<when test="created_orderType == 'created_at_desc'">order by created_at desc</when>
+			</choose>
+		</if>
 	</select>
 	
 	<select id="selectone" parameterType="String" resultType="kr.co.dong.member.MemberDTO">
