@@ -11,6 +11,7 @@
 	rel="stylesheet">
 
 </head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <body>
 	<div class="container mt-4">
 
@@ -22,6 +23,7 @@
 			onclick="document.querySelector('input[name=searchValue]').value = '';
        			document.querySelector('select[name=searchType]').value = 'all';">전체
 			회원리스트</a>
+		<button type="button" class="btn btn-outline-primary btn-sm ms-3" onclick="location.href='<c:url value="/"/>'">홈으로</button>
 		<hr>
 
 		<!-- 검색 폼 -->
@@ -143,8 +145,16 @@
 							<td>${member.is_active }</td>
 							<td>${member.created_at}</td>
 							<td><button class="btn btn-secondary btn-sm">상세조회</button></td>
-							<td><button class="btn btn-primary btn-sm">수정</button></td>
-							<td><button class="btn btn-danger btn-sm">삭제</button></td>
+					<form method="post">
+					    <input type="hidden" name="id" value="${member.id}">
+					   <td> <button type="submit" class="btn btn-primary btn-sm"
+					            formaction="${pageContext.request.contextPath}/member/adminupdate">수정</button></td>
+					</form>
+					<td>
+					  <button type="button" class="btn btn-danger btn-sm"
+					          data-bs-toggle="modal"
+					          data-bs-target="#deleteModal"
+					          data-id="${member.id}">삭제</button></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -255,5 +265,38 @@
 	                            </c:choose>
 	                        </td>
 -->
+<!-- 삭제 확인 모달 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">회원 삭제 확인</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        정말 삭제하시겠습니까?
+      </div>
+      <div class="modal-footer">
+        <form id="deleteForm" method="post" action="${pageContext.request.contextPath}/member/deleteadmin">
+          <input type="hidden" name="id" id="deleteId">
+          <button type="submit" class="btn btn-danger">삭제</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var deleteModal = document.getElementById('deleteModal');
+  deleteModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget; // 삭제 버튼
+    var memberId = button.getAttribute('data-id'); // data-id 값 가져오기
+    var deleteInput = document.getElementById('deleteId');
+    deleteInput.value = memberId; // hidden input에 설정
+  });
+});
+</script>
 </body>
 </html>
