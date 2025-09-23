@@ -5,11 +5,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>관리자 페이지</title>
 </head>
 <body>
 
- <a href="<c:url value='/admin/members'/>">전체 회원조회</a> | <a href="<c:url value='/admin/active'/>">회원 탈퇴관리</a> | <a href="<c:url value='/admin/active'/>"> 관리자 마이페이지</a>
+ <a href="<c:url value='/admin/members'/>">전체 회원조회</a> | <a href="<c:url value='/admin/active'/>"> 관리자 마이페이지</a>
 
 </body>
 </html>

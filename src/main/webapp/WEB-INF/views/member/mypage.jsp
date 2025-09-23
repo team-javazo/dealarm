@@ -51,7 +51,7 @@
 	
 	    <div class="mt-3">
 	        <button type="button" class="btn btn-primary" onclick="openPassModal()">수정</button>
-	        <button type="button" class="btn btn-secondary" onclick="history.back()">이전페이지</button>
+			<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/"/>'">홈으로</button>
 	    </div>
 	</div>
 	

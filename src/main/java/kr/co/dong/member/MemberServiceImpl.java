@@ -53,8 +53,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<MemberDTO> allList() {
-		return memberDAO.allList();
+	public List<MemberDTO> allList(Map<String,Object> params) {
+		return memberDAO.allList(params);
 	}
 
 //	@Override	// 예전 검색회원리스트
@@ -62,8 +62,14 @@ public class MemberServiceImpl implements MemberService {
 //		return memberDAO.searchMembers(searchType, searchValue);
 //	}
 
-	@Override // 신규 검색회원 리스트
-	public List<MemberDTO> searchMembers(Map<String, String> params) {
+	@Override	// 페이징용 검색 카운트
+	public int searchMembersCount(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return memberDAO.searchMembersCount(params);
+	}
+	
+	@Override	// 신규 검색회원 리스트
+	public List<MemberDTO> searchMembers(Map<String, Object> params) {
 		return memberDAO.searchMembers(params);
 	}
 
@@ -106,5 +112,20 @@ public class MemberServiceImpl implements MemberService {
 		// TODO Auto-generated method stub
 		return memberDAO.deleteUser(id);
 	}
+
+	@Override
+	public int deleteadmin(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.deleteadmin(id);
+	}
+
+	@Override
+	public int activeUser(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.activeUser(id);
+	}
+
+
+
 
 }
