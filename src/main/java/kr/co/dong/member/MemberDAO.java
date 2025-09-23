@@ -6,6 +6,8 @@ import java.util.Map;
 public interface MemberDAO {
     void insertMember(MemberDTO member);
     int idCheck(String id);
+    int phoneCheck(String phone);
+    int emailCheck(String email);
     MemberDTO login(MemberDTO member); // 추가
 	MemberDTO myDTO(String id); // 정보 불러오기
 	int memberCount();			// 회원수
