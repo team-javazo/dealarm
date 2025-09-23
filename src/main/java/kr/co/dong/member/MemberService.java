@@ -7,6 +7,8 @@ public interface MemberService {
 	void register(MemberDTO member);
 	MemberDTO login(MemberDTO member);
 	boolean isIdAvailable(String id);
+	boolean isPhoneAvailable(String phone);
+	boolean isEmailAvailable(String email);
 	MemberDTO myDTO(String id);	//내정보
 	int memberCount();			//회원수
 	List<MemberDTO> allList();	//모든회원

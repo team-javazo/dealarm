@@ -27,6 +27,16 @@
 		COUNT(*) FROM users WHERE id = #{id}
 	</select>
 	
+	<!-- 휴대폰 번호 중복 체크 -->
+    <select id="phoneCheck" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM users WHERE phone = #{phone}
+    </select>
+
+    <!-- 이메일 중복 체크 -->
+    <select id="emailCheck" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM users WHERE email = #{email}
+    </select>
+	
 	<!-- 회원 업데이트 -->
 	<update id="userupdate" parameterType="kr.co.dong.member.MemberDTO">
 		update users set phone = ${phone}, email = #{email}, notification = #{notification},  region = #{region}

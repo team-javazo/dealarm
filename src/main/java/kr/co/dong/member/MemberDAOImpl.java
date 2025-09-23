@@ -17,15 +17,27 @@ public class MemberDAOImpl implements MemberDAO {
 
 	private static final String namespace = "kr.co.dong.member.MemberDAO";
 
+	// 중복 체크 - 휴대폰 번호
+    @Override
+    public int phoneCheck(String phone) {
+        return sqlSession.selectOne(namespace + ".phoneCheck", phone);
+    }
+
+    // 중복 체크 - 이메일
+    @Override
+    public int emailCheck(String email) {
+        return sqlSession.selectOne(namespace + ".emailCheck", email);
+    }
+	// 중복 체크 - 아이디
+    @Override
+    public int idCheck(String id) {
+    	return sqlSession.selectOne(namespace + ".idCheck", id);
+    }
+	
 	@Override
 	public void insertMember(MemberDTO member) {
 		sqlSession.insert(namespace + ".insertMember", member);
 
-	}
-
-	@Override
-	public int idCheck(String id) {
-		return sqlSession.selectOne(namespace + ".idCheck", id);
 	}
 
 	@Override
