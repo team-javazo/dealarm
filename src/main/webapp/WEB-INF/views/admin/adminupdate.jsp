@@ -93,7 +93,9 @@
 				<td><input type="text" name="created_at" value="${user.created_at}"></td>
 			</tr>
 			<tr>
+					
 					<td colspan="2" style="text-align: center;"><input type="hidden" name="id" value="${user.id}"> 
+					<button type="button" onclick="location.href='<c:url value="/member/members"/>'">목록으로</button>
 					<input type="submit" value="수정">
 					<button type="button" onclick="openPwModal()">비밀번호 변경</button>
 			</tr>
