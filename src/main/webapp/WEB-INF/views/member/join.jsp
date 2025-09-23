@@ -56,12 +56,26 @@
 			value="${member.birth_date != null ? member.birth_date : ''}"><br>
 
 		<!-- 성별 입력 필드 -->
-		성별: <input type="text" name="gender"
-			value="${member.gender != null ? member.gender : ''}"><br>
+		성별: <label>
+			      <input type="radio" name="gender" value="male" checked >
+			            남자
+			        </label>
+			        &nbsp;&nbsp;
+			        <label>
+			            <input type="radio" name="gender" value="female">
+			            여자
+			        </label><br>
 
 		<!-- 수신동의 입력 필드 -->
-		수신동의: <input type="int" name="notification"
-			value="${member.notification != null ? member.notification : ''}"><br>
+		수신동의:  <label>
+			            <input type="radio" name="notification" value="1" checked >
+			            동의
+			        </label>
+			        &nbsp;&nbsp;
+			        <label>
+			            <input type="radio" name="notification" value="0">
+			            동의하지 않음
+			        </label><br>
 
 		<!-- 지역 입력 필드 -->
 		지역: <input type="text" name="region"

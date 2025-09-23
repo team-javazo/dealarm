@@ -30,7 +30,14 @@
 	        <tr><th>전화번호</th><td>${user.phone}</td></tr>
 	        <tr><th>이메일</th><td>${user.email}</td></tr>
 	        <tr><th>생년월일</th><td>${user.birth_date}</td></tr>
-	        <tr><th>성별</th><td>${user.gender}</td></tr>
+	        <tr><th>성별</th>
+	        <td><c:if test="${user.gender eq 'male'}">
+				  남자
+				    </c:if>
+				    <c:if test="${user.gender eq 'female'}">
+				  여자
+			    </c:if>
+			</td></tr>
 	        <tr>
 	            <th>알림 수신 여부</th>
 	            <td>
