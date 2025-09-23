@@ -33,9 +33,8 @@
 		<input type="hidden" id="activeid" value="${sessionScope.id}">
 		비밀번호: <input type="password" id="activePw" required><br>
 		<br>
-
-		<button type="button" onclick="closeModal()">취소</button>
 		<button type="button" id="confirmactive">활성화</button>
+		<button type="button" onclick="closeModal()">취소</button>
 	</div>
 
 <script>
