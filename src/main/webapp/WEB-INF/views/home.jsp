@@ -16,7 +16,7 @@
         <!-- Bootstrap icons-->
 <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />   --> 
         <!-- Core theme CSS (includes Bootstrap)-->
-<link href="/css/styles.css" rel="stylesheet" />
+<link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -107,14 +107,28 @@
             </div>
         </nav>
         <!-- Header-->
-        <header class="bg-dark py-5" >
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Dealarm</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">With this shop hot deal template</p>
-                </div>
-            </div>
-        </header>
+		<header class="py-5 position-relative" style="height: 300px; max-width: 1220px; margin: 0 auto;">
+    
+	    <!-- 왼쪽 컨테이너 -->
+	    <div class="left-container position-absolute h-100 d-flex align-items-center">
+	        <p class="text-black ms-3">좌측 컨텐츠</p>
+	    </div>
+	
+	    <!-- 가운데 이미지 컨테이너 -->
+	    <div class="center-container d-flex justify-content-center align-items-center h-100">
+	        <img src="${pageContext.request.contextPath}/resources/images/header-bg.jpg"
+	             alt="배너" 
+	             style="width: 550px;  /* 가로 크기 지정 */
+               			height: auto;  /* 세로 비율 자동 */
+              			object-fit: contain;">
+	    </div>
+	
+	    <!-- 오른쪽 컨테이너 -->
+	    <div class="right-container position-absolute end-0 top-0 h-100 d-flex align-items-center">
+	        <p class="text-black me-3">우측 컨텐츠</p>
+	    </div>
+	
+	</header>
         <!-- Section-->
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
@@ -417,7 +431,7 @@
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
-        <script src="/js/scripts.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/scripts.js"></script>
 
 </body>
 </html>
