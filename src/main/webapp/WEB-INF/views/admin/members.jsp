@@ -187,16 +187,35 @@
 		            </c:otherwise>
 		        </c:choose>
 		
-		        <!-- 페이지 번호 -->
+		        <!-- 현재 페이지 + 번호 -->
+		        
+<!-- 
 		        <c:forEach var="i" begin="${startPage}" end="${endPage}">
 		            <li class="page-item ${i == currentPage ? 'active' : ''}">
 		                <a class="page-link" href="?currentPage=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">${i}</a>
 		            </li>
 		        </c:forEach>
+
+		       <!-- ----- --> 
+		        <c:choose>
+		        	<c:when test="${totalPage <= 1 }">
+		        		<li class="page-item disabled">
+		        			<a class="page-link" href="#">1</a>
+		        		</li>
+		        	</c:when>
+			        <c:otherwise>
+			        	<c:forEach var="i" begin="${startPage}" end="${endPage}">
+				           	<li class="page-item ${i == currentPage ? 'active' : ''}">
+				            	<a class="page-link" href="?currentPage=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">${i}</a>
+				            </li>
+				        </c:forEach>    
+			        </c:otherwise>
+		        </c:choose>
+       
 		
 		        <!-- 다음 페이지 -->
 		        <c:choose>
-		            <c:when test="${currentPage >= totalPages}">
+		            <c:when test="${empty totalPages or currentPage >= totalPages}">
 		                <li class="page-item disabled">
 		                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">다음페이지</a>
 		                </li>
@@ -209,6 +228,7 @@
 		        </c:choose>
 		    </ul>
 		</nav>
+ 
 		<div style="background:#f8f9fa; padding:10px; margin:10px 0; border:1px solid #ddd;">
 		    <strong>페이징 디버그</strong><br/>
 		    currentPage: ${currentPage}<br/>
