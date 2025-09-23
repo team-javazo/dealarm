@@ -19,4 +19,6 @@ public interface MemberDAO {
     int updatePassword(MemberDTO member);
     MemberDTO selectone(String id);
     int deleteUser(String id);
+    int deleteadmin(String id);
+    int activeUser(String id);
 }

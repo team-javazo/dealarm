@@ -55,7 +55,7 @@ public class MemberController {
             session.setAttribute("id", loginUser.getId());
             session.setAttribute("role", loginUser.getRole());
             session.setAttribute("name", loginUser.getName());
-            
+            session.setAttribute("is_active", loginUser.getIs_active());
             return "redirect:/"; // 로그인 성공 → 홈으로
         } else {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
@@ -182,23 +182,28 @@ public class MemberController {
 	public String adminupdate(@RequestParam("id") String id, Model model) {
 	    MemberDTO list = memberService.selectone(id);
 	     model.addAttribute("user", list);  
-	     return "adminupdate";  
+	     return "admin/adminupdate";  
 	}
 	
 	// 회원 정보 수정
-	@PostMapping(value = "/userupdate_ok")
-	public String userupdate(@ModelAttribute MemberDTO update) {
-		memberService.userupdate(update);
-	     return "redirect:/";  
-	}
+//	@PostMapping(value = "/userupdate_ok")
+//	public String userupdate(@ModelAttribute MemberDTO update) {
+//		memberService.userupdate(update);
+//	     return "redirect:/";  
+//	}
 	
 	// 관리자 회원 정보 수정
 	@PostMapping(value = "/adminupdate_ok")
 	public String adminupdate(@ModelAttribute MemberDTO update) {
 		memberService.adminupdate(update);
-	     return "redirect:/";  
+	     return "redirect:/member/members";  
 	}
-	// 비밀번호 변경 
+	// 관리자 삭제
+	@PostMapping(value = "/deleteadmin")
+	public String deleteadmin(@RequestParam("id") String id) {
+		memberService.deleteadmin(id);
+		return "redirect:/member/members";  
+	}
 	@PostMapping("/change-password")
 	@ResponseBody
 	public String changePassword(
@@ -268,6 +273,42 @@ public class MemberController {
 	        json.append(",\"message\":\"회원 탈퇴 처리에 실패했습니다.\"");
 	    } else {
 	        json.append(",\"message\":\"회원 탈퇴가 완료되었습니다.\"");
+	    }
+	    json.append("}");
+	    return json.toString();
+	}
+	
+	//회원 계정 활성화
+	@PostMapping(value="/active", produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public String active(@RequestParam("id") String id,
+	                         @RequestParam("password") String password) {
+
+	    StringBuilder json = new StringBuilder();
+	    json.append("{");
+
+	    MemberDTO member = memberService.selectone(id);
+	    if (member == null) {
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"사용자를 찾을 수 없습니다.\"");
+	        json.append("}");
+	        return json.toString();
+	    }
+
+	    if (!member.getPassword().equals(password)) {
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"비밀번호가 일치하지 않습니다.\"");
+	        json.append("}");
+	        return json.toString();
+	    }
+
+	    int result = memberService.activeUser(id);
+
+	    json.append("\"success\":").append(result > 0);
+	    if (result <= 0) {
+	        json.append(",\"message\":\"계정 활성화에 실패했습니다.\"");
+	    } else {
+	        json.append(",\"message\":\"계정 활성화가 완료되었습니다. 재로그인 해주세요\"");
 	    }
 	    json.append("}");
 	    return json.toString();
