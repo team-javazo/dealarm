@@ -44,16 +44,21 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override	// 전체회원 리스트
-	public List<MemberDTO> allList() {
-		return sqlSession.selectList(namespace + ".allDTO");
+	public List<MemberDTO> allList(Map<String,Object> params) {
+		return sqlSession.selectList(namespace + ".allDTO", params);
 	}
+
+	@Override	// 페이징용 검색 카운트
+	public int searchMembersCount(Map<String, Object> params) {
+		return sqlSession.selectOne(namespace + ".searchMembersCount",params);
+	}
+
 	@Override	// 검색회원리스트
-	public List<MemberDTO> searchMembers(String searchType, String searchValue) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("searchType", searchType);
-		params.put("searchValue", searchValue);
+//	public List<MemberDTO> searchMembers(String searchType, String searchValue) {	//예전꺼
+	public List<MemberDTO> searchMembers(Map<String, Object> params) {
 		return sqlSession.selectList(namespace + ".searchMembers", params);
 	}
+
 	@Override
 	public int userupdate(MemberDTO update) {
 		return sqlSession.update(namespace + ".userupdate", update);
@@ -91,6 +96,11 @@ public class MemberDAOImpl implements MemberDAO {
 		// TODO Auto-generated method stub
 	  return sqlSession.update(namespace + ".activeUser", id);
 	}
+
+
+
+
+
 
 
 
