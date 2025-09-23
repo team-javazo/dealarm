@@ -99,22 +99,69 @@ public class MemberController {
 
 	//	관리자 회원관리 전체 리스트
 	@RequestMapping("/members")
-	public String members(Model model) {
+	public String members(@RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage,
+						  Model model){
+		
+		int limit = 15;	// 페이지당 목록 수
+		int offset = (currentPage -1) * limit;
+		
+		// 검색조건 Map int형 따로 분리 object에서 안들어감
+		Map<String,Object> params = new HashMap<>();
+		params.put("limit", Integer.valueOf(limit));
+		params.put("offset", Integer.valueOf(offset));
+		
+		
 		int totalCount = memberService.memberCount(); // 총 회원 수
-		model.addAttribute("totalCount", totalCount);
-		List<MemberDTO> list = memberService.allList(); // 전체회원 목록
+		List<MemberDTO> list = memberService.allList(params); // 전체회원 목록
+		int searchMembersCount = memberService.searchMembersCount(params); // 검색 회원 수
+		
+		int totalPages = totalCount / limit;   // 정수 나눗셈 = 자동 소수점 버림
+	    if(totalCount % limit != 0) {         // 나머지가 있으면 한 페이지 추가
+	        totalPages += 1;
+	    }
+	    
+		if(currentPage > totalPages) currentPage = totalPages;
+		if(currentPage < 1) currentPage = 1; 
+		
+
 		model.addAttribute("list", list);
-		model.addAttribute("searchCount", list.size());	// 검색카운트
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("searchCount", totalCount);	// 검색카운트
+		model.addAttribute("currentPage", currentPage);
+		model.addAttribute("totalPages", totalPages);
+		model.addAttribute("limit", limit);
+		
 		return "admin/members";
 	}
 	// 관리자 회원검색 리스트
 	@RequestMapping("/members_search")
-	public String searchMembers(@RequestParam String searchType, @RequestParam String searchValue, Model model) {
-		int totalCount = memberService.memberCount(); // 총 회원 수
-		model.addAttribute("totalCount", totalCount);
-		List<MemberDTO> list= memberService.searchMembers(searchType, searchValue);
+	public String searchMembers(@RequestParam Map<String, Object> params, // 모든 파라미터를 한
+								@RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage,
+								Model model) {
+		
+		//2. 검색 필터조건 Map 에 넣어 서비스로 보내기
+		int limit = 15;	// 페이지당 목록 수
+		int offset = (currentPage -1) * limit; 
+		
+		// 검색조건 Map int형 따로 분리 object에서 안들어감
+		params.put("limit", Integer.valueOf(limit));
+		params.put("offset", Integer.valueOf(offset));
+		
+		
+//		List<MemberDTO> list= memberService.searchMembers(searchType, searchValue); // 이전꺼
+		List<MemberDTO> list= memberService.searchMembers(params);	//검색 회원 목록
+
+		int totalCount = memberService.memberCount();	// 총 회원수
+		int searchMembersCount = memberService.searchMembersCount(params); // 검색 회원 수
+		int totalPage = (int) Math.ceil((double) searchMembersCount / limit);	// 총페이지수 계산
+
 		model.addAttribute("list", list);
-		model.addAttribute("searchCount", list.size());
+		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("searchCount", searchMembersCount);
+		model.addAttribute("params", params);
+		model.addAttribute("currentPage", currentPage);
+		model.addAttribute("totalPage", totalPage);
+
 		return "admin/members";
 		
 	}

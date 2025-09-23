@@ -1,6 +1,7 @@
 package kr.co.dong.member;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -39,12 +40,24 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<MemberDTO> allList() {
-		return memberDAO.allList();
+	public List<MemberDTO> allList(Map<String,Object> params) {
+		return memberDAO.allList(params);
 	}
-	@Override	//  검색회원리스트
-	public List<MemberDTO> searchMembers(String searchType, String searchValue) {
-		return memberDAO.searchMembers(searchType, searchValue);
+	
+//	@Override	// 예전 검색회원리스트
+//	public List<MemberDTO> searchMembers(String searchType, String searchValue) {
+//		return memberDAO.searchMembers(searchType, searchValue);
+//	}
+
+	@Override	// 페이징용 검색 카운트
+	public int searchMembersCount(Map<String, Object> params) {
+		// TODO Auto-generated method stub
+		return memberDAO.searchMembersCount(params);
+	}
+	
+	@Override	// 신규 검색회원 리스트
+	public List<MemberDTO> searchMembers(Map<String, Object> params) {
+		return memberDAO.searchMembers(params);
 	}
 	@Override
 	public boolean checkPassword(String id, String password) {
@@ -96,6 +109,8 @@ public class MemberServiceImpl implements MemberService {
 		// TODO Auto-generated method stub
 		return memberDAO.activeUser(id);
 	}
+
+
 
 
 }
