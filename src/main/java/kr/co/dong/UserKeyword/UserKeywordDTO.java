@@ -2,17 +2,20 @@ package kr.co.dong.UserKeyword;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class UserKeywordDTO {
+	private int id;
 	private String userId;
 	private String keyword;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createdAt;
-	private int id;
-	
-	public int getNum() {
+
+	public int getId() {
 		return id;
 	}
 
-	public void setNum(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -51,11 +54,10 @@ public class UserKeywordDTO {
 
 	public UserKeywordDTO(String userId, String keyword, Date createdAt, int id) {
 		super();
+		this.id = id;
 		this.userId = userId;
 		this.keyword = keyword;
 		this.createdAt = createdAt;
-		this.id = id;
 	}
 
-	
 }
