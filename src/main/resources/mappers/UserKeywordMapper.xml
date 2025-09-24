@@ -15,12 +15,22 @@
 	<!-- 사용자별 키워드 조회 -->
 	<select id="findByUserId" parameterType="String"
 		resultType="kr.co.dong.UserKeyword.UserKeywordDTO">
-		SELECT * FROM user_keywords 
-		WHERE user_id = #{userId} ORDER BY created_at DESC
+		SELECT id, user_id AS userId , keyword, created_at AS createdAt
+		FROM user_keywords
+		WHERE user_id = #{userId}
+	</select>
+
+	<select id="countKeyword"
+		parameterType="kr.co.dong.UserKeyword.UserKeywordDTO"
+		resultType="Integer">
+		SELECT COUNT(*) FROM user_keywords WHERE user_id =
+		#{userId} AND keyword =
+		#{keyword}
 	</select>
 
 	<delete id="delete" parameterType="String">
-		 DELETE FROM user_keywords WHERE id = #{id}
+		DELETE FROM user_keywords
+		WHERE id = #{id}
 	</delete>
 
 </mapper>
