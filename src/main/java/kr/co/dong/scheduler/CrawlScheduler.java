@@ -1,15 +1,14 @@
 package kr.co.dong.scheduler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class CrawlScheduler {
@@ -25,13 +24,14 @@ public class CrawlScheduler {
             // 파일 읽기
             String json = Files.readString(JSON_PATH, StandardCharsets.UTF_8);
 
-            // JSON 파싱
-            ObjectMapper mapper = new ObjectMapper();
-            List<Map<String, Object>> deals = mapper.readValue(json, new TypeReference<>() {});
+            // JSON 파싱 (json-simple 사용)
+            JSONParser parser = new JSONParser();
+            JSONArray deals = (JSONArray) parser.parse(json);
 
             // 콘솔 출력
             System.out.println("===== 크롤링 데이터 (" + deals.size() + "건) =====");
-            for (Map<String, Object> deal : deals) {
+            for (Object obj : deals) {
+                JSONObject deal = (JSONObject) obj;
                 System.out.println("제목: " + deal.get("title"));
                 System.out.println("링크: " + deal.get("link"));
                 System.out.println("가격: " + deal.get("price"));
