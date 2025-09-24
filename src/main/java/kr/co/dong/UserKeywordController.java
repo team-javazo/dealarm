@@ -1,6 +1,8 @@
 package kr.co.dong;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import org.springframework.stereotype.Controller;
@@ -19,27 +21,41 @@ public class UserKeywordController {
 
     // 키워드 추가
     @PostMapping("/add")
-    public String addKeyword(@RequestParam("userId") String userId,
-                             @RequestParam("keyword") String keyword) {
-        UserKeywordDTO dto = new UserKeywordDTO();
-        dto.setUserId(userId);
-        dto.setKeyword(keyword);
-        userKeywordService.addKeyword(dto);
-        return "redirect:/keywords/list/" + userId;  // 키워드 목록으로 리다이렉트
+    @ResponseBody
+    public Map<String, Object> addKeyword(@RequestBody UserKeywordDTO dto) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            userKeywordService.addKeyword(dto);
+            response.put("success", true);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+        }
+        return response;
     }
-    
-    // 키워드 목록
-    @RequestMapping("/list/{userId}")
-    public String listKeywords(@PathVariable("userId") String userId, Model model) {
-        List<UserKeywordDTO> keywords = userKeywordService.getKeywords(userId);
-        model.addAttribute("keywords", keywords);
-        return "home"; 
-    }
-    
+
     // 키워드 삭제
     @PostMapping("/delete/{id}")
-    public String deleteKeyword(@PathVariable("id") String num) {
-        userKeywordService.removeKeyword(num);  // 키워드 삭제 서비스 호출
-        return "redirect:/keywords/list/{userId}";  // 키워드 목록으로 리다이렉트
+    @ResponseBody
+    public Map<String, Object> deleteKeyword(@PathVariable int id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            userKeywordService.removeKeyword(String.valueOf(id));
+            response.put("success", true);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "삭제 실패");
+        }
+        return response;
+    }
+
+    // 로그인한 사용자의 키워드 목록
+    @GetMapping("/list")
+    @ResponseBody
+    public Map<String, Object> getKeywords(@RequestParam String userId) {
+        List<UserKeywordDTO> keywords = userKeywordService.getKeywords(userId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("keywords", keywords);
+        return result;  // ✅ JSON 형태로 반환됨
     }
 }
