@@ -37,7 +37,17 @@
 
 			<tr>
 				<th>성별</th>
-				<td><input type="text" name="gender" value="${user.gender}"	disabled></td>
+				<td>
+				    <c:if test="${user.gender eq 'male'}">
+				        <input type="text" value="남자" disabled>
+				        <input type="hidden" name="gender" value="male">
+				    </c:if>
+				    <c:if test="${user.gender eq 'female'}">
+				        <input type="text" value="여자" disabled>
+				        <input type="hidden" name="gender" value="female">
+				    </c:if>
+				</td>
+
 			</tr>
 			<tr>
 				<th>지역</th>

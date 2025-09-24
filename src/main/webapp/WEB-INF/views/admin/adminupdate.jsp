@@ -82,7 +82,19 @@
 			</tr>
 			<tr>
 				<th>성별 :</th>
-				<td><input type="text" name="gender" value="${user.gender}"></td>
+				 <td>
+			        <label>
+			            <input type="radio" name="gender" value="male"
+			                <c:if test="${user.gender == 'male'}">checked</c:if> >
+			            남자
+			        </label>
+			        &nbsp;&nbsp;
+			        <label>
+			            <input type="radio" name="gender" value="female"
+			                <c:if test="${user.gender == 'female'}">checked</c:if> >
+			           여자
+			        </label>
+			    </td>
 			</tr>
 			<tr>
 				<th>지역 :</th>
