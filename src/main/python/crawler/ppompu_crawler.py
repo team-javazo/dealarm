@@ -63,7 +63,7 @@ while not stop_flag:
                 break
 
             # 수집일
-            collected_at = today.strftime("%Y-%m-%d %H:%M:%S")
+            created_at = today.strftime("%Y-%m-%d %H:%M:%S")
 
             # 추천수 계산
             rec_tag = item.select_one("td.baseList-rec")
@@ -87,7 +87,7 @@ while not stop_flag:
                 "price": price,
                 "site": site,
                 "posted_at": posted_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "collected_at": collected_at,
+                "created_at": created_at,
                 "likes": rec_score
             }
 
