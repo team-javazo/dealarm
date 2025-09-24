@@ -11,6 +11,7 @@
 	rel="stylesheet">
 
 </head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <body>
 	<div class="container mt-4">
 
@@ -22,11 +23,11 @@
 			onclick="document.querySelector('input[name=searchValue]').value = '';
        			document.querySelector('select[name=searchType]').value = 'all';">전체
 			회원리스트</a>
+		<button type="button" class="btn btn-outline-primary btn-sm ms-3" onclick="location.href='<c:url value="/"/>'">홈으로</button>
 		<hr>
 
 		<!-- 검색 폼 -->
-		<form
-			action="${pageContext.request.contextPath}/member/members_search"
+	 	<form action="${pageContext.request.contextPath}/member/members_search"		
 			method="post" class="d-flex mb-3" role="search">
 			<select class="form-select me-2" style="max-width: 120px;"
 				name="searchType">
@@ -60,8 +61,7 @@
 
 		<!-- 회원 목록 테이블 -->
 
-		<form action="${pageContext.request.contextPath}/member/members_search" method="post">
-
+		<form action="${pageContext.request.contextPath}/member/members_search" method="post">			
 	        <!-- 타입불일치오류 제거용 searchType/searchValue hidden input 추가 -->
 	        <input type="hidden" name="searchType" value="${param.searchType}">
 	        <input type="hidden" name="searchValue" value="${param.searchValue}">
@@ -74,7 +74,14 @@
 						<th style="width: 30px; vertical-align: middle;">이름</th>
 <!--        			<th style="width: 100px;vertical-align: middle;">전화번호</th>  	 -->
 <!--         		  	<th style="width: 100px;vertical-align: middle;">이메일</th>		 -->
-						<th style="width: 25px; vertical-align: middle;">생년월일</th>
+<!--					<th style="width: 25px; vertical-align: middle;">생년월일</th>		-->
+						<th style="width: 25px; vertical-align: middle;">
+							<select name="birth_orderType" id="birth_orderType" class="form-select form-select-sm" onchange="this.form.submit()">
+								<option value="">생년월일</option>
+								<option value="birth_date_asc">오름차순</option>
+								<option value="birth_date_desc">내림차순</option>			 
+							</select>
+						</th>
 <!-- 	          		<th style="width: 20px;vertical-align: middle;">성별</th>		 -->
 						<th style="width: 20px; vertical-align: middle;">
 							<select name="genderFilter" class="form-select form-select-sm" onchange="this.form.submit()">
@@ -89,6 +96,8 @@
 	 							<option value="">알림</option>
 	 							<option value="1" <c:if test="${param.notificationFilter == '1'}">selected</c:if>>동의</option>
 	 							<option value="0" <c:if test="${param.notificationFilter == '0'}">selected</c:if>>거부</option>
+	 						</select>
+	 							
 	 					</th>			
 						<th style="width: 20px; vertical-align: middle;">지역</th>
 <!-- 					<th style="width: 20px; vertical-align: middle;">권한</th>		 -->	
@@ -107,7 +116,14 @@
 	 							<option value="0" <c:if test="${param.is_activeFilter == '0'}">selected</c:if>>탈퇴</option>
 							</select>
 	 					</th>						
-						<th style="width: 45px; vertical-align: middle;">가입일</th>
+<!--					<th style="width: 45px; vertical-align: middle;">가입일</th>	 -->
+						<th style="width: 45px; vertical-align: middle;">
+							<select name="created_orderType" id="created_orderType" class="form-select form-select-sm" onchange="this.form.submit()">
+								<option value="">가입일</option>
+								<option value="created_at_asc">오름차순</option>
+								<option value="created_at_desc">내림차순</option>			 
+							</select>	 
+						</th>
 						<th style="width: 28px; vertical-align: middle;">상세조회</th>
 						<th style="width: 20px; vertical-align: middle;">수정</th>
 						<th style="width: 20px; vertical-align: middle;">삭제</th>
@@ -129,13 +145,137 @@
 							<td>${member.is_active }</td>
 							<td>${member.created_at}</td>
 							<td><button class="btn btn-secondary btn-sm">상세조회</button></td>
-							<td><button class="btn btn-primary btn-sm">수정</button></td>
-							<td><button class="btn btn-danger btn-sm">삭제</button></td>
+					<form method="post">
+					    <input type="hidden" name="id" value="${member.id}">
+					   <td> <button type="submit" class="btn btn-primary btn-sm"
+					            formaction="${pageContext.request.contextPath}/member/adminupdate">수정</button></td>
+					</form>
+					<td>
+					  <button type="button" class="btn btn-danger btn-sm"
+					          data-bs-toggle="modal"
+					          data-bs-target="#deleteModal"
+					          data-id="${member.id}">삭제</button></td>
 						</tr>
 					</c:forEach>
 				</tbody>
 			</table>
 		</form>
+			
+		<!-- 페이징 UI ver2 -->
+		<c:set var="limit" value="${limit}"/>
+		<c:set var="totalPages" value="${totalPages}"/>
+		<c:set var="startPage" value="${currentPage - 2 <= 0 ? 1 : currentPage - 2}"/>
+		<c:set var="endPage" value="${startPage + 4 > totalPages ? totalPages : startPage +4}"/>
+		<c:if test="${endPage > totalPages}">
+		    <c:set var="endPage" value="${totalPages}"/>
+		</c:if> 
+		
+		<!-- 페이징 네비게이션 -->
+		<nav aria-label="Page navigation">
+		    <ul class="pagination justify-content-center mt-3">
+		        <!-- 이전 페이지 -->
+		        <c:choose>
+		            <c:when test="${currentPage == 1}">
+		                <li class="page-item disabled">
+		                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">이전페이지</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="?currentPage=${currentPage - 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">이전페이지</a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		
+		        <!-- 현재 페이지 + 번호 -->
+		        
+<!-- 
+		        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+		            <li class="page-item ${i == currentPage ? 'active' : ''}">
+		                <a class="page-link" href="?currentPage=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">${i}</a>
+		            </li>
+		        </c:forEach>
+
+		       <!-- ----- --> 
+		        <c:choose>
+		        	<c:when test="${totalPage <= 1 }">
+		        		<li class="page-item disabled">
+		        			<a class="page-link" href="#">1</a>
+		        		</li>
+		        	</c:when>
+			        <c:otherwise>
+			        	<c:forEach var="i" begin="${startPage}" end="${endPage}">
+				           	<li class="page-item ${i == currentPage ? 'active' : ''}">
+				            	<a class="page-link" href="?currentPage=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">${i}</a>
+				            </li>
+				        </c:forEach>    
+			        </c:otherwise>
+		        </c:choose>
+       
+		
+		        <!-- 다음 페이지 -->
+		        <c:choose>
+		            <c:when test="${empty totalPages or currentPage >= totalPages}">
+		                <li class="page-item disabled">
+		                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">다음페이지</a>
+		                </li>
+		            </c:when>
+		            <c:otherwise>
+		                <li class="page-item">
+		                    <a class="page-link" href="?currentPage=${currentPage + 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">다음페이지</a>
+		                </li>
+		            </c:otherwise>
+		        </c:choose>
+		    </ul>
+		</nav>
+ 
+		<div style="background:#f8f9fa; padding:10px; margin:10px 0; border:1px solid #ddd;">
+		    <strong>페이징 디버그</strong><br/>
+		    currentPage: ${currentPage}<br/>
+		    limit: ${limit}<br/>
+		    searchCount: ${searchCount}<br/>
+		    totalPages: ${totalPages}<br/>
+		    조건 (currentPage == totalPages): ${currentPage == totalPages}<br/>
+		    조건 (currentPage == totalPages): ${currentPage >= totalPages}<br/>
+		</div>
+		
+			
+			<!-- 페이징 UI ver1 -->
+<!--  
+			<c:set var="limit" value="10"/>
+			<c:set var="totalPages" value="${(totalCount / limit) + (totalCount % limit > 0 ? 1 : 0)}"/>
+			<c:set var="startPage" value="${currentPage - 2 <= 0 ? 1 : currentPage - 2}"/>
+			<c:set var="endPage" value="${startPage + 4 > totalPages ? totalPages : startPage + 4}"/>
+			
+			<nav aria-label="Page navigation example">
+			    <ul class="pagination justify-content-center mt-3">
+			        <!-- 이전 페이지 -->
+<!--
+ 			        <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
+			            <a class="page-link" href="?currentPage=${currentPage - 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">Previous</a>
+			        </li>
+			
+			        <!-- 페이지 번호 -->
+<!--
+			        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+			            <li class="page-item ${i == currentPage ? 'active' : ''}">
+			                <a class="page-link" href="?currentPage=${i}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">${i}</a>
+			            </li>
+			        </c:forEach>
+			
+			        <!-- 다음 페이지 -->
+<!--
+			        <li class="page-item ${currentPage == totalPages ? 'disabled' : ''}">
+			            <a class="page-link" href="?currentPage=${currentPage + 1}&searchType=${param.searchType}&searchValue=${param.searchValue}&genderFilter=${param.genderFilter}&roleFilter=${param.roleFilter}&notificationFilter=${param.notificationFilter}&is_activeFilter=${param.is_activeFilter}&birth_orderType=${param.birth_orderType}&created_orderType=${param.created_orderType}">Next</a>
+			        </li>
+			    </ul>
+			</nav>
+			</div>
+ --> 		
+ 
+ 
+ 	
+
 
 		<!-- 					
 							<td>${member.is_active }
@@ -145,5 +285,38 @@
 	                            </c:choose>
 	                        </td>
 -->
+<!-- 삭제 확인 모달 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">회원 삭제 확인</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        정말 삭제하시겠습니까?
+      </div>
+      <div class="modal-footer">
+        <form id="deleteForm" method="post" action="${pageContext.request.contextPath}/member/deleteadmin">
+          <input type="hidden" name="id" id="deleteId">
+          <button type="submit" class="btn btn-danger">삭제</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var deleteModal = document.getElementById('deleteModal');
+  deleteModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget; // 삭제 버튼
+    var memberId = button.getAttribute('data-id'); // data-id 값 가져오기
+    var deleteInput = document.getElementById('deleteId');
+    deleteInput.value = memberId; // hidden input에 설정
+  });
+});
+</script>
 </body>
 </html>
