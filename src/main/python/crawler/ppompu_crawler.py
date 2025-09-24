@@ -45,7 +45,7 @@ while not stop_flag:
             # 링크
             link_tag = item.select_one("a.baseList-title")
             relative_link = link_tag['href'] if link_tag else ""
-            link = base_url + relative_link
+            url = base_url + relative_link
 
             # 게시일
             td_tag = item.select_one("td.baseList-space[title]")
@@ -83,12 +83,12 @@ while not stop_flag:
 
             deal = {
                 "title": title,
-                "link": link,
+                "url": url,
                 "price": price,
                 "site": site,
                 "posted_at": posted_at.strftime("%Y-%m-%d %H:%M:%S"),
                 "collected_at": collected_at,
-                "recommend": rec_score
+                "likes": rec_score
             }
 
             print(deal)
