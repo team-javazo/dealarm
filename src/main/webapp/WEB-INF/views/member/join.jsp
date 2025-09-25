@@ -76,11 +76,18 @@
 			                </div>
 			
 			                <div class="mb-3">
-			                    <label for="gender" class="form-label">성별</label>
-			                    <input type="text" class="form-control" id="gender" name="gender"
-			                        value="${member.gender != null ? member.gender : ''}">
+			                    <label for="gender" class="form-label">성별</label><br>
+			                     <label> <input type="radio" name="gender" value="male" checked >
+			            남자
+			        </label>
+			        &nbsp;&nbsp;
+			        <label>
+			            <input type="radio" name="gender" value="female">
+			            여자
+			        </label>
 			                </div>
-			
+
+
 			                <div class="mb-3">
 			                    <label for="notification" class="form-label">수신동의</label>
 			                    <input type="number" class="form-control" id="notification" name="notification"

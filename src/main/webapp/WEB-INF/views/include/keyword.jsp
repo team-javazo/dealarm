@@ -2,95 +2,25 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!-- 좌측 네비바 -->
-<div class="d-flex">
-    <!-- Sidebar -->
-    <nav class="d-flex flex-column flex-shrink-0 p-3 bg-light" 
-         style="width: 250px; min-height: 100vh;">
-         
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-            <span class="fs-4">MENU</span>
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column">
-            <li class="nav-item">
-                <a href="/" class="nav-link active" aria-current="page"> 카테고리</a>
-            </li>
-            
-            <li>
-                <a href="/about" class="nav-link link-dark">소개</a>
-            </li>
-            
-            <li>
-                <a href="/shop" class="nav-link link-dark">쇼핑</a>
-            </li>
-            
-            <li>
-            	<a href="/contact" class="nav-link link-dark">문의</a>
-            </li>
-        </ul>
-        
-        <hr>
-        <ul class="nav nav-pills flex-cloumn mb-auto">
-        	<li class="nav-item dropdown">
-        		<a class="nav-link dropdown-toggle" id="myKeywordDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-				   My키워드</a>
-                <ul class="dropdown-menu" aria-labelledby="myKeywordDropdown">
-                	<c:choose>
-                		<c:when test="${empty sessionScope.id}">
-                			<li><span class="dropdown-item text-muted">로그인 후 이용 가능</span></li>
-                		</c:when>
-                		<c:otherwise>
-                    <!-- 서브메뉴 -->
-                    <li class="dropdown-submenu">
-					    <a class="dropdown-item" href="#" onclick="toggleKeywordForm(event)">키워드 등록</a>
-					    <div id="keywordForm" style="display:none; padding:0.5rem;">
-					        <form action="${pageContext.request.contextPath}/keyword/add" method="post">
-					            <div class="mb-2">
-					                <input type="text" name="keyword" class="form-control form-control-sm" placeholder="새 키워드">
-					            </div>
-					            <button type="submit" class="btn btn-primary btn-sm w-100">등록</button>
-					        </form>
-					    </div>
-					</li>
-                    <li class="dropdown-submenu">
-					    <a class="dropdown-item" href="#" onclick="toggleKeywordForm(event)">키워드 관리</a>
-					    <div id="keywordForm" style="display:none; padding:0.5rem;">
-					    	<ul id="keywordList" class="list-unstyled mt-2"></ul>    
-					    </div>
-					</li>
-
-                    <li><a class="dropdown-item" href="#">키워드2</a></li>
-                    <li><a class="dropdown-item" href="#">키워드3</a></li>
-                </c:otherwise>
-                	</c:choose>
-                </ul>
-        	</li>
-        		<c:choose>
-	       			<c:when test="${empty sessionScope.id}">
-          				<a href="${pageContext.request.contextPath}/member/login" class="btn btn-outline-primary w-100">로그인</a>
-					</c:when>
-        		</c:choose>
-       	</ul>
-        
-    </nav>
+<meta charset="UTF-8">
+       	 <!-- 키워드 등록 -->
+         <h3>키워드 등록</h3>
+         <form id="addKeywordForm">
+            <input type="hidden" name="userId" value="${sessionScope.id}" /> <input
+               type="text" id="keyword" name="keyword" placeholder="키워드 입력"
+               required />
+            <button type="submit">추가</button>
+         </form>
 
 
 
-<script>
-function toggleKeywordForm(event) {
-    event.preventDefault();   // 링크 이동 막기
-    event.stopPropagation();  // 부모 드롭다운에 이벤트 전파 막기
+         <h3>키워드 관리</h3>
+         <!-- 키워드 리스트 -->
+         <ul id="keywordList">
+            <!-- 키워드 목록이 동적으로 삽입됩니다. -->
+         </ul>
 
-    const form = event.target.nextElementSibling;
-    form.style.display = (form.style.display === "none") ? "block" : "none";
-}
-</script>
-
-
-<script>
-
-
+         <script>
             // 키워드 추가
             $('#addKeywordForm')
                   .on(
@@ -224,3 +154,4 @@ function toggleKeywordForm(event) {
                loadKeywords(); // 키워드 리스트 불러오기
             });
          </script>
+
