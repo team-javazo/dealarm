@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapper namespace="kr.co.dong.sms.UserKeywordDAO">
+	<!--  특정 deal title과 매칭되는 userId 들 조회  -->
+	<select id="findMatchingUsers" parameterType="string" resultType="string"> 
+		SELECT DISTINCT user_id FROM user_keywords 
+		WHERE #{title} LIKE CONCAT('%', keyword, '%') 
+	</select>
+</mapper>

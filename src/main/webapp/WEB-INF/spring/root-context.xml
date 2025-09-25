@@ -15,7 +15,7 @@
 		<property name="driverClassName"
 			value="com.mysql.cj.jdbc.Driver" />
 		<property name="url"
-			value="jdbc:mysql://192.168.0.79:3306/project_db?serverTimezone=UTC"></property>
+			value="jdbc:mysql://192.168.0.9:3306/project_db?serverTimezone=UTC"></property>
 		<property name="username" value="javajo"></property>
 		<property name="password" value="181818"></property>
 	</bean>
@@ -32,20 +32,28 @@
 	</bean>
 
 	<!-- my -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation"
-			value="classpath:/mybatis-config.xml"></property>
-		<property name="mapperLocations"
-			value="classpath:mappers/**/*.xml"></property>
+	<!-- SqlSessionFactoryBean: XML 매퍼 위치 지정 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	  <property name="dataSource" ref="dataSource"/>
+	  <property name="mapperLocations" value="classpath:/mappers/*.xml"/>
 	</bean>
+	
+	<!-- Mapper 인터페이스 자동 스캔 (xml-매퍼는 mapperLocations에서 로드) -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	  <property name="basePackage" value="kr.co.dong.sms"/>
+	</bean>
+	
 	<bean id="sqlSession"
 		class="org.mybatis.spring.SqlSessionTemplate"
 		destroy-method="clearCache">
 		<constructor-arg name="sqlSessionFactory"
 			ref="sqlSessionFactory"></constructor-arg>
 	</bean>
+	
+	<!-- RestTemplate (외부 HTTP 호출용) -->
+	<bean id="restTemplate" 
+		class="org.springframework.web.client.RestTemplate"/>
+	
 	<!-- 어노테이션 스캔 -->
 	<context:component-scan
 		base-package="kr.co.dong" />
