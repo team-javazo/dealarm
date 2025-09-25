@@ -34,7 +34,7 @@
 					onclick="document.querySelector('input[name=searchValue]').value = '';
 		       			document.querySelector('select[name=searchType]').value = 'all';">전체
 					회원리스트</a>
-				<button type="button" class="btn btn-outline-primary btn-sm ms-3" onclick="location.href='<c:url value="/"/>'">홈으로</button>
+				<button type="button" class="btn btn-outline-primary btn-sm ms-3" onclick="location.href='<c:url value="/main"/>'">홈으로</button>
 				<hr>
 		
 				<!-- 검색 폼 -->
@@ -149,11 +149,23 @@
 									<!--                		<td>${member.phone}</td>	 -->
 									<!--                		<td>${member.email}</td>	 -->
 									<td>${member.birth_date}</td>
-									<td>${member.gender}</td>
-									<td>${member.notification}</td>
+									<td><c:choose>
+								      <c:when test="${user.gender == 'male'}">남자</c:when>
+								      <c:otherwise>여자</c:otherwise>
+								    </c:choose></td>
+									<td><c:choose>
+								      <c:when test="${member.notification == '1'}">동의</c:when>
+								      <c:otherwise>비동의</c:otherwise>
+								    </c:choose></td>									
 									<td>${member.region}</td>
-									<td>${member.role}</td>
-									<td>${member.is_active }</td>
+									<td><c:choose>
+								      <c:when test="${member.role == 'ADMIN'}">관리자</c:when>
+								      <c:otherwise>회원</c:otherwise>
+								    </c:choose></td>									
+									<td><c:choose>
+								      <c:when test="${member.is_active == '1'}">활성화</c:when>
+								      <c:otherwise>비활성화</c:otherwise>
+								    </c:choose></td>
 									<td>${member.created_at}</td>
 									<td><button class="btn btn-secondary btn-sm">상세조회</button></td>
 							  	<td><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateModal" data-id="${member.id}">수정</button></td>

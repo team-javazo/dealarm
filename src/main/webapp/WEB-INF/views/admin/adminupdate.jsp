@@ -116,8 +116,17 @@
 			                </div>
 			
 			                <div class="mb-3">
-			                    <label for="gender" class="form-label">성별</label>
-			                    <input type="text" class="form-control" id="gender" name="gender" value="${user.gender}">
+			                    <label for="gender" class="form-label">성별</label><br>						
+									<div class="form-check form-check-inline">
+			                        <input class="form-check-input" type="radio" name="gender" value="male"
+			                            <c:if test="${user.gender == 'male'}">checked</c:if>>
+			                        <label class="form-check-label">남자</label>
+			                    </div>
+			                    <div class="form-check form-check-inline">
+			                        <input class="form-check-input" type="radio" name="gender" value="female"
+			                            <c:if test="${user.gender == 'female'}">checked</c:if>>
+			                        <label class="form-check-label">여자</label>
+			                    </div>
 			                </div>
 			
 			                <div class="mb-3">
