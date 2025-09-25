@@ -13,14 +13,17 @@ import java.nio.file.Path;
 @Component
 public class CrawlScheduler {
 
+	private static final String USER_DIR = System.getProperty("user.dir");
     // ✅ 절대 경로 고정 (Python이 저장하는 곳)
     private static final Path JSON_PATH =
-            Path.of("C:/hys/git/dealarm/src/main/resources/crawler/ppomppu_crawling.json");
+            Path.of(System.getProperty("user.dir")+ "/src/main/resources/crawler/ppomppu_crawling.json");
 
     // 5분마다 실행 (이전 실행이 끝난 후 5분 뒤)
     @Scheduled(fixedDelay = 300000)
     public void readCrawledJson() {
-        try {
+        
+    	
+    	try {
             // 파일 읽기
             String json = Files.readString(JSON_PATH, StandardCharsets.UTF_8);
 
