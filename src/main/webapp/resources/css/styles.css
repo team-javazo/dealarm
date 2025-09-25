@@ -10,6 +10,7 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+ 
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -91,27 +92,100 @@
   }
 }
 
+/* 상단 네비바 최대 폭 + 왼쪽 정렬 */
+.navbar .container {
+    max-width: 1580px;  /* 원하는 최대 폭 */
+    margin-left: 0;      /* 왼쪽으로 붙이기 */
+    margin-right: auto;  /* 오른쪽 여백 자동 */
+    padding-left: 15px;  /* 필요하면 좌측 여백 유지 */
+    padding-right: 15px; /* 필요하면 우측 여백 유지 */
+}
+
 /*============== 배너 + 좌우측 컨테이너=================== */
 
-.left-container, .right-container {
-	position: absolute;
-    top: 0;
-    transform: translateY(42px); /* 현재 위치에서 50px 아래로 이동 */
-    width: 300px;
-    height: 100%;
-    border: 1px solid #999999;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
+.header-img {
+    width: 550px;       /* 이미지 가로 크기 조절 */
+    height: auto;       /* 세로 비율 유지 */
+    object-fit: contain;
+    display: block;
 }
 
 .center-container {
-    position: absolute;
-    top: 50%;        /* 수직 중앙 */
-    left: 50%;       /* 수평 중앙 */
-    transform: translate(-50%, -36%); /* 진짜 중앙 정렬 */
+    position: absolute;  /* 헤더 기준 절대 위치 */
+    top: 50px;           /* 헤더 상단에서 세로 위치 */
+    left: 335px;          /* 헤더 좌측에서 가로 위치 */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
+/* 이미지 왼쪽 컨테이너 */
+.left-container {
+    position: absolute;
+    top: 50px;                            /* 이미지와 세로 위치 맞춤 */
+    left: 0px;                            /* 이미지 왼쪽 기준 */
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #999999;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+/* 이미지 오른쪽 컨테이너 */
+.right-container {
+    position: absolute;
+    top: 50px;                            /* 이미지와 세로 위치 맞춤 */
+    left: 925px;                          /* 이미지 left + 이미지 width + 여유 공간 */
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #999999;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+/* 배너 컨테이너 */
+.banner-container {
+    width: 100%;                /* 부모 header 폭 전체 */
+    height: 250px;              /* 배너 높이 지정 */
+    overflow: hidden;           /* 높이보다 큰 이미지는 잘림 */
+    display: flex;
+    justify-content: center;    
+    align-items: center;
+}
+
+/* 배너 이미지 */
+.banner-img {
+    width: 1220px;              /* 배너 가로 크기 지정 */
+    height: 100%;               /* 컨테이너 높이에 맞춤 */
+    object-fit: cover;          /* 비율 유지하며 컨테이너 채움, 상하 잘림 가능 */
+    display: block;
+}
+/* 회원가입 스타일 */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 10000;
+    display: none;
+}
+
+.fixed-section {
+    width: 1200px;       /* 섹션 고정 폭 */
+    margin: 0 auto;      /* 중앙 정렬 */
+    padding: 20px;       /* 내부 여백 */
+    box-sizing: border-box;
+}
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
