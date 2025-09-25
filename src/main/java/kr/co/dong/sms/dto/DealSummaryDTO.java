@@ -4,6 +4,7 @@ public class DealSummaryDTO {
     private String userId;
     private String title;
     private String url;
+    private int dealId;
     private int notified;
 
     // getters & setters
@@ -15,4 +16,6 @@ public class DealSummaryDTO {
     public void setUrl(String url) { this.url = url; }
     public int getNotified() { return notified; }
     public void setNotified(int notified) { this.notified = notified; }
+	public int getDealId() { return dealId; }
+	public void setDealId(int dealId) { this.dealId = dealId; }
 }

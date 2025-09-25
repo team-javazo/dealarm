@@ -23,16 +23,6 @@
         <beans:property name="prefix" value="/WEB-INF/views/" />
         <beans:property name="suffix" value=".jsp" />
     </beans:bean>
-
-    <!-- Controller만 스캔 -->
-    <context:component-scan base-package="kr.co.dong">
-        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
-        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>
     
     <context:component-scan base-package="kr.co.dong"/>
 

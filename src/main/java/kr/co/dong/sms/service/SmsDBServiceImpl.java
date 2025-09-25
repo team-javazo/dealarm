@@ -57,7 +57,8 @@ public class SmsDBServiceImpl implements SmsDBService {
                     userId,
                     user.getPhone(),
                     deal.getTitle(),
-                    deal.getUrl()
+                    deal.getUrl(),
+                    deal.getDealId()
                 );
 
                 Map<String, Object> result = smsApiService.sendSms(dto);

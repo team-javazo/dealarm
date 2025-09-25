@@ -28,17 +28,17 @@ public class CrawlScheduler {
             JSONArray deals = (JSONArray) parser.parse(json);
 
             // 콘솔 출력
-            System.out.println("===== 크롤링 데이터 (" + deals.size() + "건) =====");
-            for (Object obj : deals) {
-                JSONObject deal = (JSONObject) obj;
-                System.out.println("제목: " + deal.get("title"));
-                System.out.println("링크: " + deal.get("link"));
-                System.out.println("가격: " + deal.get("price"));
-                System.out.println("사이트: " + deal.get("site"));
-                System.out.println("게시일: " + deal.get("posted_at"));
-                System.out.println("추천수: " + deal.get("recommend"));
-                System.out.println("----------------------------");
-            }
+//            System.out.println("===== 크롤링 데이터 (" + deals.size() + "건) =====");
+//            for (Object obj : deals) {
+//                JSONObject deal = (JSONObject) obj;
+//                System.out.println("제목: " + deal.get("title"));
+//                System.out.println("링크: " + deal.get("link"));
+//                System.out.println("가격: " + deal.get("price"));
+//                System.out.println("사이트: " + deal.get("site"));
+//                System.out.println("게시일: " + deal.get("posted_at"));
+//                System.out.println("추천수: " + deal.get("recommend"));
+//                System.out.println("----------------------------");
+//            }
 
         } catch (Exception e) {
             System.err.println("❌ JSON 읽기 실패: " + e.getMessage());
