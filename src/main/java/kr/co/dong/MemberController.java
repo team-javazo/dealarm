@@ -27,6 +27,12 @@ public class MemberController {
 	@Inject
 	private MemberService memberService;
 
+	// 키워드 페이지 이동
+	@GetMapping("/keyword")
+	public String keyword() {
+		return "member/keyword";
+	}
+
 	// 회원가입 폼 이동
 	@GetMapping("/join")
 	public String joinForm() {

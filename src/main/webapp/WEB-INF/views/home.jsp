@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>홈 화면</title>
         <!-- Favicon-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,33 +23,52 @@
 </head>
 <body>
 	<!-- =======================[바디시작]================================ -->
-         <a href="<c:url value='/main'/>">메인view페이지로 이동</a> |
+ 	<div class="homeView">
+ 		<div class="homeText">
+		    <h1>환영합니다!</h1>
+		    <p>빠르고 편리한 할인 정보, 당신을 위한 실시간 쇼핑 파트너.</p>
+ 		</div>
+
+		<div class="homeButton">
+		    <a href="<c:url value='/main'/>">메인 페이지로 이동(클릭)</a>
+		</div> 	
+		    <p id="autoRedirectMsg" style="margin-top: 10px; color: white;"></p>
+	</div>
+    <%@ include file="/WEB-INF/views/include/footer.jsp"%>
 
 	<!-- =================== [메인 영역 시작]==================================-->
+
+	<script>
+		let countdown = 7;
+		const msg = document.getElementById('autoRedirectMsg');
+		
+		const timer = setInterval(function(){
+			msg.textContent = countdown + '초 후 자동으로 메인 페이지로 이동합니다.';
+			countdown--;
+			
+			if(countdown < 0){
+				clearInterval(timer);
+				window.location.href = '<c:url value="/main"/>';
+			}
+		}, 1000);
+	</script>   			
+   			
+   			
+   			
+   			
    				<h1>홈 화면</h1>
 
    <!-- 로그인 여부에 따라 다른 화면 출력 -->
    <c:choose>
-      <c:when test="${empty sessionScope.id}">
-         <a href="<c:url value='/member/join'/>">회원가입</a> |
-            <a href="<c:url value='/member/login'/>">로그인</a>
-      </c:when>
-      <c:when test="${sessionScope.role eq 'ADMIN'}">
-         <p>
-            <b>${sessionScope.role}</b> 님, 환영합니다!
-         </p>
-         <a href="<c:url value='/member/members'/>">회원목록</a> |
-            <a href="<c:url value='/member/logout'/>">로그아웃</a> |
-            <a href="<c:url value='/member/mypage'/>">마이페이지</a>
-      </c:when>
+      <c:when test="${empty sessionScope.id}"></c:when>
+      <c:when test="${sessionScope.role eq 'ADMIN'}"></c:when>
       <c:otherwise>
-         <p>
-            <b>${sessionScope.name}</b> 님, 환영합니다!
-         </p>
-         <a href="<c:url value='/member/logout'/>">로그아웃</a> |
-            <a href="<c:url value='/member/mypage'/>">마이페이지</a>
 
-         <!-- 키워드 등록 -->
+
+
+
+
+      	 <!-- 키워드 등록 -->
          <h3>키워드 등록</h3>
          <form id="addKeywordForm">
             <input type="hidden" name="userId" value="${sessionScope.id}" /> <input
@@ -56,6 +76,8 @@
                required />
             <button type="submit">추가</button>
          </form>
+
+
 
          <h3>키워드 관리</h3>
          <!-- 키워드 리스트 -->
@@ -197,6 +219,11 @@
                loadKeywords(); // 키워드 리스트 불러오기
             });
          </script>
+
+
+
+
+
       </c:otherwise>
    </c:choose>
 

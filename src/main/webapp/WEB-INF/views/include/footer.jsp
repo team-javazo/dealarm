@@ -3,5 +3,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
   <hr>
-   <p>서버 시간: ${serverTime}</p>
+   <p style="text-align: center;">Server Read Time : ${serverTime}</p>
    
