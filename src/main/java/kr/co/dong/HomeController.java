@@ -44,7 +44,10 @@ public class HomeController {
 	@GetMapping(value = "/Update")
 	public String Update() {
 		return "Update";
-		
+	}
+	@GetMapping(value = "/main")
+	public String main() {
+		return "main";
 	}
 	
 	

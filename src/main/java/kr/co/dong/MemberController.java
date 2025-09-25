@@ -88,7 +88,7 @@ public class MemberController {
 			session.setAttribute("role", loginUser.getRole());
 			session.setAttribute("name", loginUser.getName());
 
-			return "redirect:/"; // 로그인 성공 → 홈으로
+			return "redirect:/main"; // 로그인 성공 → 홈으로
 		} else {
 			model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
 			return "member/login"; // 실패 → 다시 로그인 페이지
@@ -99,7 +99,7 @@ public class MemberController {
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate(); // 세션 초기화
-		return "redirect:/"; // 홈으로 이동
+		return "redirect:/main"; // 홈으로 이동
 	}
 
 	// 회원가입 중복 검사 후, 알림 띄우기
