@@ -19,6 +19,11 @@ public class UserKeywordDAOImpl implements UserKeywordDAO {
         sqlSession.insert(namespace + ".insert", dto);
     }
 
+//    @Override
+//	public List<String> findAllUserIds() {
+//		return sqlSession.selectList(namespace + ".findAllUserIds");
+//	}
+    
     @Override
     public List<UserKeywordDTO> findByUserId(String userId) {
         return sqlSession.selectList(namespace + ".findByUserId", userId);

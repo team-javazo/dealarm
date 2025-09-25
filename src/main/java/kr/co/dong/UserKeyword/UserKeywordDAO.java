@@ -7,4 +7,5 @@ public interface UserKeywordDAO {
     List<UserKeywordDTO> findByUserId(String userId);
     void delete(String id);
     boolean isKeywordExist(UserKeywordDTO dto);
+//    List<String> findAllUserIds();
 }

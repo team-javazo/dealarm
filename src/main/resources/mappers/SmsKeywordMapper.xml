@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.co.dong.sms.dao.UserKeywordDAO">
+  <!-- 제목(title)에 사용자 키워드가 포함되면 해당 user_id 반환 -->
+  <select id="findMatchingUsers" parameterType="string" resultType="string">
+    SELECT DISTINCT uk.user_id
+    FROM user_keywords uk
+    WHERE LOWER(#{title}) LIKE CONCAT('%', LOWER(uk.keyword), '%')
+  </select>
+</mapper>

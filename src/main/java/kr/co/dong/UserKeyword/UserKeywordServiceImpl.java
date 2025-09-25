@@ -16,6 +16,11 @@ public class UserKeywordServiceImpl implements UserKeywordService {
         return userKeywordDAO.findByUserId(userId);
     }
 
+//    @Override
+//	public List<String> getAllUserIds() {
+//		return userKeywordDAO.findAllUserIds();
+//	}
+    
     @Override
     public void removeKeyword(String id) {
         userKeywordDAO.delete(id);
