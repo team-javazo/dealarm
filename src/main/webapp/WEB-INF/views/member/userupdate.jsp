@@ -76,7 +76,10 @@
 				<td colspan="2"><input type="hidden" name="id" value="${user.id}"> 
 				<input type="submit" value="수정">
 					<button type="button" onclick="openPwModal()">비밀번호 변경</button>
-					<button type="button" onclick="openModal()">탈퇴</button></td>
+					<button type="button" onclick="openModal()">탈퇴</button>
+					<button type="button" onclick="location.href='<c:url value="/main"/>'">홈으로</button>
+					</td>
+
 							</div>
 			</tr>
 		
