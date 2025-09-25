@@ -76,22 +76,29 @@
 			                </div>
 			
 			                <div class="mb-3">
-			                    <label for="gender" class="form-label">성별</label><br>
-			                     <label> <input type="radio" name="gender" value="male" checked >
-			            남자
-			        </label>
-			        &nbsp;&nbsp;
-			        <label>
-			            <input type="radio" name="gender" value="female">
-			            여자
-			        </label>
+
+			                    <label for="gender" class="form-label">성별</label><br>						
+									<div class="form-check form-check-inline">
+			                        <input class="form-check-input" type="radio" name="gender" value="male">
+			                        <label class="form-check-label">남자</label>
+			                    </div>
+			                    <div class="form-check form-check-inline">
+			                        <input class="form-check-input" type="radio" name="gender" value="female">
+			                        <label class="form-check-label">여자</label>
+			                    </div>
 			                </div>
 
 
 			                <div class="mb-3">
-			                    <label for="notification" class="form-label">수신동의</label>
-			                    <input type="number" class="form-control" id="notification" name="notification"
-			                        value="${member.notification != null ? member.notification : ''}">
+			                    <label for="notification" class="form-label">수신동의</label><br>
+			                        <div class="form-check form-check-inline">
+			                        <input class="form-check-input" type="radio" name="notification" value="1" checked>
+			                        <label class="form-check-label">동의</label>
+			                    </div>
+			                    <div class="form-check form-check-inline">
+			                        <input class="form-check-input" type="radio" name="notification" value="0">
+			                        <label class="form-check-label">동의하지 않음</label>
+			                    </div>
 			                </div>
 			
 			                <div class="mb-3">
