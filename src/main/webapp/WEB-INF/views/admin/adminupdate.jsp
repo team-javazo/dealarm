@@ -26,6 +26,7 @@
 	rel="stylesheet" />
 
 </head>
+
 <body
 	style="margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh;">
 

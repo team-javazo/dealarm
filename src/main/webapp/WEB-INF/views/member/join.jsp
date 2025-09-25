@@ -113,7 +113,7 @@
     <div id="toast" class="toast">
         <p id="toastMessage"></p>
     </div>
-    
+
 
 	<script>
         function showToast(message) {

@@ -111,6 +111,7 @@
 
 
 
+
 	
 	<!-- 수정페이지로 넘길 ID -->
 	<input type="hidden" id="userId" value="${user.id}">
