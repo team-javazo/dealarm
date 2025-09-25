@@ -5,9 +5,8 @@ from datetime import datetime
 import os
 import re
 
-current_dir = os.path.dirname(__file__)
-save_dir = os.path.join(current_dir, '..', '..', 'resources', 'crawler')
-save_dir = os.path.abspath(save_dir)  # 절대 경로로 변환
+base_dir = os.path.expanduser("~")
+save_dir = os.path.join(base_dir, "dealarm-data")
 os.makedirs(save_dir, exist_ok=True)
 base_url = "https://www.ppomppu.co.kr/zboard/"
 headers = {

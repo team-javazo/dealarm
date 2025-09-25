@@ -11,19 +11,22 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 @Component
 public class CrawlScheduler {
 
-    private static final String JSON_CLASSPATH = "crawler/ppomppu_crawling.json";
+    private static final String PPOM_JSON = System.getProperty("user.home") + "/dealarm-data/ppomppu_crawling.json";
  
-  private static final String PYTHON_SCRIPT = "C:/hys/git/dealarm/src/main/python/crawler/ppompu_crawler.py";     //절대경로 변경 필요 
-
+    
     // 5분마다 실행
     @Scheduled(fixedDelay = 300000)
     public void runCrawlerAndReadJson() {
         try {
             //1. 파이썬 실행
+        	String PYTHON_SCRIPT = new ClassPathResource("python/crawler/ppompu_crawler.py").getFile().getAbsolutePath();
             ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT);
             pb.redirectErrorStream(true);
 
@@ -48,21 +51,27 @@ public class CrawlScheduler {
             }
 
             //2. JSON 읽기
-            ClassPathResource resource = new ClassPathResource(JSON_CLASSPATH);
-            String json = Files.readString(resource.getFile().toPath(), StandardCharsets.UTF_8);
+         // 1. JSON 파일 경로
+            System.out.println(PPOM_JSON);
+            Path ppom_json_path = Paths.get(PPOM_JSON); // PPOM_JSON은 절대경로 또는 설정값
 
-            JSONParser parser = new JSONParser();
-            JSONArray deals = (JSONArray) parser.parse(json);
+            // 2. JSON 문자열 읽기
+            String ppom_json_string = Files.readString(ppom_json_path, StandardCharsets.UTF_8);
 
-            System.out.println("===== 크롤링 데이터 (" + deals.size() + "건) =====");
-            for (Object obj : deals) {
+            // 3. JSON 파싱
+            JSONParser ppom_parser = new JSONParser();
+            JSONArray ppom_deals = (JSONArray) ppom_parser.parse(ppom_json_string);
+            
+            
+            System.out.println("===== 크롤링 데이터 (" + ppom_deals.size() + "건) =====");
+            for (Object obj : ppom_deals) {
                 JSONObject deal = (JSONObject) obj;
                 System.out.println("제목: " + deal.get("title"));
-                System.out.println("링크: " + deal.get("link"));
+                System.out.println("링크: " + deal.get("url"));
                 System.out.println("가격: " + deal.get("price"));
                 System.out.println("사이트: " + deal.get("site"));
                 System.out.println("게시일: " + deal.get("posted_at"));
-                System.out.println("추천수: " + deal.get("recommend"));
+                System.out.println("추천수: " + deal.get("likes"));
                 System.out.println("----------------------------");
             }
 
