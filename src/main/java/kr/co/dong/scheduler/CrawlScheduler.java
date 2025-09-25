@@ -3,26 +3,25 @@ package kr.co.dong.scheduler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Component
 public class CrawlScheduler {
 
-    // ✅ 절대 경로 고정 (Python이 저장하는 곳)
-    private static final Path JSON_PATH =
-            Path.of("C:/hys/git/dealarm/src/main/resources/crawler/ppomppu_crawling.json");
-
+	private static final String JSON_CLASSPATH = "crawler/ppomppu_crawling.json";
+	
     // 5분마다 실행 (이전 실행이 끝난 후 5분 뒤)
     @Scheduled(fixedDelay = 300000)
     public void readCrawledJson() {
-        try {
+    	
+    	try {
             // 파일 읽기
-            String json = Files.readString(JSON_PATH, StandardCharsets.UTF_8);
+    		ClassPathResource resource = new ClassPathResource(JSON_CLASSPATH);
+            String json = Files.readString(resource.getFile().toPath(), StandardCharsets.UTF_8);
 
             // JSON 파싱 (json-simple 사용)
             JSONParser parser = new JSONParser();
