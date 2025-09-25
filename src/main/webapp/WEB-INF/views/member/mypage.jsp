@@ -54,7 +54,15 @@
 			        <tr><th>전화번호</th><td>${user.phone}</td></tr>
 			        <tr><th>이메일</th><td>${user.email}</td></tr>
 			        <tr><th>생년월일</th><td>${user.birth_date}</td></tr>
-			        <tr><th>성별</th><td>${user.gender}</td></tr>
+			        <tr><th>성별</th>
+					  <td>
+					    <c:choose>
+					      <c:when test="${user.gender == 'male'}">남자</c:when>
+					      <c:otherwise>여자</c:otherwise>
+					    </c:choose>
+					  </td>
+					</tr>
+
 			        <tr>
 			            <th>알림 수신 여부</th>
 			            <td>
@@ -75,10 +83,10 @@
 			
 			    <div class="mt-3">
 			        <button type="button" class="btn btn-primary" onclick="openPassModal()">수정</button>
-					<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/"/>'">홈으로</button>
+					<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/main"/>'">홈으로</button>
 			    </div>
 			</div>
-			
+	
 			
 			<!-- 비밀번호 확인 모달 -->
 			<div class="modal fade" id="passwordModal" tabindex="-1">
