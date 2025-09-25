@@ -1,103 +1,89 @@
 import requests
 from bs4 import BeautifulSoup
-import json
-from datetime import datetime
-import os
-import re
+from datetime import datetime, timedelta
+import time
+import random
 
-current_dir = os.path.dirname(__file__)
-save_dir = os.path.join(current_dir, '..', '..', 'resources', 'crawler')
-save_dir = os.path.abspath(save_dir)
-os.makedirs(save_dir, exist_ok=True)
+def refresh_session():
+    new_session = requests.Session()
+    new_session.headers.update(headers)
+    return new_session
 
-base_url = "https://www.fmkorea.com"
+# 기본 설정
+base_url = "https://www.fmkorea.com/index.php?mid=hotdeal&page={}"
 headers = {
-    "User-Agent": "Mozilla/5.0"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/117.0.0.0 Safari/537.36",
+    "Referer": "https://www.fmkorea.com/",
+    "Accept-Language": "ko-KR,ko;q=0.9"
+
 }
-stop_flag = False
+max_days = 7
+now = datetime.now()
 page = 1
-deals = []
+stop = False
 
-while not stop_flag:
-    print(f"FM코리아 페이지 {page} 크롤링 중...")
-    url = f"{base_url}/index.php?mid=hotdeal&page={page}"
-    res = requests.get(url, headers=headers)
-    soup = BeautifulSoup(res.text, "html.parser")
+# 세션 유지
+session = requests.Session()
+session.headers.update(headers)
 
-    for item in soup.select("li.li"):
-        try:
-            link_tag = item.select_one("a.hotdeal_var8")
-            relative_link = link_tag['href'] if link_tag else ""
-            full_url = base_url + relative_link
+while not stop:
+    print(f"📄 페이지 {page} 크롤링 중...")
+    try:
+        response = session.get(base_url.format(page))
+        soup = BeautifulSoup(response.text, "html.parser")
 
-            # 상세 페이지 요청
-            detail_res = requests.get(full_url, headers=headers)
-            detail_soup = BeautifulSoup(detail_res.text, "html.parser")
+        items = soup.select("li.li_best2_hotdeal0")
+        if not items:
+            print("❌ 쿠키 만료 또는 서버 응답 이상. 세션 갱신 시도 중...")
+            session = refresh_session()
+            time.sleep(2)
 
-            # 제목
-            title_tag = detail_soup.select_one("tr th:contains('상품명') + td .xe_content")
-            title = title_tag.get_text(strip=True) if title_tag else "제목 없음"
-
-            # 외부 링크
-            link_tag = detail_soup.select_one("a.hotdeal_url")
-            external_url = link_tag['href'] if link_tag else full_url
-
-            # 쇼핑몰
-            site_tag = detail_soup.select_one("tr th:contains('쇼핑몰') + td .xe_content")
-            site = site_tag.get_text(strip=True).split()[0] if site_tag else "Unknown"
-
-            # 가격
-            price_tag = detail_soup.select_one("tr th:contains('가격') + td .xe_content")
-            price_text = price_tag.get_text(strip=True) if price_tag else None
-            price_match = re.search(r'(\d+(,\d{3})*)원', price_text) if price_text else None
-            price = int(price_match.group(1).replace(',', '')) if price_match else None
-
-            # 게시일
-            date_tag = detail_soup.select_one("span.date.m_no")
-            posted_at_str = date_tag.get_text(strip=True) if date_tag else None
+        for item in items:
             try:
-                posted_at = datetime.strptime(posted_at_str, "%Y.%m.%d %H:%M")
-            except:
-                posted_at = datetime.now()
+                title = item.select_one("h3.title .ellipsis-target").text.strip()
+                link = "https://www.fmkorea.com" + item.select_one("a.hotdeal_var8")["href"]
 
-            # 추천수
-            rec_tag = detail_soup.select_one("div.side.fr span:contains('추천 수') b")
-            rec_text = rec_tag.get_text(strip=True) if rec_tag else "0"
-            try:
-                rec_score = int(rec_text)
-            except:
-                rec_score = 0
+                # 이미지 URL에서 게시 시간 추출
+                image_tag = item.select_one("img.thumb")
+                image_url = image_tag.get("data-original") or image_tag.get("src")
 
-            # 일주일 이상 지난 글이면 중단
-            today = datetime.now()
-            if (today - posted_at).days >= 7:
-                stop_flag = True
-                print("📛 오래된 게시글 감지됨 → 크롤링 종료")
-                break
+                if image_url and "?c=" in image_url:
+                    timestamp_raw = image_url.split("?c=")[-1]
+                    posted_at = datetime.strptime(timestamp_raw, "%Y%m%d%H%M%S")
+                else:
+                    posted_at = None
 
-            created_at = today.strftime("%Y-%m-%d %H:%M:%S")
+                # 게시 시간 기준으로 중단 여부 판단
+                if posted_at and (now - posted_at > timedelta(days=max_days)):
+                    print(f"⏹️ 중단: {posted_at} → 7일 초과")
+                    stop = True
+                    break
 
-            deal = {
-                "title": title,
-                "url": external_url,
-                "price": price,
-                "site": site,
-                "posted_at": posted_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "created_at": created_at,
-                "likes": rec_score
-            }
+                # 기타 정보 추출
+                price = item.select_one(".hotdeal_info span:nth-of-type(2) a").text.strip()
+                site = item.select_one(".hotdeal_info span:nth-of-type(1) a").text.strip()
+                delivery = item.select_one(".hotdeal_info span:nth-of-type(3) a").text.strip()
+                comments = item.select_one(".comment_count").text.strip("[]")
+                recommend = item.select_one(".pc_voted_count .count").text.strip()
+                author = item.select_one(".author").text.strip(" /")
+                category = item.select_one(".category a").text.strip()
 
-            print(deal)
-            deals.append(deal)
+                # 출력
+                print(f"🛒 제목: {title}")
+                print(f"🔗 링크: {link}")
+                print(f"🕒 게시시간: {posted_at}")
+                print(f"💬 댓글: {comments} / 추천: {recommend}")
+                print(f"🏷️ 쇼핑몰: {site} / 가격: {price} / 배송: {delivery}")
+                print(f"📂 카테고리: {category} / 작성자: {author}")
+                print("-" * 60)
 
-        except Exception as e:
-            print("❌ Error parsing item:", e)
-            continue
+            except Exception as e:
+                print("❌ 오류 발생:", e)
 
-    page += 1
+        # 랜덤 딜레이 (0.5초 ~ 2초)
+        time.sleep(random.uniform(0.5, 1.0))
+        page += 1
 
-try:
-    with open(os.path.join(save_dir, "fmkorea_crawling.json"), "w", encoding="utf-8") as f:
-        json.dump(deals, f, ensure_ascii=False, indent=2)
-except Exception as e:
-    print("JSON 저장 실패:", e)
+    except Exception as e:
+        print(f"❌ 페이지 요청 실패: {e}")
+        break

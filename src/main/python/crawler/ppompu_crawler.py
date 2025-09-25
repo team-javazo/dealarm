@@ -23,8 +23,18 @@ while not stop_flag:
     res = requests.get(url, headers=headers)
     soup = BeautifulSoup(res.text, "html.parser")
 
-    for item in soup.select("tr.baseList"):
+    items = soup.select("tr.baseList")
+    if not items:
+        print("❌ 더 이상 게시글이 없습니다.")
+        break
+
+    for item in items:
         try:
+            # ✅ end2 클래스가 포함된 게시글은 건너뛰기
+            link_tag = item.select_one("a.baseList-title")
+            if link_tag and 'end2' in link_tag.get('class', []):
+                continue
+            
             title_tag = item.select_one("a.baseList-title > span")
             title_raw = title_tag.get_text(strip=True) if title_tag else "제목 없음"
             title = re.sub(r'\[.*?\]', '', title_raw).strip()
@@ -87,7 +97,6 @@ while not stop_flag:
                 "price": price,
                 "site": site,
                 "posted_at": posted_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "created_at": created_at,
                 "likes": rec_score
             }
 
