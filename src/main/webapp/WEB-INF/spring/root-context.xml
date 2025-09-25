@@ -1,63 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="
-        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
-        http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
-        http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
-        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd">
+           http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+           http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+           http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd">
 
-	<!-- Root Context: defines shared resources visible to all other web components -->
-	<bean id="dataSourceSpied"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName"
-			value="com.mysql.cj.jdbc.Driver" />
-		<property name="url"
-			value="jdbc:mysql://192.168.0.79:3306/project_db?serverTimezone=UTC" />
-		<property name="username" value="javajo" />
-		<property name="password" value="181818" />
-	</bean>
+    <!-- DataSource -->
+    <bean id="dataSourceSpied" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.0.79:3306/project_db?serverTimezone=UTC"/>
+        <property name="username" value="javajo"/>
+        <property name="password" value="181818"/>
+    </bean>
 
-	<!-- db Log추가 -->
-	<bean id="dataSource"
-		class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
-		<constructor-arg ref="dataSourceSpied" />
-		<property name="logFormatter">
-			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
-				<property name="loggingType" value="MULTI_LINE" />
-				<property name="sqlPrefix" value="SQL : " />
-			</bean>
-		</property>
-	</bean>
+    <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+        <constructor-arg ref="dataSourceSpied"/>
+        <property name="logFormatter">
+            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+                <property name="loggingType" value="MULTI_LINE"/>
+                <property name="sqlPrefix" value="SQL : "/>
+            </bean>
+        </property>
+    </bean>
 
-	<!-- my -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation"
-			value="classpath:/mybatis-config.xml" />
-		<property name="mapperLocations"
-			value="classpath:mappers/**/*.xml" />
-	</bean>
+    <!-- MyBatis -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- configLocation 제거: mapperLocations만 사용 -->
+        <property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+    </bean>
 
-	<bean id="sqlSession"
-		class="org.mybatis.spring.SqlSessionTemplate"
-		destroy-method="clearCache">
-		<constructor-arg name="sqlSessionFactory"
-			ref="sqlSessionFactory" />
-	</bean>
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
 
-	<!-- 어노테이션 스캔 -->
-    <context:component-scan base-package="kr.co.dong"/>
+    <!-- Service/DAO 스캔 (Controller 제외) -->
+    <context:component-scan base-package="kr.co.dong">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <!-- RestTemplate (서비스 계층에서 사용 가능) -->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
     
-    
+    <!-- 패키지 안의 인터페이스들을 MyBatis Mapper 로 자동 등록 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	    <property name="basePackage" value="kr.co.dong.sms.dao"/>
+	</bean>
+
     <!-- 스케줄러 설정 -->
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="5"/>
+
 </beans>
-
-
