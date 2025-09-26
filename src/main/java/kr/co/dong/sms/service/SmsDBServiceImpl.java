@@ -6,10 +6,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import kr.co.dong.UserKeyword.UserKeywordDAO;
 import kr.co.dong.sms.dao.DealSummaryDAO;
+import kr.co.dong.sms.dao.MatchingUserKeywordDAO;
 import kr.co.dong.sms.dao.UserDAO;
-import kr.co.dong.sms.dao.UserKeywordsmsDAO;
 import kr.co.dong.sms.dto.DealSummaryDTO;
 import kr.co.dong.sms.dto.SmsDTO;
 import kr.co.dong.sms.dto.UserDTO;
@@ -20,12 +19,12 @@ public class SmsDBServiceImpl implements SmsDBService {
 	@Autowired
     private final SmsApiService smsApiService;
     private final DealSummaryDAO dealMapper;
-    private final UserKeywordsmsDAO keywordMapper;
+    private final MatchingUserKeywordDAO keywordMapper;
     private final UserDAO userMapper;
 
     public SmsDBServiceImpl(SmsApiService smsApiService,
                             DealSummaryDAO dealMapper,
-                            UserKeywordsmsDAO keywordMapper,
+                            MatchingUserKeywordDAO keywordMapper,
                             UserDAO userMapper) {
         this.smsApiService = smsApiService;
         this.dealMapper = dealMapper;

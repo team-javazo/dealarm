@@ -7,6 +7,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import kr.co.dong.sms.service.SmsDBService;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +22,11 @@ public class CrawlScheduler {
 
     private static final String PPOM_JSON = System.getProperty("user.home") + "/dealarm-data/ppomppu_crawling.json";
  
+    private final SmsDBService smsDBService;
+
+    public CrawlScheduler(SmsDBService smsDBService) {
+        this.smsDBService = smsDBService;
+    }
     
     // 5분마다 실행
     @Scheduled(fixedDelay = 300000)
@@ -62,6 +69,8 @@ public class CrawlScheduler {
             JSONParser ppom_parser = new JSONParser();
             JSONArray ppom_deals = (JSONArray) ppom_parser.parse(ppom_json_string);
             
+            // 4. 크롤링 완료 후 → sms 발송 프로세스 실행
+            smsDBService.processDeals();
             
             System.out.println("===== 크롤링 데이터 (" + ppom_deals.size() + "건) =====");
             for (Object obj : ppom_deals) {

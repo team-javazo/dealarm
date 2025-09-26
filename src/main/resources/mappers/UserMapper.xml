@@ -4,8 +4,12 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.dong.sms.dao.UserDAO">
-	<select id="findUserById" parameterType="string" resultType="kr.co.dong.sms.dto.UserDTO"> 
-		SELECT id AS userId, phone, notification 
-		FROM users WHERE id = #{id} 
-	</select>
+
+	<!-- userId 기준으로 사용자 조회 -->
+    <select id="findUserById" parameterType="string" resultType="kr.co.dong.sms.dto.UserDTO"> 
+        SELECT id AS userId, phone, notification 
+        FROM users 
+        WHERE id = #{id} 
+    </select>
+	
 </mapper>

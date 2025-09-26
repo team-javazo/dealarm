@@ -47,9 +47,6 @@
         <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
         <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
-
-    <!-- RestTemplate (서비스 계층에서 사용 가능) -->
-    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
     
     <!-- 패키지 안의 인터페이스들을 MyBatis Mapper 로 자동 등록 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
