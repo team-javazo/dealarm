@@ -1,6 +1,8 @@
 import os
 import logging
 import pymysql
+import sys
+import json
 from dotenv import load_dotenv
 from twilio.rest import Client
 
@@ -89,3 +91,23 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int):
     except Exception as e:
         logging.exception("❌ SMS 전송 실패")
         return {"error": str(e)}
+
+# -------------------------
+# CLI 모드 (Java에서 호출 시)
+# -------------------------
+if __name__ == "__main__":
+    try:
+        if len(sys.argv) < 2:
+            print(json.dumps({"error": "No arguments received"}))
+            sys.exit(1)
+
+        data = json.loads(sys.argv[1])
+        result = send_sms(
+            data["userId"], data["phone"], data["title"], data.get("url", ""), data["dealId"]
+        )
+        print(json.dumps(result))
+    except Exception as e:
+        # ❌ 예외 발생 시에도 반드시 JSON 출력
+        print(json.dumps({"error": str(e)}))
+        sys.exit(1)
+

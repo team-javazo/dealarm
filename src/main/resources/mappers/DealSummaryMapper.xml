@@ -7,16 +7,16 @@
 
 	<!-- 알림이 아직 발송되지 않은 Deal 목록 조회 -->
     <select id="findUnnotifiedDeals" resultType="kr.co.dong.sms.dto.DealSummaryDTO"> 
-        SELECT user_id AS userId, title, url, notified 
+        SELECT id AS dealId, title, url, notified
         FROM deal_summary 
         WHERE notified = 0 
     </select>
 	
 	<!-- 특정 사용자의 Deal 알림 상태를 "발송 완료"로 표시 -->
-    <update id="markAsNotified" parameterType="string"> 
+    <update id="markAsNotified" parameterType="int"> 
         UPDATE deal_summary 
         SET notified = 1 
-        WHERE user_id = #{userId} 
+        WHERE id = #{dealId} 
     </update>
 	
 </mapper>
