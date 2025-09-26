@@ -150,7 +150,7 @@
 									<!--                		<td>${member.email}</td>	 -->
 									<td>${member.birth_date}</td>
 									<td><c:choose>
-								      <c:when test="${user.gender == 'male'}">남자</c:when>
+								      <c:when test="${member.gender == 'male'}">남자</c:when>
 								      <c:otherwise>여자</c:otherwise>
 								    </c:choose></td>
 									<td><c:choose>
