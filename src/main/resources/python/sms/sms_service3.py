@@ -2,20 +2,16 @@ import os
 import sys
 import json
 import logging
-import base64
 import pymysql
 from dotenv import load_dotenv
 from twilio.rest import Client
 
-logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="%(asctime)s [%(levelname)s] %(message)s")
+print(f"sys.argv = {sys.argv}", file=sys.stderr)
 
 # ==================================================
 # 1) 환경 변수 로드
 # ==================================================
-# ✅ .env 확실히 로드 (파일을 스크립트와 같은 폴더에 둔다고 가정)
-from pathlib import Path
-dotenv_path = (Path(__file__).resolve().parent / ".env")
-load_dotenv(dotenv_path)
+load_dotenv()
 
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
@@ -23,7 +19,7 @@ TWILIO_FROM_NUMBER = os.getenv("TWILIO_FROM_NUMBER")
 
 twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 # ==================================================
 # 2) DB 연결
@@ -80,17 +76,17 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int):
         )
         logging.info(f"✅ SMS 전송 성공: user={user_id}, dealId={deal_id}, to={to_number}, sid={message.sid}")
 
-        # 2) DB 기록
-        conn = get_connection()
-        with conn.cursor() as cursor:
-            sql = """
-                INSERT INTO deal_match (user_id, deal_id)
-                VALUES (%s, %s)
-                ON DUPLICATE KEY UPDATE matched_at = CURRENT_TIMESTAMP
-            """
-            cursor.execute(sql, (user_id, deal_id))
-            conn.commit()
-        conn.close()
+        # # 2) DB 기록
+        # conn = get_connection()
+        # with conn.cursor() as cursor:
+        #     sql = """
+        #         INSERT INTO deal_match (user_id, deal_id)
+        #         VALUES (%s, %s)
+        #         ON DUPLICATE KEY UPDATE matched_at = CURRENT_TIMESTAMP
+        #     """
+        #     cursor.execute(sql, (user_id, deal_id))
+        #     conn.commit()
+        # conn.close()
 
         return {"result": "sent", "sid": message.sid}
 
@@ -99,33 +95,34 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int):
         return {"error": str(e)}
 
 # ==================================================
-# 5) 엔트리포인트
+# 5) 엔트리포인트 (직접 데이터 넣기)
 # ==================================================
 if __name__ == "__main__":
     try:
-        args = sys.argv[1:]
-        # ✅ --b64 인자만 받는다. 다른 인자/stdin 섞지 않음
-        if len(args) >= 2 and args[0] == "--b64":
-            raw_b64 = args[1].strip('"')  # 혹시 모를 쿼트 제거
-            raw_json = base64.b64decode(raw_b64).decode("utf-8")
-        else:
-            # ❗ stdout에 에러 JSON을 찍으면 자바가 또 파싱하다가 실패할 수 있음
-            #   → 에러는 stderr로만 알리고, stdout은 비워둔다 (자바가 빈 응답 체크함)
-            logging.error(f"Invalid arguments: {args}")
-            sys.exit(1)
+        # -------------------------------
+        # 🔹 테스트용 임시 데이터 직접 정의
+        # -------------------------------
+        data = {
+            "userId": "정지호",
+            "phone": "01032047742",  # ⚠️ Twilio Trial 계정은 인증된 번호만 허용
+            "title": "최고급 홍요셉",
+            "url": "http://example.com",
+            "dealId": 99
+        }
 
-        logging.info(f"argv ok, decoded json length={len(raw_json)}")
+        # 디버그 출력
+        print(f">>> RAW JSON: {json.dumps(data, ensure_ascii=False)}", file=sys.stderr)
 
-        data = json.loads(raw_json)
-
+        # 실제 SMS 발송
         result = send_sms(
-            data["userId"], data["phone"], data["title"], data.get("url", ""), data["dealId"]
+            data["userId"],
+            data["phone"],
+            data["title"],
+            data.get("url", ""),
+            data["dealId"],
         )
-
-        # ✅ stdout에는 딱 이 한 줄만! (JSON)
         print(json.dumps(result, ensure_ascii=False))
 
     except Exception as e:
-        # ❗ 예외는 stderr로만 알리고 종료코드로 실패를 알려준다
-        logging.exception(f"fatal error: {e}")
+        print(json.dumps({"error": str(e)}))
         sys.exit(1)

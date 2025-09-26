@@ -1,9 +1,6 @@
 package kr.co.dong.sms.service;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
@@ -33,45 +30,67 @@ public class SmsApiServiceImpl implements SmsApiService {
         }
     }
 
+    private static class StreamGobbler implements Runnable {
+        private final InputStream is;
+        private final StringBuilder buffer;
+        StreamGobbler(InputStream is, StringBuilder buffer) { this.is = is; this.buffer = buffer; }
+        @Override
+        public void run() {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    buffer.append(line).append("\n");
+                }
+            } catch (IOException ignored) {}
+        }
+    }
+
     @Override
     public Map<String, Object> sendSms(SmsDTO dto) {
         try {
             String json = mapper.writeValueAsString(dto);
-            String b64 = Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
+            String b64  = Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
             System.out.println("👉 [Api] JSON(len=" + json.length() + ") → b64(len=" + b64.length() + ")");
 
             ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT, "--b64-stdin");
-            pb.redirectErrorStream(true);
             pb.environment().put("PYTHONIOENCODING", "utf-8");
+
             Process process = pb.start();
 
-            // stdin으로 Base64 전달
+            // ✅ stdin으로 base64 전달
             try (BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
-            	writer.write(b64);
-            	writer.newLine();   // Python에서 read() 끝을 인식하도록 개행
-            	writer.flush();
-            	writer.close();     // 꼭 닫아야 Python이 stdin EOF 인식
+                writer.write(b64);
+                writer.newLine();
+                writer.flush();
             }
 
-            StringBuilder output = new StringBuilder();
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    output.append(line);
-                }
-            }
+            // ✅ stdout/stderr 분리해서 동시에 읽기
+            StringBuilder stdout = new StringBuilder();
+            StringBuilder stderr = new StringBuilder();
+            Thread tOut = new Thread(new StreamGobbler(process.getInputStream(), stdout));
+            Thread tErr = new Thread(new StreamGobbler(process.getErrorStream(), stderr));
+            tOut.start(); tErr.start();
 
             int exitCode = process.waitFor();
+            tOut.join(); tErr.join();
+
+            String out = stdout.toString().trim();
+            String err = stderr.toString().trim();
+
             if (exitCode != 0) {
-                return Map.of("error", "Python script failed", "details", output.toString());
+                return Map.of("error", "Python script failed", "stderr", err);
             }
-            if (output.toString().isBlank()) {
-                return Map.of("error", "Python returned empty output");
+            if (out.isEmpty()) {
+                return Map.of("error", "Python returned empty output", "stderr", err);
             }
 
-            return mapper.readValue(output.toString(), Map.class);
+            try {
+                return mapper.readValue(out, Map.class);
+            } catch (Exception parseEx) {
+                // JSON 파싱 실패시 stderr도 함께 반환
+                return Map.of("error", "Invalid JSON from Python", "stdout", out, "stderr", err);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
