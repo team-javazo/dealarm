@@ -41,7 +41,7 @@ public class CrawlScheduler {
                     new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println("[Python] " + line);//이거 굳이 안해도 됨
+//                    System.out.println("[Python] " + line);//이거 굳이 안해도 됨
                 }
             }
 
@@ -67,13 +67,13 @@ public class CrawlScheduler {
             System.out.println("===== 크롤링 데이터 (" + ppom_deals.size() + "건) =====");
             for (Object obj : ppom_deals) {
                 JSONObject deal = (JSONObject) obj;
-                System.out.println("제목: " + deal.get("title"));
-                System.out.println("링크: " + deal.get("url"));
-                System.out.println("가격: " + deal.get("price"));
-                System.out.println("사이트: " + deal.get("site"));
-                System.out.println("게시일: " + deal.get("posted_at"));
-                System.out.println("추천수: " + deal.get("likes"));
-                System.out.println("----------------------------");
+//                System.out.println("제목: " + deal.get("title"));
+//                System.out.println("링크: " + deal.get("url"));
+//                System.out.println("가격: " + deal.get("price"));
+//                System.out.println("사이트: " + deal.get("site"));
+//                System.out.println("게시일: " + deal.get("posted_at"));
+//                System.out.println("추천수: " + deal.get("likes"));
+//                System.out.println("----------------------------");
             }
 
         } catch (Exception e) {
