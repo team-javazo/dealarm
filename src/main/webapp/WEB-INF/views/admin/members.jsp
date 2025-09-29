@@ -50,18 +50,25 @@
 							<c:if test="${param.searchType == 'name'}">selected</c:if>>이름</option>
 						<option value="phone"
 							<c:if test="${param.searchType == 'phone'}">selected</c:if>>전화번호</option>
+	 					<option value="email"
+							<c:if test="${param.searchType == 'email'}">selected</c:if>>이메일</option>
 						<option value="birth_date"
 							<c:if test="${param.searchType == 'birth_date'}">selected</c:if>>생년월일</option>
-						<option value="gender"
+						<option value="keyword"
+							<c:if test="${param.searchType == 'keyword'}">selected</c:if>>키워드</option>
+<!-- 					<option value="gender"
 							<c:if test="${param.searchType == 'gender'}">selected</c:if>>성별</option>
 						<option value="notification"
 							<c:if test="${param.searchType == 'notification'}">selected</c:if>>알림동의</option>
+ -->							
 						<option value="region"
 							<c:if test="${param.searchType == 'region'}">selected</c:if>>지역</option>
+<!-- 
 						<option value="role"
 							<c:if test="${param.searchType == 'role'}">selected</c:if>>권한</option>
 						<option value="is_active"
 							<c:if test="${param.searchType == 'is_active'}">selected</c:if>>계정상태</option>
+ -->
 						<option value="created_at"
 							<c:if test="${param.searchType == 'created_at'}">selected</c:if>>가입일</option>
 					</select> <input type="text" name="searchValue" class="form-control me-2"
@@ -150,7 +157,7 @@
 									<!--                		<td>${member.email}</td>	 -->
 									<td>${member.birth_date}</td>
 									<td><c:choose>
-								      <c:when test="${user.gender == 'male'}">남자</c:when>
+								      <c:when test="${member.gender == 'male'}">남자</c:when>
 								      <c:otherwise>여자</c:otherwise>
 								    </c:choose></td>
 									<td><c:choose>
@@ -167,9 +174,9 @@
 								      <c:otherwise>비활성화</c:otherwise>
 								    </c:choose></td>
 									<td>${member.created_at}</td>
-									<td><button class="btn btn-secondary btn-sm">상세조회</button></td>
-							  	<td><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateModal" data-id="${member.id}">수정</button></td>
-								<td><button type="button" class="btn btn-danger btn-sm"	data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${member.id}">삭제</button></td></tr>
+									<td><button type="button" class="btn btn-secondary btn-sm" onclick="location.href='${pageContext.request.contextPath}/member/detail?id=${member.id}'">상세조회</button></td>
+								  	<td><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateModal" data-id="${member.id}">수정</button></td>
+									<td><button type="button" class="btn btn-danger btn-sm"	data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${member.id}">삭제</button></td></tr>
 							</c:forEach>
 						</tbody>
 					</table>
