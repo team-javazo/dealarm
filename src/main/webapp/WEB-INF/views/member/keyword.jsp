@@ -9,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 	<meta name="description" content="" />
 	<meta name="author" content="" />
-	<title>키워드 관리</title>
+	<title>안쓰는 페이지</title>
 	<link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
 	
 </head>
@@ -162,8 +162,7 @@
 					loadKeywords(); // 키워드 리스트 불러오기
 				});
 			</script>
-		</c:otherwise>
-	</c:choose>
+
             <%@ include file="/WEB-INF/views/include/footer.jsp"%>
         </div>
     </div>

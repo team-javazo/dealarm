@@ -39,4 +39,9 @@ public class UserKeywordDAOImpl implements UserKeywordDAO {
         Integer count = sqlSession.selectOne(namespace + ".countKeyword", dto);
         return count != null && count > 0;
     }
+
+	@Override
+	public List<UserKeywordDTO> memberKeyword(String memberId) {
+		return sqlSession.selectList(namespace + "findByUserId", memberId);
+	}
 }
