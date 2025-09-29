@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 public class CrawlScheduler {
 
     private static final String PPOM_JSON = System.getProperty("user.home") + "/dealarm-data/ppomppu_crawling.json";
+    private static final String QUASAR_JSON = System.getProperty("user.home") + "/dealarm-data/quasarzone_crawling.json";
  
     
     // 5분마다 실행
@@ -26,7 +27,7 @@ public class CrawlScheduler {
 
     public void runCrawlerAndReadJson() {
         try {
-            //1. 파이썬 실행
+            //1. 파이썬 실행(뽐뿌)
         	String PYTHON_SCRIPT = new ClassPathResource("python/crawler/ppompu_crawler.py").getFile().getAbsolutePath();
             ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT);
             pb.redirectErrorStream(true);
@@ -50,18 +51,43 @@ public class CrawlScheduler {
                 System.err.println("❌ Python script 실행 실패 (exitCode=" + exitCode + ")");
                 return;
             }
+            
+            //1. 파이썬 실행(퀘이사존)
+        	PYTHON_SCRIPT = new ClassPathResource("python/crawler/quasar_crawler.py").getFile().getAbsolutePath();
+            pb = new ProcessBuilder("python", PYTHON_SCRIPT);
+            pb.redirectErrorStream(true);
 
-            //2. JSON 읽기
-         // 1. JSON 파일 경로
+            // 파이썬 stdout 인코딩을 UTF-8로 강제
+            pb.environment().put("PYTHONIOENCODING", "utf-8");
+
+            process = pb.start();
+
+            // 파이썬 실행 로그 출력
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println("[Python] " + line);//이거 굳이 안해도 됨
+                }
+            }
+
+            exitCode = process.waitFor();
+            if (exitCode != 0) {
+                System.err.println("❌ Python script 실행 실패 (exitCode=" + exitCode + ")");
+                return;
+            }
+
+            //2. JSON 읽기(뽐뿌)
+            // 1. JSON 파일 경로
             System.out.println(PPOM_JSON);
-            Path ppom_json_path = Paths.get(PPOM_JSON); // PPOM_JSON은 절대경로 또는 설정값
+            Path json_path = Paths.get(PPOM_JSON); // PPOM_JSON은 절대경로 또는 설정값
 
             // 2. JSON 문자열 읽기
-            String ppom_json_string = Files.readString(ppom_json_path, StandardCharsets.UTF_8);
+            String json_string = Files.readString(json_path, StandardCharsets.UTF_8);
 
             // 3. JSON 파싱
-            JSONParser ppom_parser = new JSONParser();
-            JSONArray ppom_deals = (JSONArray) ppom_parser.parse(ppom_json_string);
+            JSONParser json_parser = new JSONParser();
+            JSONArray ppom_deals = (JSONArray) json_parser.parse(json_string);
             
             
             System.out.println("===== 크롤링 데이터 (" + ppom_deals.size() + "건) =====");
@@ -73,8 +99,37 @@ public class CrawlScheduler {
                 System.out.println("사이트: " + deal.get("site"));
                 System.out.println("게시일: " + deal.get("posted_at"));
                 System.out.println("추천수: " + deal.get("likes"));
+                System.out.println("이미지: " + deal.get("img"));
                 System.out.println("----------------------------");
             }
+            
+            //2. JSON 읽기(퀘이사존)
+            // 1. JSON 파일 경로
+            System.out.println(QUASAR_JSON);
+            json_path = Paths.get(QUASAR_JSON); // PPOM_JSON은 절대경로 또는 설정값
+
+            // 2. JSON 문자열 읽기
+            json_string = Files.readString(json_path, StandardCharsets.UTF_8);
+
+            // 3. JSON 파싱
+            json_parser = new JSONParser();
+            JSONArray quas_deals = (JSONArray) json_parser.parse(json_string);
+            
+            
+            System.out.println("===== 크롤링 데이터 (" + quas_deals.size() + "건) =====");
+            for (Object obj : quas_deals) {
+                JSONObject deal = (JSONObject) obj;
+                System.out.println("제목: " + deal.get("title"));
+                System.out.println("링크: " + deal.get("url"));
+                System.out.println("가격: " + deal.get("price"));
+                System.out.println("사이트: " + deal.get("site"));
+                System.out.println("게시일: " + deal.get("posted_at"));
+                System.out.println("추천수: " + deal.get("likes"));
+                System.out.println("이미지: " + deal.get("img"));
+                System.out.println("----------------------------");
+            }
+            
+          
 
         } catch (Exception e) {
             System.err.println("❌ 크롤러 실행/JSON 읽기 실패: " + e.getMessage());
