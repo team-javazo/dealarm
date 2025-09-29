@@ -5,30 +5,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-	<meta name="description" content="" />
-	<meta name="author" content="" />
-	<title>안쓰는 페이지</title>
-	<link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
-	
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>키워드 관리</title>
+<link href="${pageContext.request.contextPath}/resources/css/styles.css"
+	rel="stylesheet" />
+
 </head>
-<body style="margin:0; padding:0; display: flex; flex-direction: column; height: 100vh;">
-
- 
-    <%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
-
-    <div class="d-flex">
-        <%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
-        <div class="flex-grow-1">
-            <%@ include file="/WEB-INF/views/include/banner.jsp"%>
-            <!-- =================[키워드]============ -->
+<body
+	style="margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh;">
 
 
+	<%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
 
+	<div class="d-flex">
+		<%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
+		<div class="flex-grow-1">
+			<%@ include file="/WEB-INF/views/include/banner.jsp"%>
+			<!-- =================[키워드]============ -->
 
-
-<script>
+			<script>
 				// 키워드 추가
 				$('#addKeywordForm')
 						.on(
@@ -163,15 +162,12 @@
 				});
 			</script>
 
-            <%@ include file="/WEB-INF/views/include/footer.jsp"%>
-        </div>
-    </div>
-   
 
-          <!-- =================[ end]============ -->
-            <%@ include file="/WEB-INF/views/include/footer.jsp"%>
-        </div>
-    </div>
+
+	<!-- =================[ end]============ -->
+	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
+	</div>
+	</div>
 
 </body>
 </html>
