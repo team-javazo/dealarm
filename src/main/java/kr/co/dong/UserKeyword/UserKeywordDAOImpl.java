@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -40,8 +42,13 @@ public class UserKeywordDAOImpl implements UserKeywordDAO {
         return count != null && count > 0;
     }
 
-	@Override
-	public List<UserKeywordDTO> memberKeyword(String memberId) {
-		return sqlSession.selectList(namespace + "findByUserId", memberId);
-	}
+    @Autowired
+    public UserKeywordDAOImpl(SqlSessionTemplate sqlSession) {
+        this.sqlSession = sqlSession;
+    }
+
+    @Override
+    public List<String> findMatchingUsers(String title) {
+        return sqlSession.selectList(namespace + ".findMatchingUsers", title);
+    }
 }

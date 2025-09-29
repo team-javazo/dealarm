@@ -3,6 +3,10 @@ package kr.co.dong.member;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
+import kr.co.dong.sms.SmsDTO;
+
 public interface MemberDAO {
     void insertMember(MemberDTO member);
     int idCheck(String id);
@@ -23,4 +27,8 @@ public interface MemberDAO {
     int deleteUser(String id);
     int deleteadmin(String id);
     int activeUser(String id);
+    
+ // userId 기준으로 사용자 정보를 조회
+    // (전화번호, 알림 설정 상태 등 가져오기 위해 사용)
+    SmsDTO findUserById(@Param("id") String userId);
 }
