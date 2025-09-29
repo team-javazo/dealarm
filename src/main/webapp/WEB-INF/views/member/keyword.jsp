@@ -161,9 +161,7 @@
 					loadKeywords(); // 키워드 리스트 불러오기
 				});
 			</script>
-			<%@ include file="/WEB-INF/views/include/footer.jsp"%>
-		</div>
-	</div>
+
 
 	<!-- =================[ end]============ -->
 	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
