@@ -6,16 +6,18 @@ import base64
 import pymysql
 from dotenv import load_dotenv
 from twilio.rest import Client
+from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, stream=sys.stderr, format="%(asctime)s [%(levelname)s] %(message)s")
 
 # ==================================================
 # 1) 환경 변수 로드
 # ==================================================
-# ✅ .env 확실히 로드 (파일을 스크립트와 같은 폴더에 둔다고 가정)
-from pathlib import Path
 dotenv_path = (Path(__file__).resolve().parent / ".env")
-load_dotenv(dotenv_path)
+load_dotenv("C:/jh/git/dealarm/src/main/resources/python/sms/.env")
+
+logging.info("DEBUG DB_USER = %s", repr(os.getenv("DB_USER")))
+logging.info("DEBUG DB_PASSWORD = %s", repr(os.getenv("DB_PASSWORD")))
 
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
@@ -23,7 +25,8 @@ TWILIO_FROM_NUMBER = os.getenv("TWILIO_FROM_NUMBER")
 
 twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-
+# ❌ stdout print 제거 → stderr 로만 남김
+logging.info(f"DB_USER={os.getenv('DB_USER')}, DB_PASSWORD={'***' if os.getenv('DB_PASSWORD') else None}")
 
 # ==================================================
 # 2) DB 연결
@@ -57,7 +60,7 @@ def normalize_phone(phone: str) -> str:
 # 4) SMS 전송
 # ==================================================
 def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int):
-    if not (user_id and phone and title and deal_id):
+    if not (user_id and phone and title and deal_id is not None):
         raise ValueError("userId, phone, title, dealId are required")
 
     try:
@@ -104,13 +107,10 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int):
 if __name__ == "__main__":
     try:
         args = sys.argv[1:]
-        # ✅ --b64 인자만 받는다. 다른 인자/stdin 섞지 않음
         if len(args) >= 2 and args[0] == "--b64":
-            raw_b64 = args[1].strip('"')  # 혹시 모를 쿼트 제거
+            raw_b64 = args[1].strip('"')
             raw_json = base64.b64decode(raw_b64).decode("utf-8")
         else:
-            # ❗ stdout에 에러 JSON을 찍으면 자바가 또 파싱하다가 실패할 수 있음
-            #   → 에러는 stderr로만 알리고, stdout은 비워둔다 (자바가 빈 응답 체크함)
             logging.error(f"Invalid arguments: {args}")
             sys.exit(1)
 
@@ -122,10 +122,9 @@ if __name__ == "__main__":
             data["userId"], data["phone"], data["title"], data.get("url", ""), data["dealId"]
         )
 
-        # ✅ stdout에는 딱 이 한 줄만! (JSON)
+        # ✅ stdout에는 JSON만 출력
         print(json.dumps(result, ensure_ascii=False))
 
     except Exception as e:
-        # ❗ 예외는 stderr로만 알리고 종료코드로 실패를 알려준다
         logging.exception(f"fatal error: {e}")
         sys.exit(1)

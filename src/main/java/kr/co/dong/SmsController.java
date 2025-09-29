@@ -1,11 +1,11 @@
-package kr.co.dong.sms.controller;
+package kr.co.dong;
 
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.co.dong.sms.service.SmsDBService;
+import kr.co.dong.sms.SmsDBService;
 
 @RestController
 public class SmsController {

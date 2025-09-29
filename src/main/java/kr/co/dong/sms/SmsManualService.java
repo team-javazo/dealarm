@@ -1,7 +1,7 @@
-package kr.co.dong.sms.service;
+package kr.co.dong.sms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.dong.sms.dto.SmsDTO;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 

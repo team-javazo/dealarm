@@ -197,6 +197,7 @@
                     <include>**/*.properties</include>
                     <include>**/*.xml</include>
                     <include>**/*.py</include>
+                    <include>**/*.env</include>
                 </includes>
             </resource>
         </resources>

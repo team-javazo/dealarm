@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.co.dong.member.MemberDAO">
+<mapper namespace="kr.co.dong.mappers.MemberMapper">
 
 	<!-- 로그인 -->
 	<select id="login" parameterType="kr.co.dong.member.MemberDTO"
@@ -218,4 +218,13 @@
 	<delete id="deleteadmin" parameterType="String">
 	    delete from users WHERE id = #{id}
 	</delete>
+	
+	<!-- userId 기준으로 사용자 조회 -->
+	<select id="findUserById" parameterType="string" resultType="kr.co.dong.sms.SmsDTO"> 
+	    SELECT id AS userId, phone, notification 
+	    FROM users 
+	    WHERE id = #{id} 
+	</select>
+
+    
 </mapper>

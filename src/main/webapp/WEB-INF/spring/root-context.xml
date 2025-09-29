@@ -33,13 +33,20 @@
     <!-- MyBatis -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <!-- configLocation 제거: mapperLocations만 사용 -->
-        <property name="mapperLocations" value="classpath:mappers/**/*.xml"/>
+        <!-- Mapper XML 위치 -->
+        <property name="mapperLocations" value="classpath:mappers/*.xml"/>
     </bean>
 
     <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
         <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
     </bean>
+    
+    <!-- MyBatis Mapper 인터페이스 자동 인식 
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="kr.co.dong.UserKeyword,kr.co.dong.member"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    -->
 
     <!-- Service/DAO 스캔 (Controller 제외) -->
     <context:component-scan base-package="kr.co.dong">
@@ -48,8 +55,6 @@
         <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
     
-    
-
     <!-- 스케줄러 설정 -->
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="5"/>

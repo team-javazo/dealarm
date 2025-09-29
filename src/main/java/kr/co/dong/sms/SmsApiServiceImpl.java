@@ -1,4 +1,4 @@
-package kr.co.dong.sms.service;
+package kr.co.dong.sms;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -9,8 +9,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import kr.co.dong.sms.dto.SmsDTO;
 
 /** DB기반 자동 발송 → Python(stdin b64) 호출 */
 @Service

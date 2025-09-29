@@ -1,7 +1,6 @@
-package kr.co.dong.sms.service;
+package kr.co.dong.sms;
 
 import java.util.Map;
-import kr.co.dong.sms.dto.SmsDTO;
 
 //SMS 발송 서비스 인터페이스
 public interface SmsApiService {

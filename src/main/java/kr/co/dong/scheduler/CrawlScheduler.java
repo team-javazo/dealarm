@@ -7,7 +7,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import kr.co.dong.sms.service.SmsDBService;
+import kr.co.dong.sms.SmsDBService;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
