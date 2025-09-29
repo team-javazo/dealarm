@@ -71,9 +71,6 @@ while not stop_flag:
                 print("📛 오래된 게시글 감지됨 → 크롤링 종료")
                 break
 
-            # 수집일
-            created_at = today.strftime("%Y-%m-%d %H:%M:%S")
-
             # 추천수 계산
             rec_tag = item.select_one("td.baseList-rec")
             rec_text = rec_tag.get_text(strip=True) if rec_tag else "0"
@@ -90,13 +87,26 @@ while not stop_flag:
                 except:
                     rec_score = 0
 
+            # 섬네일 이미지 추출
+            img_tag = item.select_one("img")
+            img_url = img_tag['src'] if img_tag and 'src' in img_tag.attrs else None
+
+            # ✅ ?t= 파라미터 제거
+            if img_url:
+                img_url = img_url.split("?")[0]
+            if img_url:
+                img_url = img_url.split("?")[0]
+                if img_url.startswith("//"):
+                    img_url = "https:" + img_url
+
             deal = {
                 "title": title,
                 "url": url,
                 "price": price,
                 "site": site,
                 "posted_at": posted_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "likes": rec_score
+                "likes": rec_score,
+                "img": img_url
             }
 
             print(deal)
@@ -108,7 +118,7 @@ while not stop_flag:
 
     page += 1
 
-
+# 저장
 try:
     with open(os.path.join(save_dir, "ppomppu_crawling.json"), "w", encoding="utf-8") as f:
         json.dump(deals, f, ensure_ascii=False, indent=2)
