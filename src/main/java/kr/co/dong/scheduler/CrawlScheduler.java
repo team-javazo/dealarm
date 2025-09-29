@@ -99,6 +99,7 @@ public class CrawlScheduler {
                 System.out.println("사이트: " + deal.get("site"));
                 System.out.println("게시일: " + deal.get("posted_at"));
                 System.out.println("추천수: " + deal.get("likes"));
+                System.out.println("이미지: " + deal.get("img"));
                 System.out.println("----------------------------");
             }
             
@@ -124,6 +125,7 @@ public class CrawlScheduler {
                 System.out.println("사이트: " + deal.get("site"));
                 System.out.println("게시일: " + deal.get("posted_at"));
                 System.out.println("추천수: " + deal.get("likes"));
+                System.out.println("이미지: " + deal.get("img"));
                 System.out.println("----------------------------");
             }
             
