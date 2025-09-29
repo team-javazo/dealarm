@@ -76,6 +76,7 @@
 			                </div>
 			
 			                <div class="mb-3">
+
 			                    <label for="gender" class="form-label">성별</label><br>						
 									<div class="form-check form-check-inline">
 			                        <input class="form-check-input" type="radio" name="gender" value="male">
@@ -86,7 +87,8 @@
 			                        <label class="form-check-label">여자</label>
 			                    </div>
 			                </div>
-			
+
+
 			                <div class="mb-3">
 			                    <label for="notification" class="form-label">수신동의</label><br>
 			                        <div class="form-check form-check-inline">

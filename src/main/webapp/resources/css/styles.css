@@ -91,6 +91,73 @@
     scroll-behavior: smooth;
   }
 }
+/* 홈뷰 전체 */
+.homeView {
+    width: 100vw;
+    height: 100vh;
+    background: url("../images/home-bg.jpg") no-repeat center center / cover;
+    position: relative;  /* 하위 절대 위치 기준 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    color: white;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+
+    display: flex;
+    flex-direction: column;  
+    justify-content: flex-start; /* 상단 문구 위치만 컨트롤 */
+    align-items: center;     
+    text-align: center;
+}
+
+/* 글자 컨테이너 - 상단 위치 조절 */
+.homeView .homeText {
+    margin-top: 100px; /* 상단 문구 위치 조절 */
+}
+
+/* 버튼 컨테이너 - 하단 위치 조절 */
+.homeView .homeButton {
+    position: absolute;   /* 화면 기준 절대 위치 */
+    bottom: 150px;         /* 하단에서 위쪽 거리 조절 */
+    left: 50%;
+    transform: translateX(-50%); /* 가로 중앙 정렬 */
+}
+
+
+/* 버튼 스타일 */
+.homeView a {
+    display: inline-block;
+    font-weight: bold;   /* 두껍게 */
+	font-style: italic;  /* 기울임 */
+	text-transform: uppercase; /* 모두 대문자 */
+	letter-spacing: 2px; /* 글자 사이 간격 */
+	line-height: 1.5;    /* 줄 높이 */
+    padding: 10px 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    background-color: rgba(63,255,0,0.72);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+a:hover {
+    color: orange;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+    transform: scale(1.05); /* 약간 커지게 */
+    transition: all 0.3s;
+}
+/* 자동 이동 안내 문구 */
+.homeView #autoRedirectMsg {
+    position: absolute;
+    bottom: 110px;       /* 버튼 위쪽 거리 고정 */
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 16px;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
 
 /* 상단 네비바 최대 폭 + 왼쪽 정렬 */
 .navbar .container {
@@ -100,7 +167,40 @@
     padding-left: 15px;  /* 필요하면 좌측 여백 유지 */
     padding-right: 15px; /* 필요하면 우측 여백 유지 */
 }
+/* 좌측 네비바 드롭다운 메뉴 */
+#myKeywordDropdown + .dropdown-menu {
+	min-width: unset !important; /* 기본값 해제 */
+	width: 230px !important;     /* 원하는 크기 (여기서 키워드 늘려가면 됨) */
+	max-width: none !important;  /* 제한 없애기 */
+    max-height: 900px;  /* 최대 높이 */
+    overflow-y: auto;   /* 내용 넘치면 스크롤 */
+	position: absolute;  /* Popper와 무관하게 */
+    top: 0px;           /* 부모 메뉴 바로 아래로 */
+    left: 0;             /* 왼쪽 정렬 */
+    width: 250px;        /* 원하는 폭 */
+}
 
+#keywordList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#keywordList li .deleteBtn {
+    margin-left: 10px; /* 키워드 오른쪽에 여백 */
+}
+/* 키워드 삭제 X자 */
+.deleteBtn {
+    font-size: 14px;
+    color: red;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+.deleteBtn:hover {
+    color: darkred;
+}
 /*============== 배너 + 좌우측 컨테이너=================== */
 
 .header-img {

@@ -30,6 +30,7 @@ public class CrawlScheduler {
     
     // 5분마다 실행
     @Scheduled(fixedDelay = 300000)
+
     public void runCrawlerAndReadJson() {
         try {
             //1. 파이썬 실행
