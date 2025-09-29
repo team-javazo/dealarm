@@ -41,6 +41,23 @@ public class HomeController {
 		
 		return "home";
 	}
+	@RequestMapping(value = "/include/footer", method = RequestMethod.GET)
+	public String footer(Locale locale, Model model) {
+		logger.info("Welcome home! The client locale is {}.", locale);
+		
+		Date date = new Date();
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
+		
+		String formattedDate = dateFormat.format(date);
+		
+		model.addAttribute("serverTime", formattedDate );
+		
+		logger.info("import->git->clone URI->주소지정");
+		
+		return "include/footer";
+	}
+	
+	
 	@GetMapping(value = "/Update")
 	public String Update() {
 		return "Update";

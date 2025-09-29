@@ -22,6 +22,7 @@ import javax.inject.Inject;
 @Component
 public class CrawlScheduler {
 
+
 	@Inject
 	private DealSummaryService dealSummaryService;
 
