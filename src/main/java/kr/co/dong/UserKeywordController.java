@@ -3,6 +3,8 @@ package kr.co.dong;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 
 import javax.inject.Inject;
 import org.springframework.stereotype.Controller;
@@ -57,8 +59,11 @@ public class UserKeywordController {
     @ResponseBody
     public Map<String, Object> getKeywords(@RequestParam String userId) {
         List<UserKeywordDTO> keywords = userKeywordService.getKeywords(userId);
+      
         Map<String, Object> result = new HashMap<>();
         result.put("keywords", keywords);
         return result;  // ✅ JSON 형태로 반환됨
     }
+    
+
 }

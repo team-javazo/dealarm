@@ -179,6 +179,28 @@ a:hover {
     left: 0;             /* 왼쪽 정렬 */
     width: 250px;        /* 원하는 폭 */
 }
+
+#keywordList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#keywordList li .deleteBtn {
+    margin-left: 10px; /* 키워드 오른쪽에 여백 */
+}
+/* 키워드 삭제 X자 */
+.deleteBtn {
+    font-size: 14px;
+    color: red;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+.deleteBtn:hover {
+    color: darkred;
+}
 /*============== 배너 + 좌우측 컨테이너=================== */
 
 .header-img {
