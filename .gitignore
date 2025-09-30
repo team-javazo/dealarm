@@ -17,6 +17,7 @@ local.properties
 .classpath
 .project
 .settings/org.eclipse.jdt.core.prefs
+.env
 /src/main/resources/json/
 
 

@@ -12,8 +12,11 @@
     <h2>발송 결과</h2>
 
     <c:if test="${result.error != null}">
-        <p style="color:red;">❌ 오류: ${result.error}</p>
-    </c:if>
+	    <p style="color:red;">❌ 오류: ${result.error}</p>
+	    <c:if test="${result.details != null}">
+	        <pre style="color:gray;">${result.details}</pre>
+    	</c:if>
+	</c:if>
 
     <c:if test="${result.result == 'sent'}">
         <p style="color:green;">✅ 성공적으로 전송되었습니다.</p>

@@ -7,7 +7,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import kr.co.dong.sms.SmsDTO;
 
 @Repository
 public class MemberDAOImpl implements MemberDAO {
@@ -15,7 +19,7 @@ public class MemberDAOImpl implements MemberDAO {
 	@Inject
 	private SqlSession sqlSession;
 
-	private static final String namespace = "kr.co.dong.member.MemberDAO";
+	private static final String namespace = "kr.co.dong.mappers.MemberMapper";
 
 	// 중복 체크 - 휴대폰 번호
     @Override
@@ -109,7 +113,15 @@ public class MemberDAOImpl implements MemberDAO {
 	  return sqlSession.update(namespace + ".activeUser", id);
 	}
 
+	@Autowired
+    public MemberDAOImpl(SqlSessionTemplate sqlSession) {
+        this.sqlSession = sqlSession;
+    }
 
+    @Override
+    public SmsDTO findUserById(String userId) {
+        return sqlSession.selectOne(namespace + ".findUserById", userId);
+    }
 
 
 
