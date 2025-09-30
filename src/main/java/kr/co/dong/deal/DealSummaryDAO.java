@@ -2,14 +2,11 @@ package kr.co.dong.deal;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.co.dong.sms.SmsDTO;
 
-@Mapper
 public interface DealSummaryDAO {
-	
     void insertDeal(DealSummaryDTO dto);
 
     boolean existsByUrl(String url); // 중복 방지

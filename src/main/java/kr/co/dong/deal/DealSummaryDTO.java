@@ -105,7 +105,7 @@ public class DealSummaryDTO {
 
 	@Override
 	public String toString() {
-		return "DealSummaryDTO2 [id=" + id + ", title=" + title + ", url=" + url + ", price=" + price + ", site=" + site
+		return "DealSummaryDTO [id=" + id + ", title=" + title + ", url=" + url + ", price=" + price + ", site=" + site
 				+ ", postedAt=" + postedAt + ", createdAt=" + createdAt + ", likes=" + likes + ", img=" + img + "]";
 	}
 

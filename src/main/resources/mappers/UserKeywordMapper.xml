@@ -12,13 +12,14 @@
         VALUES (#{userId}, #{keyword})
     </insert>
 
-    <!-- 사용자별 키워드 조회 -->
-    <select id="findByUserId" parameterType="String"
-        resultType="kr.co.dong.UserKeyword.UserKeywordDTO">
-        SELECT id, user_id AS userId , keyword, created_at AS createdAt
-        FROM user_keywords
-        WHERE user_id = #{userId}
-    </select>
+	<!-- 사용자별 키워드 조회 -->
+	<select id="findByUserId" parameterType="String"
+		resultType="kr.co.dong.UserKeyword.UserKeywordDTO">
+		SELECT id, user_id AS userId , keyword, created_at AS createdAt
+		FROM user_keywords
+		WHERE user_id = #{userId}
+		order by created_at desc;
+	</select>
 
     <!-- 키워드 중복 체크 -->
     <select id="countKeyword"
