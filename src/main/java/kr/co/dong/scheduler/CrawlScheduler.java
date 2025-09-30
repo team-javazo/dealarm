@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import kr.co.dong.deal.DealSummaryService;
-import kr.co.dong.deal.DealSummaryDTO2;
+import kr.co.dong.deal.DealSummaryDTO;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -68,7 +68,7 @@ public class CrawlScheduler {
 			for (Object obj : deals) {
 				JSONObject deal = (JSONObject) obj;
 
-				DealSummaryDTO2 dto = new DealSummaryDTO2();
+				DealSummaryDTO dto = new DealSummaryDTO();
 				dto.setTitle((String) deal.get("title"));
 				dto.setUrl((String) deal.get("url"));
 				dto.setPrice(safeParseInt(deal.get("price")));
@@ -119,7 +119,7 @@ public class CrawlScheduler {
 			for (Object obj : deals2) {
 				JSONObject deal2 = (JSONObject) obj;
 
-				DealSummaryDTO2 dto = new DealSummaryDTO2();
+				DealSummaryDTO dto = new DealSummaryDTO();
 				dto.setTitle((String) deal2.get("title"));
 				dto.setUrl((String) deal2.get("url"));
 				dto.setPrice(safeParseInt(deal2.get("price")));
