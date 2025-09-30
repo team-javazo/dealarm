@@ -2,7 +2,10 @@ package kr.co.dong;
 
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -19,6 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import kr.co.dong.member.MemberDTO;
 import kr.co.dong.member.MemberService;
+import kr.co.dong.news.NaverNewsdto;
+import kr.co.dong.news.NaverNewsService;
+import kr.co.dong.UserKeyword.UserKeywordDTO;
+import kr.co.dong.UserKeyword.UserKeywordService;
+
 
 @Controller
 @RequestMapping("/member")
@@ -26,6 +34,12 @@ public class MemberController {
 
 	@Inject
 	private MemberService memberService;
+	@Inject
+	private NaverNewsService naverNewsService;
+
+	@Inject
+	private UserKeywordService userKeywordService;
+
 
 	// 키워드 페이지 이동
 	@GetMapping("/keyword")
@@ -86,19 +100,47 @@ public class MemberController {
 	// 로그인 처리
 	@PostMapping("/login")
 	public String login(MemberDTO member, HttpSession session, Model model) {
-		MemberDTO loginUser = memberService.login(member);
+	    MemberDTO loginUser = memberService.login(member);
 
-		if (loginUser != null) {
-//            session.setAttribute("loginUser", loginUser);
-			session.setAttribute("id", loginUser.getId());
-			session.setAttribute("role", loginUser.getRole());
-			session.setAttribute("name", loginUser.getName());
+	    if (loginUser != null) {
+	        // 1. 세션 저장
+	        session.setAttribute("id", loginUser.getId());
+	        session.setAttribute("role", loginUser.getRole());
+	        session.setAttribute("name", loginUser.getName());
 
-			return "redirect:/main"; // 로그인 성공 → 홈으로
-		} else {
-			model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
-			return "member/login"; // 실패 → 다시 로그인 페이지
-		}
+	        // 2. 로그인 직후 키워드 뉴스 가져오기
+	        Map<String, List<NaverNewsdto.NewsItem>> keywordNewsMap = new LinkedHashMap<>();
+	        Set<String> addedLinks = new HashSet<>();
+
+	        try {
+	            List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
+
+	            for (UserKeywordDTO dto : keywordDTOs) {
+	                NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
+	                List<NaverNewsdto.NewsItem> items = newsResponse.getItems();
+
+	                // 중복 링크 제거
+	                items.removeIf(n -> addedLinks.contains(n.getLink()));
+	                items = items.size() > 5 ? items.subList(0, 5) : items;
+	                items.forEach(n -> addedLinks.add(n.getLink()));
+
+	                keywordNewsMap.put(dto.getKeyword(), items);
+	            }
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+
+	        // ✅ 헤더에서도 접근 가능하도록 세션에 저장
+	        session.setAttribute("keywordNewsMap", keywordNewsMap);
+
+	        // 3. 로그인 후 메인 페이지로 이동
+	        return "main";
+
+	    } else {
+	        model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
+	        return "member/login"; // 로그인 실패
+	    }
 	}
 
 	// 로그아웃 처리
