@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -81,42 +82,70 @@ public class HomeController {
 	@GetMapping(value = "/Update")
 	public String Update() {
 		return "Update";
+		
 	}
 	@GetMapping("/main")
-	public String main(HttpSession session, Model model) throws Exception {
-	    String userId = (String) session.getAttribute("id");
-	    if(userId != null) {
-	        List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(userId);
-	        Set<String> addedLinks = new HashSet<>();
-	        List<Map<String, String>> latestNews = new ArrayList<>();
+	public String main(HttpSession session) {
+	    Object userId = session.getAttribute("id");
 
-	        for(UserKeywordDTO dto : keywordDTOs){
-	            NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
-	            for(NaverNewsdto.NewsItem item : newsResponse.getItems()){
-	                if(addedLinks.contains(item.getLink())) continue;
-	                addedLinks.add(item.getLink());
+	    List<Map<String, String>> latestNews = new ArrayList<>();
+	    Set<String> addedLinks = new HashSet<>();
 
-	                Map<String,String> newsMap = new HashMap<>();
-	                newsMap.put("title", item.getTitle());
-	                newsMap.put("pubDate", item.getPubDate());
-	                newsMap.put("keyword", dto.getKeyword());
-	                newsMap.put("link", item.getLink());
+	    try {
+	        if (userId != null) {
+	            // 로그인 O → 유저 키워드 뉴스
+	            List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords((String) userId);
 
-	                latestNews.add(newsMap);
+	            for (UserKeywordDTO dto : keywordDTOs) {
+	                NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
+	                for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
+	                    if (addedLinks.contains(item.getLink())) continue;
+	                    addedLinks.add(item.getLink());
+
+	                    Map<String, String> newsMap = new HashMap<>();
+	                    newsMap.put("title", item.getTitle());
+	                    newsMap.put("pubDate", item.getPubDate());
+	                    newsMap.put("keyword", dto.getKeyword());
+	                    newsMap.put("link", item.getLink());
+	                    latestNews.add(newsMap);
+	                }
+	            }
+	        } else {
+	            // 로그인 X → 최신 트렌드 키워드 뉴스
+	            String[] trendingKeywords = {
+	                "인공지능", "전기차", "메타버스", "환경", "건강",
+	                "스타트업", "여행", "스마트폰", "K-콘텐츠", "요리"
+	            };
+
+	            for (String keyword : trendingKeywords) {
+	                NaverNewsdto newsResponse = naverNewsService.searchNews(keyword);
+	                for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
+	                    if (addedLinks.contains(item.getLink())) continue;
+	                    addedLinks.add(item.getLink());
+
+	                    Map<String, String> newsMap = new HashMap<>();
+	                    newsMap.put("title", item.getTitle());
+	                    newsMap.put("pubDate", item.getPubDate());
+	                    newsMap.put("keyword", keyword);
+	                    newsMap.put("link", item.getLink());
+	                    latestNews.add(newsMap);
+	                }
 	            }
 	        }
-
-	        latestNews = latestNews.stream()
-	                               .sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
-	                               .limit(10)
-	                               .toList();
-
-	        model.addAttribute("latestNews", latestNews);
+	    } catch (Exception e) {
+	        e.printStackTrace();
 	    }
 
-	    return "main";
+	    // 최신순 정렬 후 10개만
+	    latestNews = latestNews.stream()
+	                           .sorted((a, b) -> b.get("pubDate").compareTo(a.get("pubDate")))
+	                           .limit(16)
+	                           .toList();
+
+	    session.setAttribute("latestNews", latestNews);
+
+	    return "main"; // main.jsp
 	}
 
-	
 	
 }

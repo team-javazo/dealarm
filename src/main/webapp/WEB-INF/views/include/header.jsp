@@ -24,37 +24,26 @@
         최신 뉴스
     </div>
 
-    <c:choose>
-        <c:when test="${not empty sessionScope.id}">
-            <c:if test="${not empty sessionScope.latestNews}">
-                <ul style="list-style:none; padding-left:0; margin-top:0;">
-                    <c:forEach var="item" items="${sessionScope.latestNews}">
-                        <li style="margin-bottom:8px;">
-                            <a href="${item.link}" target="_blank" style="text-decoration:none; color:#2980b9;">
-                                <c:out value="${item.title}" escapeXml="false"/>
-                            </a>
-                            <div style="font-size:11px; color:gray;">
-							    ${item.pubDate} | 키워드: <span style="font-weight:bold; color:black;">${item.keyword}</span>
-							</div>
+    <c:if test="${not empty sessionScope.latestNews}">
+        <ul style="list-style:none; padding-left:0; margin-top:0;">
+            <c:forEach var="item" items="${sessionScope.latestNews}">
+                <li style="margin-bottom:8px;">
+                    <a href="${item.link}" target="_blank" style="text-decoration:none; color:#2980b9;">
+                        <c:out value="${item.title}" escapeXml="false"/>
+                    </a>
+                    <div style="font-size:11px; color:gray;">
+                        ${item.pubDate} | 키워드: <span style="font-weight:bold; color:black;">${item.keyword}</span>
+                    </div>
+                </li>
+            </c:forEach>
+        </ul>
+    </c:if>
 
-                        </li>
-                    </c:forEach>
-                </ul>
-            </c:if>
-
-            <c:if test="${empty sessionScope.latestNews}">
-                <div style="margin-top:5px; color:gray; text-align:center;">
-                    최신 뉴스가 없습니다.
-                </div>
-            </c:if>
-        </c:when>
-
-        <c:otherwise>
-            <div style="margin-top:5px; color:gray; text-align:center;">
-                로그인 후 최신 뉴스를 확인할 수 있습니다.
-            </div>
-        </c:otherwise>
-    </c:choose>
+    <c:if test="${empty sessionScope.latestNews}">
+        <div style="margin-top:5px; color:gray; text-align:center;">
+            최신 뉴스가 없습니다.
+        </div>
+    </c:if>
 </div>
 
 
