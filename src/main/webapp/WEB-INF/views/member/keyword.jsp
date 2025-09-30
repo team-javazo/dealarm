@@ -162,8 +162,7 @@
 					loadKeywords(); // 키워드 리스트 불러오기
 				});
 			</script>
-		</c:otherwise>
-	</c:choose>
+
             <%@ include file="/WEB-INF/views/include/footer.jsp"%>
         </div>
     </div>
