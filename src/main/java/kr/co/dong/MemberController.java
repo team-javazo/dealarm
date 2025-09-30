@@ -1,6 +1,7 @@
 package kr.co.dong;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -100,48 +101,55 @@ public class MemberController {
 	// 로그인 처리
 	@PostMapping("/login")
 	public String login(MemberDTO member, HttpSession session, Model model) {
+
 	    MemberDTO loginUser = memberService.login(member);
 
 	    if (loginUser != null) {
-	        // 1. 세션 저장
 	        session.setAttribute("id", loginUser.getId());
 	        session.setAttribute("role", loginUser.getRole());
 	        session.setAttribute("name", loginUser.getName());
 
-	        // 2. 로그인 직후 키워드 뉴스 가져오기
-	        Map<String, List<NaverNewsdto.NewsItem>> keywordNewsMap = new LinkedHashMap<>();
+	        // 키워드 뉴스 최신 10개 가져오기
+	        List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
 	        Set<String> addedLinks = new HashSet<>();
+	        List<Map<String, String>> latestNews = new ArrayList<>();
 
 	        try {
-	            List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
-
 	            for (UserKeywordDTO dto : keywordDTOs) {
 	                NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
-	                List<NaverNewsdto.NewsItem> items = newsResponse.getItems();
 
-	                // 중복 링크 제거
-	                items.removeIf(n -> addedLinks.contains(n.getLink()));
-	                items = items.size() > 5 ? items.subList(0, 5) : items;
-	                items.forEach(n -> addedLinks.add(n.getLink()));
+	                for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
+	                    if (addedLinks.contains(item.getLink())) continue;
+	                    addedLinks.add(item.getLink());
 
-	                keywordNewsMap.put(dto.getKeyword(), items);
+	                    Map<String, String> newsMap = new HashMap<>();
+	                    newsMap.put("title", item.getTitle());
+	                    newsMap.put("pubDate", item.getPubDate());
+	                    newsMap.put("keyword", dto.getKeyword());
+	                    newsMap.put("link", item.getLink());
+
+	                    latestNews.add(newsMap);
+	                }
 	            }
-
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 
-	        // ✅ 헤더에서도 접근 가능하도록 세션에 저장
-	        session.setAttribute("keywordNewsMap", keywordNewsMap);
+	        // 최신순 정렬 후 X개만
+	        latestNews = latestNews.stream()
+	                               .sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
+	                               .limit(16)
+	                               .toList();
 
-	        // 3. 로그인 후 메인 페이지로 이동
-	        return "main";
+	        session.setAttribute("latestNews", latestNews);
 
+	        return "main"; // 메인 페이지
 	    } else {
 	        model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
-	        return "member/login"; // 로그인 실패
+	        return "member/login";
 	    }
 	}
+
 
 	// 로그아웃 처리
 	@GetMapping("/logout")
