@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/** DB기반 자동 발송 → Python(stdin b64) 호출 */
+/** DB기반 자동 발송 → Python(--b64) 호출 */
 @Service
 public class SmsApiServiceImpl implements SmsApiService {
 
@@ -45,25 +45,23 @@ public class SmsApiServiceImpl implements SmsApiService {
 
     @Override
     public Map<String, Object> sendSms(SmsDTO dto) {
+        System.out.println("========== 📩 sendSMS 시작 ==========");
+
         try {
+            // 1) DTO → JSON 직렬화
             String json = mapper.writeValueAsString(dto);
-            String b64  = Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
+
+            // 2) Base64 인코딩
+            String b64 = Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
             System.out.println("👉 [Api] JSON(len=" + json.length() + ") → b64(len=" + b64.length() + ")");
 
-            ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT, "--b64-stdin");
+            // 3) Python 호출 (manual 방식과 동일)
+            ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT, "--b64", b64);
             pb.environment().put("PYTHONIOENCODING", "utf-8");
 
             Process process = pb.start();
 
-            // ✅ stdin으로 base64 전달
-            try (BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
-                writer.write(b64);
-                writer.newLine();
-                writer.flush();
-            }
-
-            // ✅ stdout/stderr 분리해서 동시에 읽기
+            // 4) stdout/stderr 분리해서 동시에 읽기
             StringBuilder stdout = new StringBuilder();
             StringBuilder stderr = new StringBuilder();
             Thread tOut = new Thread(new StreamGobbler(process.getInputStream(), stdout));
@@ -76,6 +74,7 @@ public class SmsApiServiceImpl implements SmsApiService {
             String out = stdout.toString().trim();
             String err = stderr.toString().trim();
 
+            // 5) 에러 처리
             if (exitCode != 0) {
                 return Map.of("error", "Python script failed", "stderr", err);
             }
@@ -83,10 +82,10 @@ public class SmsApiServiceImpl implements SmsApiService {
                 return Map.of("error", "Python returned empty output", "stderr", err);
             }
 
+            // 6) Python → JSON 파싱
             try {
                 return mapper.readValue(out, Map.class);
             } catch (Exception parseEx) {
-                // JSON 파싱 실패시 stderr도 함께 반환
                 return Map.of("error", "Invalid JSON from Python", "stdout", out, "stderr", err);
             }
 

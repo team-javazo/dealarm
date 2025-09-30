@@ -8,6 +8,8 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import kr.co.dong.sms.SmsDTO;
+
 @Repository
 public class UserKeywordDAOImpl implements UserKeywordDAO {
 
@@ -48,7 +50,7 @@ public class UserKeywordDAOImpl implements UserKeywordDAO {
     }
 
     @Override
-    public List<String> findMatchingUsers(String title) {
+    public List<SmsDTO> findMatchingUsers(String title) {
         return sqlSession.selectList(namespace + ".findMatchingUsers", title);
     }
 }

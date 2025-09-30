@@ -2,7 +2,7 @@ package kr.co.dong.deal;
 
 import java.util.Date;
 
-public class DealSummaryDTO2 {
+public class DealSummaryDTO {
 	private int id;
 	private String title;
 	private String url;
@@ -13,7 +13,7 @@ public class DealSummaryDTO2 {
 	private int likes;
 	private String img;
 
-	public DealSummaryDTO2() {
+	public DealSummaryDTO() {
 		// 기본 생성자 필수 (MyBatis 매핑 시 필요)
 	}
 
@@ -89,7 +89,7 @@ public class DealSummaryDTO2 {
 		this.likes = likes;
 	}
 
-	public DealSummaryDTO2(int id, String title, String url, int price, String site, Date postedAt, Date createdAt,
+	public DealSummaryDTO(int id, String title, String url, int price, String site, Date postedAt, Date createdAt,
 			int likes, String img) {
 		super();
 		this.id = id;

@@ -37,10 +37,13 @@
     </delete>
 
     <!-- 제목(title)에 사용자 키워드가 포함되면 해당 user_id 반환 -->
-    <select id="findMatchingUsers" parameterType="string" resultType="string">
-        SELECT DISTINCT uk.user_id
-        FROM user_keywords uk
-        WHERE LOWER(#{title}) LIKE CONCAT('%', LOWER(uk.keyword), '%')
+    <select id="findMatchingUsers" parameterType="string" resultType="kr.co.dong.sms.SmsDTO">
+        SELECT DISTINCT 
+        	uk.user_id AS userId,
+        	uk.keyword AS keyword
+	    FROM user_keywords uk
+	    WHERE LOWER(uk.keyword) IS NOT NULL
+	      AND LOWER(#{title}) LIKE CONCAT('%', LOWER(uk.keyword), '%')
     </select>
 
 </mapper>
