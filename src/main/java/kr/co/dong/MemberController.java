@@ -2,6 +2,7 @@ package kr.co.dong;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.scribejava.core.model.OAuth2AccessToken;
+
 import kr.co.dong.member.MemberDTO;
 import kr.co.dong.member.MemberService;
 import kr.co.dong.news.NaverNewsdto;
@@ -27,10 +32,20 @@ import kr.co.dong.news.NaverNewsService;
 import kr.co.dong.UserKeyword.UserKeywordDTO;
 import kr.co.dong.UserKeyword.UserKeywordService;
 
+import kr.co.dong.oauth.NaverLoginVO;
 
 @Controller
 @RequestMapping("/member")
 public class MemberController {
+	/* NaverLoginVO */
+	private NaverLoginVO naverLoginVO;
+	private String apiResult = null;
+	
+	@Autowired
+	private void setNaverLoginBO(NaverLoginVO naverLoginVO) {
+		this.naverLoginVO = naverLoginVO;
+	}
+	
 
    @Inject
    private MemberService memberService;
@@ -210,42 +225,6 @@ public class MemberController {
       return "member/userupdate";
    }
 
-   // 관리자 회원관리 전체 리스트
-   @RequestMapping("/members")
-   public String members(@RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage,
-                    Model model){
-      
-      int limit = 15;   // 페이지당 목록 수
-      int offset = (currentPage -1) * limit;
-      
-      // 검색조건 Map int형 따로 분리 object에서 안들어감
-      Map<String,Object> params = new HashMap<>();
-      params.put("limit", Integer.valueOf(limit));
-      params.put("offset", Integer.valueOf(offset));
-      
-      
-      int totalCount = memberService.memberCount(); // 총 회원 수
-      List<MemberDTO> list = memberService.allList(params); // 전체회원 목록
-      int searchMembersCount = memberService.searchMembersCount(params); // 검색 회원 수
-      
-      int totalPages = totalCount / limit;   // 정수 나눗셈 = 자동 소수점 버림
-       if(totalCount % limit != 0) {         // 나머지가 있으면 한 페이지 추가
-           totalPages += 1;
-       }
-       
-      if(currentPage > totalPages) currentPage = totalPages;
-      if(currentPage < 1) currentPage = 1; 
-      
-
-      model.addAttribute("list", list);
-      model.addAttribute("totalCount", totalCount);
-      model.addAttribute("searchCount", totalCount);   // 검색카운트
-      model.addAttribute("currentPage", currentPage);
-      model.addAttribute("totalPages", totalPages);
-      model.addAttribute("limit", limit);
-      
-      return "admin/members";
-   }
 
    // 관리자 회원검색 리스트
    @RequestMapping("/members_search")
@@ -432,5 +411,36 @@ public class MemberController {
       
    }
    
+
+	// 네이버 소셜 로그인
+	//로그인 첫 화면 요청 메소드
+	@GetMapping(value = "/oauthLogin")
+	public String login(Model model, HttpSession session) {
+		
+		/* 네이버아이디로 인증 URL을 생성하기 위하여 naverLoginBO클래스의 getAuthorizationUrl메소드 호출 */
+		String naverAuthUrl = naverLoginVO.getAuthorizationUrl(session);
+		
+		//네이버 
+		model.addAttribute("url", naverAuthUrl);
+
+		/* 생성한 인증 URL을 View로 전달 */
+		return "member/oauthLogin";
+	}
+	//네이버 로그인 성공시 callback호출 메소드
+	@GetMapping(value = "/naverSuccess")
+	public String callback(Model model, @RequestParam String code, @RequestParam String state, HttpSession session)
+			throws IOException {
+		
+		OAuth2AccessToken oauthToken;
+        oauthToken = naverLoginVO.getAccessToken(session, code, state);
+        //로그인 사용자 정보를 읽어온다.
+	    apiResult = naverLoginVO.getUserProfile(oauthToken);
+		model.addAttribute("result", apiResult);
+
+        /* 네이버 로그인 성공 페이지 View 호출 */
+		return "member/naverSuccess";
+	}
+	
+
 
 }
