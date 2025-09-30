@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import kr.co.dong.deal.DealSummaryDTO2;
+import kr.co.dong.deal.DealSummaryDTO;
 import kr.co.dong.deal.DealSummaryService;
 
 @Controller
@@ -24,7 +24,7 @@ public class DealSummaryController {
     @GetMapping("/search")
     @ResponseBody // JSON 응답이 필요 없다면 이거 빼도 돼요
     public String search(@RequestParam String keyword) {
-        List<DealSummaryDTO2> results = service.getDealsByKeyword(keyword);
+        List<DealSummaryDTO> results = service.getDealsByKeyword(keyword);
 
         System.out.println("===== 검색 키워드: " + keyword + " =====");
         if (results.isEmpty()) {
@@ -43,7 +43,7 @@ public class DealSummaryController {
     public Map<String, Object> getDealsByKeyword(@RequestParam String keyword) {
         Map<String, Object> result = new HashMap<>();
         try {
-            List<DealSummaryDTO2> deals = service.getDealsByKeyword(keyword);
+            List<DealSummaryDTO> deals = service.getDealsByKeyword(keyword);
 
             // ✅ 서버 콘솔에 출력
             System.out.println("===== 검색 키워드: " + keyword + " =====");

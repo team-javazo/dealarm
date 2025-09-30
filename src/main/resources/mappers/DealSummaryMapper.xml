@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.dong.deal.DealSummaryDAO">
+
+	<!-- 딜 저장 -->
+	<insert id="insertDeal"
+		parameterType="kr.co.dong.deal.DealSummaryDTO">
+		INSERT INTO project_db.deal_summary
+		(title, url, price, site, posted_at, created_at, likes, img)
+		VALUES (#{title}, #{url}, #{price}, #{site}, #{postedAt}, #{createdAt},
+		#{likes}, #{img})
+	</insert>
+
+	<!-- 중복 확인 -->
+	<select id="existsByUrl" parameterType="string"
+		resultType="boolean">
+		SELECT COUNT(*) > 0
+		FROM project_db.deal_summary
+		WHERE url = #{url}
+	</select>
+
+	<!-- 키워드 검색 -->
+	<select id="findDealsByKeyword" parameterType="string"
+		resultType="kr.co.dong.deal.DealSummaryDTO">
+		SELECT id, title, url, price, site, posted_at, created_at, likes
+		FROM project_db.deal_summary
+		WHERE title LIKE #{keyword}
+		ORDER BY posted_at DESC
+	</select>
+
+	<!-- deal_summary 전체 조회 -->
+	<select id="findAllDeals" resultType="kr.co.dong.sms.SmsDTO">
+		SELECT
+		deal_id AS dealId,
+		title AS title,
+		url AS url
+		FROM deal_summary
+	</select>
+
+</mapper>
