@@ -1,5 +1,8 @@
 package kr.co.dong.news;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +12,8 @@ import java.util.Set;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.dong.UserKeyword.UserKeywordDTO;
@@ -22,7 +27,7 @@ public class NaverNewsService {
 
     // Naver 뉴스 검색
     public NaverNewsdto searchNews(String query) throws Exception {
-        String url = "https://openapi.naver.com/v1/search/news.json?query=" + query;
+    	String url = "https://openapi.naver.com/v1/search/news.json?query=" + query;
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -63,4 +68,62 @@ public class NaverNewsService {
 
         return keywordNewsMap;
     }
+    public List<String> getRealTimeKeywords() {
+        String url = "https://openapi.naver.com/v1/search/real-time-keywords.json";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Naver-Client-Id", CLIENT_ID);
+        headers.set("X-Naver-Client-Secret", CLIENT_SECRET);
+
+        HttpEntity<String> entity = new HttpEntity<>("", headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        List<String> keywords = new ArrayList<>();
+        try {
+            JsonNode root = new ObjectMapper().readTree(response.getBody());
+            JsonNode items = root.path("items");
+            for (JsonNode item : items) {
+                keywords.add(item.path("keyword").asText());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return keywords;
+    }
+    public List<Map<String, String>> getNewsForKeywords(List<String> keywords) { 
+        List<Map<String, String>> latestNews = new ArrayList<>();
+        Set<String> addedLinks = new HashSet<>();
+
+        try {
+            for (String keyword : keywords) {
+                NaverNewsdto newsResponse = this.searchNews(keyword);
+                for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
+                    if (addedLinks.contains(item.getLink())) continue;
+                    addedLinks.add(item.getLink());
+
+                    Map<String, String> newsMap = new HashMap<>();
+                    newsMap.put("title", item.getTitle());
+                    newsMap.put("pubDate", item.getPubDate());
+                    newsMap.put("keyword", keyword);
+                    newsMap.put("link", item.getLink());
+
+                    latestNews.add(newsMap);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 최신순 정렬 후 10개만
+        latestNews = latestNews.stream()
+                .sorted((a, b) -> b.get("pubDate").compareTo(a.get("pubDate")))
+                .limit(10)
+                .toList();
+
+        return latestNews;
+    }
+
 }
