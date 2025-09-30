@@ -9,7 +9,6 @@ import kr.co.dong.sms.SmsDTO;
 
 import javax.inject.Inject;
 
-@Repository
 public class DealSummaryDAOImpl implements DealSummaryDAO {
     @Autowired
     private SqlSession sqlSession;
