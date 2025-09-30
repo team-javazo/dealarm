@@ -18,6 +18,7 @@
 		SELECT id, user_id AS userId , keyword, created_at AS createdAt
 		FROM user_keywords
 		WHERE user_id = #{userId}
+		order by created_at desc;
 	</select>
 
 	<select id="countKeyword"
