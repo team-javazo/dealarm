@@ -1,4 +1,4 @@
-package kr.co.dong.sms.controller;
+package kr.co.dong;
 
 import java.util.Map;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import kr.co.dong.sms.service.SmsManualService;
+import kr.co.dong.sms.SmsManualService;
 
 @Controller
 @RequestMapping("/sms")

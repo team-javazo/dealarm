@@ -5,11 +5,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>관리자 페이지</title>
+<title>안쓰는 페이지</title>
 </head>
 <body>
-
- <a href="<c:url value='/admin/members'/>">전체 회원조회</a> | <a href="<c:url value='/admin/active'/>"> 관리자 마이페이지</a>
+		쓰지않는 페이지
 
 </body>
 </html>

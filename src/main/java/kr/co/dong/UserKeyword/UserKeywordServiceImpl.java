@@ -33,4 +33,10 @@ public class UserKeywordServiceImpl implements UserKeywordService {
         }
         userKeywordDAO.insert(dto);
     }
+
+	@Override
+	public List<UserKeywordDTO> memberKeyword(String memberId) {
+		// TODO Auto-generated method stub
+		return userKeywordDAO.findByUserId(memberId);
+	}
 }

@@ -202,7 +202,17 @@ a:hover {
     color: darkred;
 }
 /*============== 배너 + 좌우측 컨테이너=================== */
-
+/* 헤더 기본 설정 */
+header {
+    position: sticky; /* 스크롤 따라 붙도록 */
+    top: 0;           /* 상단에서 고정 */
+    z-index: 1000;    /* 다른 요소 위로 표시 */
+    width: 100%;      /* 화면 너비 전체 */
+    max-width: 1220px; /* 최대 너비 제한 */
+    margin: 0 auto;     /* 중앙 정렬 */
+    height: 300px;
+    background-color: #f8f9fa; /* 필요시 배경색 추가 */
+}
 .header-img {
     width: 550px;       /* 이미지 가로 크기 조절 */
     height: auto;       /* 세로 비율 유지 */
@@ -265,6 +275,19 @@ a:hover {
     object-fit: cover;          /* 비율 유지하며 컨테이너 채움, 상하 잘림 가능 */
     display: block;
 }
+
+/* 상위 래퍼로 가로 제한 + 위치 조정 */
+.section-wrapper {
+    max-width: 900px;       /* 최대 가로 너비 */
+    margin-left: auto;        /* 기본 중앙 정렬 */
+    margin-right: auto;
+    padding: 0 15px;          /* 내부 여백 */
+    /* 좌우 위치를 수동으로 조정하고 싶으면 아래처럼 바꿔주세요 */
+    /* margin-left: 50px; margin-right: auto; */
+    /* margin-left: auto; margin-right: 50px; */
+}
+
+
 /* 회원가입 스타일 */
 .toast {
     position: fixed;

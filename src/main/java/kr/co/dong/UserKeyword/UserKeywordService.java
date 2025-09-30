@@ -6,5 +6,6 @@ public interface UserKeywordService {
     void addKeyword(UserKeywordDTO dto);
     void removeKeyword(String id);
     List<UserKeywordDTO> getKeywords(String userId);
+    List<UserKeywordDTO> memberKeyword(String memberId);
 //    List<String> getAllUserIds();
 }

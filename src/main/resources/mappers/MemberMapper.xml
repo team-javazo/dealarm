@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.co.dong.member.MemberDAO">
+<mapper namespace="kr.co.dong.mappers.MemberMapper">
 
 	<!-- 로그인 -->
 	<select id="login" parameterType="kr.co.dong.member.MemberDTO"
@@ -85,6 +85,8 @@
 	<select id="searchMembers" parameterType="map" resultType="kr.co.dong.member.MemberDTO">
 	    SELECT *
 	    FROM users
+	    
+	    
 	    <where>
 	        <choose>
 	            <!-- 전체 검색 -->
@@ -102,6 +104,8 @@
 	                OR is_active LIKE CONCAT('%', #{searchValue}, '%')
 	                OR DATE_FORMAT(created_at, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
 	                )
+	             <!-- 키워드 검색 포함 -->
+	             or exists(select 1 from user_keywords where user_keywords.user_id = users.id)
 	            </when>
 	
 	            <!-- 특정 컬럼 검색 -->
@@ -115,6 +119,11 @@
 	                    <!-- 날짜 타입 컬럼 -->
 	                    <when test="searchType == 'birth_date' or searchType == 'created_at'">
 	                        DATE_FORMAT(${searchType}, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
+	                    </when>
+	                    
+	                    <!-- 키워드 검색 -->
+	                    <when test="searchType == 'keyword' and searchValue != null and searchValue != ''">
+	                    	exists(select 1 from user_keywords where user_id = users.id and keyword like concat('%', #{searchValue}, '%'))
 	                    </when>
 	
 	                    <!-- 나머지 문자열 컬럼 -->
@@ -168,8 +177,9 @@
 	                OR is_active LIKE CONCAT('%', #{searchValue}, '%')
 	                OR DATE_FORMAT(created_at, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
 	                )
+	             or exists(select 1 from user_keywords where user_keywords.user_id = users.id)
+	                
 	            </when>
-	
 	            <!-- 특정 컬럼 검색 -->
 	            <when test="searchType != 'all' and searchValue != null and searchValue != ''">
 	                <choose>
@@ -182,7 +192,10 @@
 	                    <when test="searchType == 'birth_date' or searchType == 'created_at'">
 	                        DATE_FORMAT(${searchType}, '%Y-%m-%d') LIKE CONCAT('%', #{searchValue}, '%')
 	                    </when>
-	
+						<when test="searchType =='keyword' and searchValue != null and searchValue != ''">
+	                    	exists(select 1 from user_keywords where user_id = users.id and keyword like concat('%', #{searchValue}, '%'))
+													
+						</when>
 	                    <!-- 나머지 문자열 컬럼 -->
 	                    <otherwise>
 	                        ${searchType} LIKE CONCAT('%', #{searchValue}, '%')
@@ -218,4 +231,13 @@
 	<delete id="deleteadmin" parameterType="String">
 	    delete from users WHERE id = #{id}
 	</delete>
+	
+	<!-- userId 기준으로 사용자 조회 -->
+	<select id="findUserById" parameterType="string" resultType="kr.co.dong.sms.SmsDTO"> 
+	    SELECT id AS userId, phone, notification 
+	    FROM users 
+	    WHERE id = #{id} 
+	</select>
+
+    
 </mapper>

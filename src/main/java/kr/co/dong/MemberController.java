@@ -373,5 +373,15 @@ public class MemberController {
 	    json.append("}");
 	    return json.toString();
 	}
+	
+	// 관리자 회원상세조회 체이지
+	@GetMapping("/detail")
+	public String detail(@RequestParam("id") String id, Model model) {
+		MemberDTO user = memberService.selectone(id);
+		model.addAttribute("user", user);
+		return "admin/detail";
+		
+	}
+	
 
 }

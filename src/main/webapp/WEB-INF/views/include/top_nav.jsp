@@ -12,14 +12,15 @@
     <meta name="author" content="" />
     <title>Top 네비</title>
 	<link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
-</head>    
+	<link rel="icon" type="image/jpeg" href="${pageContext.request.contextPath}/resources/images/icon.jpg" />
+</head>
 <body style="margin:0; padding:0; display: flex; flex-direction: column; height: 100vh;">
     
     
  <!-- TopNavigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="${pageContext.request.contextPath}/">Dealarm</a>
+                <a class="navbar-brand" href="${pageContext.request.contextPath}/">Home</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 
                 
@@ -107,16 +108,7 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 
-        
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var toggler = document.querySelector('.navbar-toggler');
-    var collapse = document.querySelector('#navbarSupportedContent');
-    toggler.addEventListener('click', function() {
-        collapse.classList.toggle('show');
-    });
-});
-</script>              
+            
         
 </body>
 </html>        

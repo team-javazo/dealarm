@@ -1,4 +1,4 @@
-package kr.co.dong.sms.dto;
+package kr.co.dong.sms;
 
 public class SmsDTO {
 	private String userId;
@@ -15,6 +15,13 @@ public class SmsDTO {
 		this.phone = phone;
 		this.title = title;
 		this.url = url;
+		this.dealId = dealId;
+	}
+
+	public SmsDTO(String userId, String phone, int dealId) {
+		super();
+		this.userId = userId;
+		this.phone = phone;
 		this.dealId = dealId;
 	}
 
