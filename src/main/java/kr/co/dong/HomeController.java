@@ -95,7 +95,7 @@ public class HomeController {
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model,
 					   @RequestParam(defaultValue = "0") int offset,
-					   @RequestParam(defaultValue = "5") int limit) {
+					   @RequestParam(defaultValue = "30") int limit) {
 	    Object userId = session.getAttribute("id");
 
 	    // 딜매치 불러오기
