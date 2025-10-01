@@ -1,8 +1,6 @@
 package kr.co.dong.deal;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import kr.co.dong.sms.SmsDTO;
