@@ -3,10 +3,11 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+
 <mapper namespace="kr.co.dong.deal.DealMatchDAO">
 
     <!-- 알림 리스트 -->
-    <select id="dealMatch" resultType="kr.co.dong.deal.DealMatchDTO">
+    <select id="dealMatch" resultType="kr.co.dong.deal.DealMatchDTO" parameterType="map">
         select 
             dm.id as id,
             dm.user_id as user_id,
@@ -22,8 +23,9 @@
             ds.img as img
         from deal_match dm
         join deal_summary ds on dm.deal_id = ds.id
-        where dm.user_id = #{userId}
+        where dm.user_id = #{uid}
         order by dm.matched_at desc
+        limit #{limit} offset #{offset}
     </select>
 
     <!-- 단일 삭제 -->

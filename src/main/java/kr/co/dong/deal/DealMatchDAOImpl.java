@@ -1,7 +1,10 @@
 package kr.co.dong.deal;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -9,23 +12,30 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DealMatchDAOImpl implements DealMatchDAO {
 	
-	private static final String namespace = "kr.co.dong.deal.DealMatchDAO.";
+	private static final String namespace = "kr.co.dong.deal.DealMatchDAO";
 	
 	@Autowired
 	private SqlSession sqlSession;
 
 	@Override
-	public List<DealMatchDTO> dealMatch(String userId) {
-		return sqlSession.selectList(namespace + "dealMatch", userId);
+	public List<DealMatchDTO> dealMatch(String uid, int offset, int limit) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("uid", uid);
+		params.put("offset",  offset);
+		params.put("limit", limit);			
+		return sqlSession.selectList(namespace +  ".dealMatch", params);
 	}
+
 
 	@Override
 	public int deleteMatch(int matchId, String userId) {
-		return sqlSession.delete(namespace + "deleteMatch", new java.util.HashMap<String, Object>(){{
-		put("matchId", matchId);
-		put("userId", userId);
-		}});
+		Map<String, Object> params = new HashMap<>();
+		params.put("matchId", matchId);
+		params.put("userId", userId);
+		return sqlSession.delete(namespace + ".deleteMatch", params);
+
 	}
+
 
 	
 

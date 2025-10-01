@@ -26,16 +26,12 @@
 	<div class="d-flex">
 		<%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
 		<div class="flex-grow-1">
-			<%@ include file="/WEB-INF/views/include/header.jsp"%>
-
-
-
-
-
-			<%@ include file="/WEB-INF/views/include/footer.jsp"%>
+			<div><%@ include file="/WEB-INF/views/include/header.jsp"%></div>
+			<div id="mainContaner">
+				 <%@ include file="/WEB-INF/views/include/dealMatch.jsp"%></div>
+			<div><%@ include file="/WEB-INF/views/include/footer.jsp"%></div>
 		</div>
 	</div>
-
 
 
 </body>

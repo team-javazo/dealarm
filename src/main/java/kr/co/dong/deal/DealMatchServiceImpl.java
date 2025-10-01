@@ -11,20 +11,17 @@ public class DealMatchServiceImpl implements DealMatchService {
     private DealMatchDAO dealMatchDAO;
 
 	@Override
-	public List<DealMatchDTO> dealMatch(String userId) {
-		// TODO Auto-generated method stub
-		return dealMatchDAO.dealMatch(userId);
+	public List<DealMatchDTO> dealMatch(String id, int offset, int limit) {
+		return dealMatchDAO.dealMatch(id, offset, limit);
 	}
 
 	@Override
 	public void deleteMatch(int matchId, String userId) {
-		// TODO Auto-generated method stub
 		dealMatchDAO.deleteMatch(matchId, userId);
 	}
 
 	@Override
 	public void deleteMultiMatch(List<Integer> matchIds, String userId) {
-		// TODO Auto-generated method stub
 		for(Integer matchID : matchIds) {
 			dealMatchDAO.deleteMatch(matchID, userId);
 		}
