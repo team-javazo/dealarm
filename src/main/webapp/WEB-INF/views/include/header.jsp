@@ -17,13 +17,16 @@
     </div>
 
    <!-- 오른쪽 컨테이너: 키워드 뉴스 -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <div class="right-container" 
      style="border:1px solid #ddd; border-radius:5px; background-color:#f9f9f9; text-align:left; display:block; clear:both;">
 
     <!-- 로그인 여부에 따라 타이틀 변경 -->
     <div style="font-weight:bold; margin-bottom:10px; font-size:14px; text-align:center;">
         <c:choose>
-            	<c:when test="${not empty sessionScope.id}">
+            <c:when test="${not empty sessionScope.loginUser}">
                 키워드 뉴스
             </c:when>
             <c:otherwise>
@@ -38,11 +41,15 @@
             <ul style="list-style:none; padding-left:0; margin-top:0;">
                 <c:forEach var="item" items="${sessionScope.latestNews}">
                     <li style="margin-bottom:5px;">
-                        <a href="${item.link}" target="_blank" style="text-decoration:none; color:blue; font-size:14px;">
+                        <!-- 뉴스 제목 -->
+                        <a href="${item.link}" target="_blank" 
+                           style="text-decoration:none; color:blue; font-size:14px;">
                             <c:out value="${item.title}" escapeXml="false"/>
                         </a>
+                        <!-- 날짜 + 키워드 -->
                         <div style="font-size:11px; color:gray;">
-                            ${item.pubDate} | 키워드: <span style="font-weight:bold; color:black;">${item.keyword}</span>
+                            ${fn:replace(item.pubDate, '+0900', '')} | 
+                            키워드: <span style="font-weight:bold; color:black;">${item.keyword}</span>
                         </div>
                     </li>
                 </c:forEach>
@@ -56,4 +63,5 @@
         </div>
     </c:if>
 </div>
+
 </header>
