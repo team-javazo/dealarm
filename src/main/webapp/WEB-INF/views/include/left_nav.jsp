@@ -1,104 +1,87 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+	
 <div class="d-flex">
-    <!-- Sidebar -->
-    <nav class="d-flex flex-column flex-shrink-0 p-3 bg-light"
-         style="width: 250px; min-height: 100vh;">
+	<nav class="d-flex flex-column flex-shrink-0 p-3 bg-light"
+		style="width: 250px; min-height: 100vh;">
 
-        <a href="/"
-           class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-            <span class="fs-4">Dealarm</span>
-        </a>
-        <hr>
+		<a href="/"
+			class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+			<span class="fs-4">Dealarm</span>
+		</a>
+		<hr>
 
-        <!-- 네비 메뉴 -->
-        <ul class="nav nav-pills flex-column">
-            <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">카테고리</a></li>
-            <li><a href="/about" class="nav-link link-dark">아무거나</a></li>
-            <li><a href="/shop" class="nav-link link-dark">누르지마</a></li>
-            <li><a href="/contact" class="nav-link link-dark">오류나</a></li>
-            <li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
-        </ul>
+		<ul class="nav nav-pills flex-column">
+			<li class="nav-item"><a href="/" class="nav-link active"
+				aria-current="page">카테고리</a></li>
+			<li><a href="/about" class="nav-link link-dark">아무거나</a></li>
+			<li><a href="/shop" class="nav-link link-dark">누르지마</a></li>
+			<li><a href="/contact" class="nav-link link-dark">오류나</a></li>
+			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
+		</ul>
 
-        <hr>
+		<hr>
 
-        <!-- ✅ 카테고리 인기 키워드 블록 -->
-        <div class="p-3 bg-white border rounded mb-3"
-             style="width: 100%; height: 300px; overflow-y: auto;">
-            <h6 class="fw-bold">카테고리 인기 키워드</h6>
+		<div class="p-3 bg-white border rounded mb-3"
+			style="width: 100%; height: 300px; overflow-y: auto;">
+			<h6 class="fw-bold">카테고리 인기 키워드</h6>
 
-            <!-- 선택 폼 -->
-            <form id="trendForm" class="mb-2">
-                <select id="category" class="form-select mb-2">
-                    <option value="50000000">패션의류</option>
-                    <option value="50000001">패션잡화</option>
-                    <option value="50000002">화장품/미용</option>
-                    <option value="50000003">디지털/가전</option>
-                    <option value="50000004">가구/인테리어</option>
-                    <option value="50000005">출산/육아</option>
-                    <option value="50000006">식품</option>
-                    <option value="50000007">스포츠/레저</option>
-                    <option value="50000008">생활/건강</option>
-                    <option value="50000009">자동차용품</option>
-                    <option value="50000010">도서/음반/DVD</option>
-                </select>
+			<form id="trendForm" class="mb-2">
+				<select id="gender" class="form-select mb-2">
+					<option value="all">전체</option>
+					<option value="m">남성</option>
+					<option value="f">여성</option>
+				</select>
 
-                <select id="gender" class="form-select mb-2">
-                    <option value="all">전체</option>
-                    <option value="m">남성</option>
-                    <option value="f">여성</option>
-                </select>
+				<select id="ages" multiple class="form-select mb-2">
+					<option value="10">10대</option>
+					<option value="20">20대</option>
+					<option value="30">30대</option>
+					<option value="40">40대</option>
+					<option value="50">50대</option>
+					<option value="60">60대</option>
+				</select>
 
-                <select id="ages" multiple class="form-select mb-2">
-                    <option value="10">10대</option>
-                    <option value="20">20대</option>
-                    <option value="30">30대</option>
-                    <option value="40">40대</option>
-                    <option value="50">50대</option>
-                    <option value="60">60대</option>
-                </select>
+				<button type="submit" class="btn btn-primary w-100">조회</button>
+			</form>
 
-                <button type="submit" class="btn btn-primary w-100">조회</button>
-            </form>
+				
+			<%-- <ol id="trendResultSidebar"
+				class="list-group list-group-numbered small"></ol> --%>
+		</div>
 
-            <!-- ✅ id 수정 -->
-            <ol id="trendResultSidebar" class="list-group list-group-numbered small"></ol>
-        </div>
-
-        <!-- My키워드 섹션 -->
-        <ul class="nav nav-pills flex-column mb-auto">
-            <c:choose>
-                <c:when test="${not empty sessionScope.id}">
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle" href="#" id="myKeywordDropdown">My키워드</a>
-                        <div id="keywordSection" class="mt-2 p-3 bg-light border rounded"
-                             style="display:none; width:100%;">
-                            <form id="addKeywordForm">
-                                <input type="hidden" name="userId" value="${sessionScope.id}" />
-                                <div class="mb-2">
-                                    <input type="text" id="keyword" name="keyword"
-                                           class="form-control" placeholder="키워드 입력" required />
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100">추가</button>
-                            </form>
-                            <hr>
-                            <h6>내 키워드</h6>
-                            <ul id="keywordList" class="list-unstyled small"></ul>
-                        </div>
-                    </li>
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/member/login"
-                       class="btn btn-outline-primary w-100">로그인</a>
-                </c:otherwise>
-            </c:choose>
-        </ul>
-    </nav>
+		<ul class="nav nav-pills flex-column mb-auto">
+			<c:choose>
+				<c:when test="${not empty sessionScope.id}">
+					<li class="nav-item"><a class="nav-link dropdown-toggle"
+						href="#" id="myKeywordDropdown">My키워드</a>
+						<div id="keywordSection" class="mt-2 p-3 bg-light border rounded"
+							style="display: none; width: 100%;">
+							<form id="addKeywordForm">
+								<input type="hidden" name="userId" value="${sessionScope.id}" />
+								<div class="mb-2">
+									<input type="text" id="keyword" name="keyword"
+										class="form-control" placeholder="키워드 입력" required />
+								</div>
+								<button type="submit" class="btn btn-primary w-100">추가</button>
+							</form>
+							<hr>
+							<h6>내 키워드</h6>
+							<ul id="keywordList" class="list-unstyled small"></ul>
+						</div></li>
+				</c:when>
+				<c:otherwise>
+					<a href="${pageContext.request.contextPath}/member/login"
+						class="btn btn-outline-primary w-100">로그인</a>
+				</c:otherwise>
+			</c:choose>
+		</ul>
+	</nav>
 </div>
 
-<!-- =================[ SCRIPT ]============ -->
 <script>
 // My키워드 클릭 시 열고/닫기
 const keywordToggle = document.getElementById('myKeywordDropdown');
@@ -124,6 +107,9 @@ if (keywordToggle) {
 
 <script>
 $(function() {
+    // ------------------------------------
+    // My 키워드 관리 로직 (기존 유지)
+    // ------------------------------------
     const $keywordList = $("#keywordList");
     const userId = "${sessionScope.id}";
     const contextPath = "${pageContext.request.contextPath}";
@@ -191,5 +177,70 @@ $(function() {
     });
 
     loadKeywords();
+
+
+    // ------------------------------------
+    // ✅ 카테고리별 인기 키워드 랭킹 로직 (수정 및 통합)
+    // ------------------------------------
+    
+    // 페이지 로딩 시 기본값 설정
+    var defaultGender = "all"; // 기본값: 전체 성별
+    // 기본값: 10대부터 60대까지 모든 옵션의 'value' 배열
+    var defaultAgeRange = ["10", "20", "30", "40", "50", "60"]; 
+
+    // 기본값 설정
+    $("#gender").val(defaultGender);
+    // multiple select에 기본값 설정
+    $("#ages").val(defaultAgeRange); 
+
+    // 폼 제출 이벤트 핸들러
+    $("#trendForm").on("submit", function(e) {
+        e.preventDefault(); // 폼 기본 동작 방지
+
+        // 성별과 연령 값 가져오기
+        var gender = $("#gender").val();
+        var ageRange = $("#ages").val(); // multiple 선택일 경우 배열로 반환
+
+    	// ✅ 수정된 연령 범위 계산 로직
+        var startAge = parseInt(ageRange[0], 10); // 선택된 첫 번째 연령대 (예: 40)
+        var endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9; // 선택된 마지막 연령대의 끝 (예: 50 + 9 = 59)
+
+        // AJAX 요청
+        $.ajax({
+            url: contextPath + "/keywords/ranking", // 서버로 키워드 랭킹 요청
+            type: "GET",
+            data: {
+                gender: gender, 
+                startAge: startAge, 
+                endAge: endAge 
+            }, 
+            success: function(response) {
+                var html = "";
+                if (response.keywordRankings && response.keywordRankings.length > 0) {
+                    // 키워드 랭킹 결과 HTML 생성
+                    response.keywordRankings.forEach(function(keyword) {
+                        html += "<li class='list-group-item'>"
+                            + keyword.keyword
+                            + " - "
+                            + keyword.frequency
+                            + "회</li>";
+                    });
+                } else {
+                    html = "<li class='list-group-item'>등록된 키워드가 없습니다.</li>";
+                }
+
+                // ✅ 결과 리스트 업데이트: 헤더와 사이드바 두 곳 모두 반영
+                $("#trendResultHeader").html(html);  // 헤더의 결과
+                $("#trendResultSidebar").html(html); // 사이드바의 결과
+            },
+            error: function(xhr, status, error) {
+                console.log("Error:", xhr.responseText); 
+                alert("키워드 랭킹 조회 실패");
+            }
+        });
+    });
+
+    // 페이지 로딩 시 기본값으로 전체 유저 키워드 랭킹 불러오기
+    $("#trendForm").trigger("submit"); 
 });
 </script>
