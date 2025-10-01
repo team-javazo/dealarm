@@ -3,11 +3,8 @@ package kr.co.dong.deal;
 import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import kr.co.dong.sms.SmsDTO;
-
-import javax.inject.Inject;
 
 public class DealSummaryDAOImpl implements DealSummaryDAO {
     @Autowired
