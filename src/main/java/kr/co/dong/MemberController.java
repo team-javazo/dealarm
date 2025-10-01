@@ -137,7 +137,7 @@ public class MemberController {
            // 최신순 정렬 후 X개만
            latestNews = latestNews.stream()
                                   .sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
-                                  .limit(16)
+                                  .limit(15)
                                   .collect(Collectors.toList());
 
            session.setAttribute("latestNews", latestNews);
