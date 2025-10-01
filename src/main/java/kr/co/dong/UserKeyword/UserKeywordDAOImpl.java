@@ -1,6 +1,8 @@
 package kr.co.dong.UserKeyword;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
@@ -22,7 +24,16 @@ public class UserKeywordDAOImpl implements UserKeywordDAO {
     public void insert(UserKeywordDTO dto) {
         sqlSession.insert(namespace + ".insert", dto);
     }
+    
+    public List<UserKeywordDTO> findKeywordRankingByGenderAndAge(String gender, int startAge, int endAge, String userId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("gender", gender);
+        params.put("startAge", startAge);
+        params.put("endAge", endAge);
+        params.put("userId", userId);  // userId 추가
 
+        return sqlSession.selectList(namespace + ".findKeywordRankingByGenderAndAge", params);
+    }
 //    @Override
 //	public List<String> findAllUserIds() {
 //		return sqlSession.selectList(namespace + ".findAllUserIds");

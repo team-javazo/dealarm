@@ -1,7 +1,6 @@
 package kr.co.dong.sms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class SmsManualService {
 
     static {
         try {
-            PYTHON_SCRIPT = new ClassPathResource("python/sms/sms_service2.py")
+            PYTHON_SCRIPT = new ClassPathResource("python/sms/sms_service3.py")
                     .getFile()
                     .getAbsolutePath();
             System.out.println("PYTHON_SCRIPT = " + PYTHON_SCRIPT);
@@ -30,30 +29,39 @@ public class SmsManualService {
     private static class StreamGobbler implements Runnable {
         private final InputStream is;
         private final StringBuilder out;
-        StreamGobbler(InputStream is, StringBuilder out) { this.is = is; this.out = out; }
+        StreamGobbler(InputStream is, StringBuilder out) {
+            this.is = is;
+            this.out = out;
+        }
         @Override public void run() {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            try (BufferedReader br = new BufferedReader(
+                    new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
-                while ((line = br.readLine()) != null) out.append(line).append('\n');
+                while ((line = br.readLine()) != null) {
+                    out.append(line).append('\n');
+                }
             } catch (IOException ignored) {}
         }
     }
 
-    public Map<String, Object> sendManualSms(String userId, String phone, String title, String url, int dealId) {
+    public Map<String, Object> sendManualSms(
+            String userId, String phone, String title, String url, int dealId) {
         try {
+            // 1) DTO → JSON → base64
             SmsDTO dto = new SmsDTO(userId, phone, title, url, dealId);
             String json = mapper.writeValueAsString(dto);
-            String b64  = Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
-            System.out.println("👉 [Manual] JSON(len=" + json.length() + ") → b64(len=" + b64.length() + ")");
+            String b64  = Base64.getEncoder()
+                                .encodeToString(json.getBytes(StandardCharsets.UTF_8));
+            System.out.println("👉 [Manual] JSON(len=" + json.length() +
+                    ") → b64(len=" + b64.length() + ")");
 
+            // 2) Python 프로세스 실행
             ProcessBuilder pb = new ProcessBuilder("python", PYTHON_SCRIPT, "--b64", b64);
             pb.environment().put("PYTHONIOENCODING", "utf-8");
-
-            // ✅ stderr와 stdout 분리
             pb.redirectErrorStream(false);
             Process p = pb.start();
 
-            // ✅ 동시에 읽기 (버퍼 막힘 방지)
+            // 3) stdout / stderr 동시에 읽기
             StringBuilder stdout = new StringBuilder();
             StringBuilder stderr = new StringBuilder();
             Thread tOut = new Thread(new StreamGobbler(p.getInputStream(), stdout));
@@ -66,15 +74,21 @@ public class SmsManualService {
             String out = stdout.toString().trim();
             String err = stderr.toString().trim();
 
+            // 4) 디버깅 로그
+            System.out.println(">>> PYTHON STDOUT RAW = " + out);
+            if (!err.isEmpty()) {
+                System.out.println(">>> PYTHON STDERR RAW = " + err);
+            }
+
+            // 5) 결과 처리
             if (exit != 0) {
-                // 파이썬은 에러 시 stdout을 비우고 stderr만 보냄 → 그대로 사용자에게 보여줌
                 return Map.of("error", "Python script failed", "stderr", err);
             }
             if (out.isEmpty()) {
                 return Map.of("error", "Python returned empty output", "stderr", err);
             }
 
-            // ✅ stdout(JSON)만 파싱
+            // ✅ Python이 단일 JSON 객체 출력한다고 가정 → Map으로 파싱
             return mapper.readValue(out, Map.class);
 
         } catch (Exception e) {
