@@ -19,6 +19,7 @@ local.properties
 .settings/org.eclipse.jdt.core.prefs
 .env
 /src/main/resources/json/
+!src/main/resources/python/sms/.env
 
 
 
