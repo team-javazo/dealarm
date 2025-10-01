@@ -19,7 +19,7 @@ public class SmsApiServiceImpl implements SmsApiService {
 
     static {
         try {
-            PYTHON_SCRIPT = new ClassPathResource("python/sms/sms_service2.py")
+            PYTHON_SCRIPT = new ClassPathResource("python/sms/sms_service3.py")
                     .getFile()
                     .getAbsolutePath();
             System.out.println("PYTHON_SCRIPT = " + PYTHON_SCRIPT);
