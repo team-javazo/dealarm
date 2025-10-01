@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class NaverNewsService {
 
     // Naver 뉴스 검색
     public NaverNewsdto searchNews(String query) throws Exception {
-    	String url = "https://openapi.naver.com/v1/search/news.json?query=" + query;
+       String url = "https://openapi.naver.com/v1/search/news.json?query=" + query;
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -121,7 +122,7 @@ public class NaverNewsService {
         latestNews = latestNews.stream()
                 .sorted((a, b) -> b.get("pubDate").compareTo(a.get("pubDate")))
                 .limit(10)
-                .toList();
+                .collect(Collectors.toList());
 
         return latestNews;
     }
