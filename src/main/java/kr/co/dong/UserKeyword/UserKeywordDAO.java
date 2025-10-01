@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import kr.co.dong.sms.SmsDTO;
+
 public interface UserKeywordDAO {
     void insert(UserKeywordDTO dto); // 키워드 등록	
     List<UserKeywordDTO> findByUserId(String userId); //특정 사용자의 키워드 조회
@@ -26,5 +28,5 @@ public interface UserKeywordDAO {
      *  - 상품명(title)과 유저가 등록한 키워드를 비교하여
      *  - 알림을 받아야 할 대상 사용자(userId)들을 추출하는 용도로 사용
      */
-    List<String> findMatchingUsers(@Param("title") String title);
+    List<SmsDTO> findMatchingUsers(String title);
 }
