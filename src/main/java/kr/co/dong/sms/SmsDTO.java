@@ -18,6 +18,14 @@ public class SmsDTO {
 		this.dealId = dealId;
 	}
 
+	public SmsDTO(String userId, String title, String url, int dealId) {
+		super();
+		this.userId = userId;
+		this.title = title;		
+		this.url = url;
+		this.dealId = dealId;
+	}
+
 	public SmsDTO(String userId, String phone, int dealId) {
 		super();
 		this.userId = userId;

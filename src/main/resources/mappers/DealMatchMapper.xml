@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.dong.deal.DealMatchDAO">
+
+    <!-- 알림 리스트 -->
+    <select id="dealMatch" resultType="kr.co.dong.deal.DealMatchDTO">
+        select 
+            dm.id as id,
+            dm.user_id as user_id,
+            dm.deal_id as deal_id,
+            dm.matched_at as matched_at,
+            ds.title as title,
+            ds.url as url,
+            ds.price as price,
+            ds.site as site,
+            ds.posted_at as posted_at,
+            ds.created_at as created_at,
+            ds.likes as likes,
+            ds.img as img
+        from deal_match dm
+        join deal_summary ds on dm.deal_id = ds.id
+        where dm.user_id = #{userId}
+        order by dm.matched_at desc
+    </select>
+
+    <!-- 단일 삭제 -->
+    <delete id="deleteMatch">
+        delete from deal_match
+        where id = #{matchId} and user_id = #{userId}
+    </delete>
+
+</mapper>

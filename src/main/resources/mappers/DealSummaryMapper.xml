@@ -39,5 +39,7 @@
 		url AS url
 		FROM deal_summary
 	</select>
+	
+	
 
 </mapper>
