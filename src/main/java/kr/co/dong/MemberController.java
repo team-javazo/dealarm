@@ -121,8 +121,6 @@ public class MemberController {
 			session.setAttribute("id", loginUser.getId());
 			session.setAttribute("role", loginUser.getRole());
 			session.setAttribute("name", loginUser.getName());
-			session.setAttribute("phone", loginUser.getPhone());
-
 			// 키워드 뉴스 최신 10개 가져오기
 			List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
 			Set<String> addedLinks = new HashSet<>();
@@ -441,18 +439,19 @@ public class MemberController {
 	    JsonNode rootNode = mapper.readTree(apiResult);
 	    JsonNode responseNode = rootNode.path("response");
 
-	    // 필요한 값 추출
+	    // 신규가입 유무 점검과 가입을 위해 필요한 값 추출
 	    String name = responseNode.path("name").asText();
-	    String mobile = responseNode.path("mobile").asText();
+	    String phone = responseNode.path("mobile").asText();
 	    String email = responseNode.path("email").asText();
 
-		// 휴대폰 중복 Test를 통한 기존 회원 확인, 가입회원이면 로그인 실행
+		// 휴대폰 중복 Test를 통한 기존 회원 확인, 가입회원이면 소셜로그인 실행, 가입이 아니면 신규회원가입 추진
 	    
-		if (!memberService.isPhoneAvailable(mobile)) {
-			session.setAttribute("id", name);
-			session.setAttribute("role", "USER");
-			session.setAttribute("name", name);
-			session.setAttribute("phone", mobile);
+		if (!memberService.isPhoneAvailable(phone)) {  //정상적인 소셜로그인
+			//네이버를 위한 DB 회원 정보 불러오기 by Phone
+			MemberDTO loginUser = memberService.myDTONaver(phone);
+			session.setAttribute("id", loginUser.getId());
+			session.setAttribute("role", loginUser.getRole());
+			session.setAttribute("name", loginUser.getName());
 
 			return "redirect:/main"; // 로그인 성공 → 홈으로
 			
@@ -460,7 +459,7 @@ public class MemberController {
 		} else {
 			// Model에 담기
 			model.addAttribute("name", name);
-			model.addAttribute("phone", mobile);
+			model.addAttribute("phone", phone);
 			model.addAttribute("email", email);
 
 			/* 네이버 로그인 성공 alert이 필요하면 naverSuccess로 수정 예정 */
