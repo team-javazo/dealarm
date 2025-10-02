@@ -110,6 +110,7 @@ public class MemberController {
 			session.setAttribute("id", loginUser.getId());
 			session.setAttribute("role", loginUser.getRole());
 			session.setAttribute("name", loginUser.getName());
+			session.setAttribute("phone", loginUser.getPhone());
 
 			return "redirect:/main"; // 로그인 성공 → 홈으로
 		} else {
@@ -155,8 +156,8 @@ public class MemberController {
 //	마이페이지 띄우기
 	@RequestMapping("/mypage")
 	public String mypage(HttpSession session, Model model) {
-		String id = (String) session.getAttribute("id"); // 로그인세션에서 id 추출
-		MemberDTO user = memberService.myDTO(id); // 내 정보객체 생성
+		String phone = (String) session.getAttribute("phone"); // 로그인세션에서 id 추출
+		MemberDTO user = memberService.myDTO(phone); // 내 정보객체 생성
 		model.addAttribute("user", user); // user를 view로 보냄
 		return "member/mypage";
 	}
@@ -439,6 +440,7 @@ public class MemberController {
 			session.setAttribute("id", name);
 			session.setAttribute("role", "USER");
 			session.setAttribute("name", name);
+			session.setAttribute("phone", mobile);
 
 			return "redirect:/main"; // 로그인 성공 → 홈으로
 			
@@ -446,7 +448,7 @@ public class MemberController {
 		} else {
 			// Model에 담기
 			model.addAttribute("name", name);
-			model.addAttribute("mobile", mobile);
+			model.addAttribute("phone", mobile);
 			model.addAttribute("email", email);
 
 			/* 네이버 로그인 성공 alert이 필요하면 naverSuccess로 수정 예정 */

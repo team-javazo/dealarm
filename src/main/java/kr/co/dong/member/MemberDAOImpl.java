@@ -50,8 +50,8 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override	// 내 정보 불러오기
-	public MemberDTO myDTO(String id) {
-		return sqlSession.selectOne(namespace + ".myDTO", id);
+	public MemberDTO myDTO(String phone) {
+		return sqlSession.selectOne(namespace + ".myDTO", phone);
 	}
 
 	@Override	// 총 회원수 

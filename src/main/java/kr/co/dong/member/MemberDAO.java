@@ -23,7 +23,7 @@ public interface MemberDAO {
     int userupdate(MemberDTO update);
     int adminupdate(MemberDTO update);
     int updatePassword(MemberDTO member);
-    MemberDTO selectone(String id);
+    MemberDTO selectone(String phone);
     int deleteUser(String id);
     int deleteadmin(String id);
     int activeUser(String id);
