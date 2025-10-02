@@ -37,7 +37,6 @@ import kr.co.dong.news.NaverNewsdto;
  */
 @Controller
 public class HomeController {
-
 	@Inject
 	private NaverNewsService naverNewsService;
 
@@ -88,7 +87,6 @@ public class HomeController {
 		return "Update";
 
 	}
-
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model, @RequestParam(defaultValue = "0") int offset,
 			@RequestParam(defaultValue = "30") int limit) {
@@ -97,6 +95,7 @@ public class HomeController {
 		// 딜매치 불러오기 (HSM 기준)
 		if (userId != null) {
 			String uid = userId.toString();
+			logger.info(uid);
 			List<DealMatchDTO> dealList = dealMatchDAO.dealMatch(uid, offset, limit);
 			model.addAttribute("list", dealList);
 		}
@@ -157,13 +156,5 @@ public class HomeController {
 		return "main"; // main.jsp
 	}
 
-// 무한 스크롤 AJAX용 엔드포인트 (HSM 기준)
-	@GetMapping("/main/dealMatch")
-	@ResponseBody
-	public List<DealMatchDTO> getMoreDeals(HttpSession session, @RequestParam int offset, @RequestParam int limit) {
-		Object userId = session.getAttribute("id");
-		if (userId == null)
-			return List.of();
-		return dealMatchDAO.dealMatch(userId.toString(), offset, limit);
-	}
+
 }
