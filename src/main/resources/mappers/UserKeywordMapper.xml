@@ -1,47 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.dong.mappers.UserKeywordMapper">
 
-    <!-- 키워드 등록 -->
-    <insert id="insert"
-        parameterType="kr.co.dong.UserKeyword.UserKeywordDTO">
-        INSERT INTO user_keywords (user_id, keyword)
-        VALUES (#{userId}, #{keyword})
-    </insert>
+	<!-- 키워드 등록 -->
+	<insert id="insert"
+		parameterType="kr.co.dong.UserKeyword.UserKeywordDTO">
+		INSERT INTO user_keywords (user_id, keyword)
+		VALUES
+		(#{userId}, #{keyword})
+	</insert>
 
 	<!-- 사용자별 키워드 조회 -->
 	<select id="findByUserId" parameterType="String"
 		resultType="kr.co.dong.UserKeyword.UserKeywordDTO">
-		SELECT id, user_id AS userId , keyword, created_at AS createdAt
+		SELECT id, user_id AS userId , keyword, created_at AS
+		createdAt
 		FROM user_keywords
 		WHERE user_id = #{userId}
-		order by created_at desc;
+		ORDER BY
+		created_at DESC;
 	</select>
 
-    <!-- 키워드 중복 체크 -->
-    <select id="countKeyword"
-        parameterType="kr.co.dong.UserKeyword.UserKeywordDTO"
-        resultType="Integer">
-        SELECT COUNT(*)
-        FROM user_keywords
-        WHERE user_id = #{userId}
-          AND keyword  = #{keyword}
-    </select>
+	<!-- 키워드 중복 체크 -->
+	<select id="countKeyword"
+		parameterType="kr.co.dong.UserKeyword.UserKeywordDTO"
+		resultType="Integer">
+		SELECT COUNT(*)
+		FROM user_keywords
+		WHERE user_id = #{userId}
+		AND keyword = #{keyword}
+	</select>
 
-    <!-- 키워드 삭제 -->
-    <delete id="delete" parameterType="String">
-        DELETE FROM user_keywords
-        WHERE id = #{id}
-    </delete>
+	<!-- 키워드 삭제 -->
+	<delete id="delete" parameterType="String">
+		DELETE FROM user_keywords
+		WHERE id = #{id}
+	</delete>
 
-    <!-- 제목(title)에 사용자 키워드가 포함되면 해당 user_id 반환 -->
-    <select id="findMatchingUsers" parameterType="string" resultType="string">
-        SELECT DISTINCT uk.user_id
-        FROM user_keywords uk
-        WHERE LOWER(#{title}) LIKE CONCAT('%', LOWER(uk.keyword), '%')
-    </select>
+	<!-- 제목(title)에 사용자 키워드가 포함되면 해당 user_id 반환 -->
+	<select id="findMatchingUsers" parameterType="string"
+		resultType="kr.co.dong.sms.SmsDTO">
+		SELECT DISTINCT uk.user_id AS userId,
+		uk.keyword AS keyword
+		FROM user_keywords uk
+		WHERE LOWER(uk.keyword) IS NOT NULL
+		AND
+		LOWER(#{title}) LIKE CONCAT('%', LOWER(uk.keyword), '%')
+	</select>
 
+	<select id="findKeywordRankingByGenderAndAge" parameterType="map" resultType="kr.co.dong.UserKeyword.UserKeywordDTO">
+    SELECT uk.keyword, COUNT(*) AS frequency
+    FROM user_keywords uk
+    JOIN users u ON uk.user_id = u.id
+    <where>
+        <if test="gender != 'all' and gender != null">
+            AND LOWER(u.gender) = LOWER(#{gender})
+        </if>
+
+        <if test="startAge != null and endAge != null">
+            AND TIMESTAMPDIFF(YEAR, u.birth_date, CURRENT_DATE) BETWEEN #{startAge} AND #{endAge}
+        </if>
+
+        </where>
+    GROUP BY uk.keyword
+    ORDER BY frequency DESC
+    LIMIT 10; </select>
 </mapper>

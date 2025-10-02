@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -98,56 +97,59 @@ public class MemberController {
 		return "member/login"; // /WEB-INF/views/member/login.jsp
 	}
 
+	/**
+	 * 로그인 처리 로직 병합 (뉴스 개수: 100개, 리턴 경로: "redirect:/main")
+	 */
 	// 로그인 처리
 	@PostMapping("/login")
 	public String login(MemberDTO member, HttpSession session, Model model) {
 
-	    MemberDTO loginUser = memberService.login(member);
+	    MemberDTO loginUser = memberService.login(member);
 
-	    if (loginUser != null) {
-	        session.setAttribute("id", loginUser.getId());
-	        session.setAttribute("role", loginUser.getRole());
-	        session.setAttribute("name", loginUser.getName());
+	    if (loginUser != null) {
+	        session.setAttribute("id", loginUser.getId());
+	        session.setAttribute("role", loginUser.getRole());
+	        session.setAttribute("name", loginUser.getName());
 
-	        // 키워드 뉴스 최신 10개 가져오기
-	        List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
-	        Set<String> addedLinks = new HashSet<>();
-	        List<Map<String, String>> latestNews = new ArrayList<>();
+	        // 키워드 뉴스 최신 10개 가져오기
+	        List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
+	        Set<String> addedLinks = new HashSet<>();
+	        List<Map<String, String>> latestNews = new ArrayList<>();
 
-	        try {
-	            for (UserKeywordDTO dto : keywordDTOs) {
-	                NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
+	        try {
+	            for (UserKeywordDTO dto : keywordDTOs) {
+	                NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
 
-	                for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
-	                    if (addedLinks.contains(item.getLink())) continue;
-	                    addedLinks.add(item.getLink());
+	                for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
+	                    if (addedLinks.contains(item.getLink())) continue;
+	                    addedLinks.add(item.getLink());
 
-	                    Map<String, String> newsMap = new HashMap<>();
-	                    newsMap.put("title", item.getTitle());
-	                    newsMap.put("pubDate", item.getPubDate());
-	                    newsMap.put("keyword", dto.getKeyword());
-	                    newsMap.put("link", item.getLink());
+	                    Map<String, String> newsMap = new HashMap<>();
+	                    newsMap.put("title", item.getTitle());
+	                    newsMap.put("pubDate", item.getPubDate());
+	                    newsMap.put("keyword", dto.getKeyword());
+	                    newsMap.put("link", item.getLink());
 
-	                    latestNews.add(newsMap);
-	                }
-	            }
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
+	                    latestNews.add(newsMap);
+	                }
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
 
-	        // 최신순 정렬 후 X개만
-	        latestNews = latestNews.stream()
-	                               .sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
-	                               .limit(16)
-	                               .toList();
+	        // 최신순 정렬 후 100개만 (main 브랜치 적용)
+	        latestNews = latestNews.stream()
+	                               .sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
+	                               .limit(100) 
+	                               .collect(Collectors.toList());
 
-	        session.setAttribute("latestNews", latestNews);
+	        session.setAttribute("latestNews", latestNews);
 
-	        return "redirect:/main"; // 메인 페이지
-	    } else {
-	        model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
-	        return "member/login";
-	    }
+	        return "redirect:/main"; // 요청에 따라 리다이렉트 적용
+	    } else {
+	        model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
+	        return "member/login";
+	    }
 	}
 
 
@@ -194,7 +196,7 @@ public class MemberController {
 		return "member/mypage";
 	}
 
-//	마이페이지 수정모달 비밀번호 체크 
+//	마이페이지 수정모달 비밀번호 체크 
 	@PostMapping("/mypage_pass")
 	public String checkPass(@RequestParam String id, @RequestParam String password, Model model) {
 		MemberDTO user = memberService.myDTO(id);
@@ -214,7 +216,7 @@ public class MemberController {
 	// 관리자 회원관리 전체 리스트
 	@RequestMapping("/members")
 	public String members(@RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage,
-						  Model model){
+						  Model model){
 		
 		int limit = 15;	// 페이지당 목록 수
 		int offset = (currentPage -1) * limit;
@@ -229,13 +231,13 @@ public class MemberController {
 		List<MemberDTO> list = memberService.allList(params); // 전체회원 목록
 		int searchMembersCount = memberService.searchMembersCount(params); // 검색 회원 수
 		
-		int totalPages = totalCount / limit;   // 정수 나눗셈 = 자동 소수점 버림
-	    if(totalCount % limit != 0) {         // 나머지가 있으면 한 페이지 추가
-	        totalPages += 1;
-	    }
-	    
+		int totalPages = totalCount / limit;   // 정수 나눗셈 = 자동 소수점 버림
+	    if(totalCount % limit != 0) {         // 나머지가 있으면 한 페이지 추가
+	        totalPages += 1;
+	    }
+	    
 		if(currentPage > totalPages) currentPage = totalPages;
-		if(currentPage < 1) currentPage = 1; 
+		if(currentPage < 1) currentPage = 1; 
 		
 
 		model.addAttribute("list", list);
@@ -256,7 +258,7 @@ public class MemberController {
 		
 		//2. 검색 필터조건 Map 에 넣어 서비스로 보내기
 		int limit = 15;	// 페이지당 목록 수
-		int offset = (currentPage -1) * limit; 
+		int offset = (currentPage -1) * limit; 
 		
 		// 검색조건 Map int형 따로 분리 object에서 안들어감
 		params.put("limit", Integer.valueOf(limit));
@@ -292,29 +294,29 @@ public class MemberController {
 	// 관리자 회원정보 수정 페이지 내용 삽입
 	@PostMapping(value = "/adminupdate")
 	public String adminupdate(@RequestParam("id") String id, Model model) {
-	    MemberDTO list = memberService.selectone(id);
-	     model.addAttribute("user", list);  
-	     return "admin/adminupdate";  
+	    MemberDTO list = memberService.selectone(id);
+	     model.addAttribute("user", list);  
+	     return "admin/adminupdate";  
 	}
 
 	// 회원 정보 수정
 //	@PostMapping(value = "/userupdate_ok")
 //	public String userupdate(@ModelAttribute MemberDTO update) {
 //		memberService.userupdate(update);
-//	     return "redirect:/";  
+//	     return "redirect:/";  
 //	}
 	
 	// 관리자 회원 정보 수정
 	@PostMapping(value = "/adminupdate_ok")
 	public String adminupdate(@ModelAttribute MemberDTO update) {
 		memberService.adminupdate(update);
-	     return "redirect:/member/members";  
+	     return "redirect:/member/members";  
 	}
 	// 관리자 삭제
 	@PostMapping(value = "/deleteadmin")
 	public String deleteadmin(@RequestParam("id") String id) {
 		memberService.deleteadmin(id);
-		return "redirect:/member/members";  
+		return "redirect:/member/members";  
 	}
 	@PostMapping("/change-password")
 	@ResponseBody
@@ -392,36 +394,36 @@ public class MemberController {
 	@PostMapping(value="/active", produces="application/json;charset=UTF-8")
 	@ResponseBody
 	public String active(@RequestParam("id") String id,
-	                         @RequestParam("password") String password) {
+	                         @RequestParam("password") String password) {
 
-	    StringBuilder json = new StringBuilder();
-	    json.append("{");
+	    StringBuilder json = new StringBuilder();
+	    json.append("{");
 
-	    MemberDTO member = memberService.selectone(id);
-	    if (member == null) {
-	        json.append("\"success\":false,");
-	        json.append("\"message\":\"사용자를 찾을 수 없습니다.\"");
-	        json.append("}");
-	        return json.toString();
-	    }
+	    MemberDTO member = memberService.selectone(id);
+	    if (member == null) {
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"사용자를 찾을 수 없습니다.\"");
+	        json.append("}");
+	        return json.toString();
+	    }
 
-	    if (!member.getPassword().equals(password)) {
-	        json.append("\"success\":false,");
-	        json.append("\"message\":\"비밀번호가 일치하지 않습니다.\"");
-	        json.append("}");
-	        return json.toString();
-	    }
+	    if (!member.getPassword().equals(password)) {
+	        json.append("\"success\":false,");
+	        json.append("\"message\":\"비밀번호가 일치하지 않습니다.\"");
+	        json.append("}");
+	        return json.toString();
+	    }
 
-	    int result = memberService.activeUser(id);
+	    int result = memberService.activeUser(id);
 
-	    json.append("\"success\":").append(result > 0);
-	    if (result <= 0) {
-	        json.append(",\"message\":\"계정 활성화에 실패했습니다.\"");
-	    } else {
-	        json.append(",\"message\":\"계정 활성화가 완료되었습니다. 재로그인 해주세요\"");
-	    }
-	    json.append("}");
-	    return json.toString();
+	    json.append("\"success\":").append(result > 0);
+	    if (result <= 0) {
+	        json.append(",\"message\":\"계정 활성화에 실패했습니다.\"");
+	    } else {
+	        json.append(",\"message\":\"계정 활성화가 완료되었습니다. 재로그인 해주세요\"");
+	    }
+	    json.append("}");
+	    return json.toString();
 	}
 	
 	// 관리자 회원상세조회 체이지
@@ -433,5 +435,4 @@ public class MemberController {
 		
 	}
 	
-
 }
