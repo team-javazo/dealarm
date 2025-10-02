@@ -95,9 +95,9 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public MemberDTO selectone(String id) {
+	public MemberDTO selectone(String phone) {
 		// TODO Auto-generated method stub
-		return memberDAO.selectone(id);
+		return memberDAO.selectone(phone);
 	}
 
 	@Override

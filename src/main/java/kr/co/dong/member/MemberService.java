@@ -21,7 +21,7 @@ public interface MemberService {
 	boolean checkPassword(String id, String password);
     int userupdate(MemberDTO update);
     int adminupdate(MemberDTO update);
-	MemberDTO selectone(String id);
+	MemberDTO selectone(String phone);
 	int updatePassword(MemberDTO member);
 	int deleteUser(String id);
     int deleteadmin(String id);

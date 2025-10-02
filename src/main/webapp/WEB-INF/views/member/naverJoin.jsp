@@ -56,7 +56,7 @@
 			                <div class="mb-3">
 			                    <label for="phone" class="form-label">휴대폰 번호</label>
 			                    <input type="text" class="form-control" id="phone" name="phone"
-			                        value="${mobile}" required>
+			                        value="${phone}" required>
 			                </div>
 			
 			                <div class="mb-3">

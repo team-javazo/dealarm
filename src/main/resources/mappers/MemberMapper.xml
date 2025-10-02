@@ -61,7 +61,7 @@
 		select id, password, name, phone, email, birth_date, gender, notification, region, role,
 		is_active, created_at
 		FROM users
-		WHERE id = #{id}
+		WHERE phone = #{phone}
 	</select>
 	
 	<!-- 전체회원 수 -->
