@@ -3,4 +3,4 @@ requests==2.32.5
 pymysql==1.1.2
 python-dotenv==1.1.1
 twilio==9.8.1
-solapi==5.2.0
+solapi==5.0.2

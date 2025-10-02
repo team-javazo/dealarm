@@ -70,6 +70,14 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int, keywo
     try:
         with conn.cursor() as cursor:
             # 중복 발송 방지 체크
+            # 1) 알림 허용 여부 확인
+            cursor.execute("SELECT notification FROM users WHERE id=%s", (user_id,))
+            row = cursor.fetchone()
+            if not row or row["notification"] != 1:
+                logging.info(f"🔕 알림 차단된 사용자: user={user_id}")
+                return {"result": "skipped", "reason": "notification_off", "userId": user_id, "dealId": deal_id}
+
+            # 2) 중복 발송 방지 체크
             cursor.execute("SELECT 1 FROM deal_match WHERE user_id=%s AND deal_id=%s", (user_id, deal_id))
             if cursor.fetchone():
                 logging.info(f"🔁 이미 발송된 알림: user={user_id}, dealId={deal_id}")

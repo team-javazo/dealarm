@@ -137,12 +137,12 @@ public class MemberController {
            // 최신순 정렬 후 X개만
            latestNews = latestNews.stream()
                                   .sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
-                                  .limit(15)
+                                  .limit(100)
                                   .collect(Collectors.toList());
 
            session.setAttribute("latestNews", latestNews);
 
-           return "main"; // 메인 페이지
+           return "redirect:/main"; // 메인 페이지
        } else {
            model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
            return "member/login";

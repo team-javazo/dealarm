@@ -89,8 +89,8 @@ public class CrawlScheduler {
 				boolean isSaved = dealSummaryService.saveIfNotExists(dto); // <-- 반환 값 받기
 				if (!isSaved) {
 					System.out.println("🚨 뽐뿌에서 중복 딜 발견! 순회 종료.");
-					 break; // break 
-				}	
+					break; // break
+				}
 			}
 
 			// ====================== 퀘이사존 ======================
@@ -128,7 +128,7 @@ public class CrawlScheduler {
 
 				DealSummaryDTO dto = new DealSummaryDTO();
 				dto.setTitle((String) deal2.get("title"));
-				dto.setUrl((String) deal2.get("url"));	
+				dto.setUrl((String) deal2.get("url"));
 				dto.setPrice(safeParseInt(deal2.get("price")));
 				dto.setSite((String) deal2.get("site"));
 				dto.setLikes(safeParseInt(deal2.get("likes")));
@@ -142,16 +142,16 @@ public class CrawlScheduler {
 				}
 
 				// 수정: 반환 값을 받고 중복 시 루프 중단
-                boolean isSaved = dealSummaryService.saveIfNotExists(dto); // <-- 반환 값 받기
-                if (!isSaved) {
-                    System.out.println("🚨 퀘이사존에서 중복 딜 발견! 순회 종료.");
-                    break; // break
-                }
+				boolean isSaved = dealSummaryService.saveIfNotExists(dto); // <-- 반환 값 받기
+				if (!isSaved) {
+					System.out.println("🚨 퀘이사존에서 중복 딜 발견! 순회 종료.");
+					break; // break
+				}
 			}
 
 			// ====================== 문자 발송 시작 ======================
 			System.out.println("========== 📩 SMS 발송 시작 ==========");
-			//smsDBService.processDeals();
+			// smsDBService.processDeals();
 
 		} catch (Exception e) {
 			System.err.println("❌ 크롤러 실행/DB 저장/문자 발송 실패: " + e.getMessage());
