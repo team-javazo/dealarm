@@ -1,8 +1,11 @@
 package kr.co.dong.deal;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import kr.co.dong.sms.SmsDTO;
 
@@ -20,6 +23,11 @@ public class DealSummaryDAOImpl implements DealSummaryDAO {
     @Override
     public boolean existsByUrl(String url) {
         return sqlSession.selectOne(NAMESPACE + ".existsByUrl", url);
+    }
+
+    @Override
+    public List<DealSummaryDTO> findDealsByTokens(Map<String, Object> params) {
+        return sqlSession.selectList(NAMESPACE + ".findDealsByTokens", params);
     }
 
     @Override
