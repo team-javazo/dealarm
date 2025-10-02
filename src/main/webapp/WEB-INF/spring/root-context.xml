@@ -19,9 +19,9 @@
 		<property name="driverClassName"
 			value="com.mysql.cj.jdbc.Driver" />
 		<property name="url"
-			value="jdbc:mysql://192.168.0.79:3306/project_db?serverTimezone=UTC" />
-		<property name="username" value="javajo" />
-		<property name="password" value="181818" />
+    value="jdbc:mysql://mbc-sw.iptime.org:4200/dealarm?useSSL=false&amp;connectTimeout=5000" />
+		<property name="username" value="dealarm" />
+		<property name="password" value="181818!*!*!*" />
 	</bean>
 
 	<bean id="dataSource"
