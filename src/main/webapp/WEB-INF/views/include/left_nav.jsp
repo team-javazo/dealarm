@@ -15,13 +15,15 @@
 		<hr>
 
 		<ul class="nav nav-pills flex-column">
-			<li class="nav-item"><a href="/" class="nav-link active"
-				aria-current="page">카테고리</a></li>
-			<li><a href="/about" class="nav-link link-dark">아무거나</a></li>
-			<li><a href="/shop" class="nav-link link-dark">누르지마</a></li>
-			<li><a href="/contact" class="nav-link link-dark">오류나</a></li>
-			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
-		</ul>
+	<li class="nav-item"><a href="${pageContext.request.contextPath}/" class="nav-link active"
+		aria-current="page">카테고리</a></li>
+	<li><a href="${pageContext.request.contextPath}/about" class="nav-link link-dark">아무거나</a></li>
+	<li><a href="${pageContext.request.contextPath}/shop" class="nav-link link-dark">누르지마</a></li>
+	<!-- 🔹 게시판 경로 수정 -->
+	<li><a href="${pageContext.request.contextPath}/board/list" class="nav-link link-dark">게시판</a></li> 
+	<li><a href="${pageContext.request.contextPath}/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
+</ul>
+
 
 		<hr>
 
