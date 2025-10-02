@@ -20,7 +20,7 @@
 	<li><a href="${pageContext.request.contextPath}/about" class="nav-link link-dark">아무거나</a></li>
 	<li><a href="${pageContext.request.contextPath}/shop" class="nav-link link-dark">누르지마</a></li>
 	<!-- 🔹 게시판 경로 수정 -->
-	<li><a href="${pageContext.request.contextPath}/board/list" class="nav-link link-dark">게시판</a></li> 
+	<li><a href="${pageContext.request.contextPath}/inquiry/list" class="nav-link link-dark">고객문의</a></li> 
 	<li><a href="${pageContext.request.contextPath}/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
 </ul>
 
