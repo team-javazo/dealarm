@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import kr.co.dong.member.MemberDTO;
@@ -47,156 +49,153 @@ public class MemberController {
 	}
 	
 
-   @Inject
-   private MemberService memberService;
-   @Inject
-   private NaverNewsService naverNewsService;
+	@Inject
+	private MemberService memberService;
+	@Inject
+	private NaverNewsService naverNewsService;
+	@Inject
+	private UserKeywordService userKeywordService;
+	// 키워드 페이지 이동
+	@GetMapping("/keyword")
+	public String keyword() {
+		return "member/keyword";
+	}
 
-   @Inject
-   private UserKeywordService userKeywordService;
+	// 회원가입 폼 이동
+	@GetMapping("/join")
+	public String joinForm() {
+		return "member/join"; // /WEB-INF/views/member/join.jsp
+	}
 
+	// 회원가입 처리
+	@RequestMapping(value = "/join", method = RequestMethod.POST)
+	public String join(MemberDTO member, Model model) {
+		// 중복 체크
+		String errorMessage = null;
+		boolean isDuplicate = false;
 
-   // 키워드 페이지 이동
-   @GetMapping("/keyword")
-   public String keyword() {
-      return "member/keyword";
-   }
+		// 아이디 중복 체크
+		if (!memberService.isIdAvailable(member.getId())) {
+			errorMessage = "아이디가 이미 존재합니다.";
+			member.setId(null); // 중복된 아이디는 null로 설정
+			isDuplicate = true;
+		}
+		// 휴대폰 번호 중복 체크
+		else if (!memberService.isPhoneAvailable(member.getPhone())) {
+			errorMessage = "휴대폰 번호가 이미 존재합니다.";
+			member.setPhone(null); // 중복된 휴대폰 번호는 null로 설정
+			isDuplicate = true;
+		}
+		// 이메일 중복 체크
+		else if (!memberService.isEmailAvailable(member.getEmail())) {
+			errorMessage = "이메일이 이미 존재합니다.";
+			member.setEmail(null); // 중복된 이메일은 null로 설정
+			isDuplicate = true;
+		}
 
-   // 회원가입 폼 이동
-   @GetMapping("/join")
-   public String joinForm() {
-      return "member/join"; // /WEB-INF/views/member/join.jsp
-   }
+		// 중복된 항목이 있을 경우, 입력 폼에 다시 보여주기 위해 `model`에 에러 메시지를 담음
+		if (isDuplicate) {
+			model.addAttribute("errorMessage", errorMessage);
+			model.addAttribute("member", member); // 중복 항목을 제외한 값들을 유지
+			return "member/join"; // 다시 회원가입 폼으로 돌아가게 함
+		}
 
-   // 회원가입 처리
-   @RequestMapping(value = "/join", method = RequestMethod.POST)
-   public String join(MemberDTO member, Model model) {
-      // 중복 체크
-      String errorMessage = null;
-      boolean isDuplicate = false;
+		// 중복되지 않으면, 회원가입 처리
+		memberService.register(member);
+		return "redirect:/member/login"; // 회원가입 후 로그인 페이지로 리다이렉트
+	}
 
-      // 아이디 중복 체크
-      if (!memberService.isIdAvailable(member.getId())) {
-         errorMessage = "아이디가 이미 존재합니다.";
-         member.setId(null); // 중복된 아이디는 null로 설정
-         isDuplicate = true;
-      }
-      // 휴대폰 번호 중복 체크
-      else if (!memberService.isPhoneAvailable(member.getPhone())) {
-         errorMessage = "휴대폰 번호가 이미 존재합니다.";
-         member.setPhone(null); // 중복된 휴대폰 번호는 null로 설정
-         isDuplicate = true;
-      }
-      // 이메일 중복 체크
-      else if (!memberService.isEmailAvailable(member.getEmail())) {
-         errorMessage = "이메일이 이미 존재합니다.";
-         member.setEmail(null); // 중복된 이메일은 null로 설정
-         isDuplicate = true;
-      }
+	// 로그인 폼 이동
+	@GetMapping("/login")
+	public String loginForm() {
+		return "member/login"; // /WEB-INF/views/member/login.jsp
+	}
 
-      // 중복된 항목이 있을 경우, 입력 폼에 다시 보여주기 위해 `model`에 에러 메시지를 담음
-      if (isDuplicate) {
-         model.addAttribute("errorMessage", errorMessage);
-         model.addAttribute("member", member); // 중복 항목을 제외한 값들을 유지
-         return "member/join"; // 다시 회원가입 폼으로 돌아가게 함
-      }
+	// 로그인 처리
+	@PostMapping("/login")
+	public String login(MemberDTO member, HttpSession session, Model model) {
 
-      // 중복되지 않으면, 회원가입 처리
-      memberService.register(member);
-      return "redirect:/member/login"; // 회원가입 후 로그인 페이지로 리다이렉트
-   }
+		MemberDTO loginUser = memberService.login(member);
 
-   // 로그인 폼 이동
-   @GetMapping("/login")
-   public String loginForm() {
-      return "member/login"; // /WEB-INF/views/member/login.jsp
-   }
+		if (loginUser != null) {
+			session.setAttribute("id", loginUser.getId());
+			session.setAttribute("role", loginUser.getRole());
+			session.setAttribute("name", loginUser.getName());
 
-   // 로그인 처리
-   @PostMapping("/login")
-   public String login(MemberDTO member, HttpSession session, Model model) {
+			// 키워드 뉴스 최신 10개 가져오기
+			List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
+			Set<String> addedLinks = new HashSet<>();
+			List<Map<String, String>> latestNews = new ArrayList<>();
 
-       MemberDTO loginUser = memberService.login(member);
+			try {
+				for (UserKeywordDTO dto : keywordDTOs) {
+					NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
 
-       if (loginUser != null) {
-           session.setAttribute("id", loginUser.getId());
-           session.setAttribute("role", loginUser.getRole());
-           session.setAttribute("name", loginUser.getName());
+					for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
+						if (addedLinks.contains(item.getLink())) continue;
+						addedLinks.add(item.getLink());
 
-           // 키워드 뉴스 최신 10개 가져오기
-           List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
-           Set<String> addedLinks = new HashSet<>();
-           List<Map<String, String>> latestNews = new ArrayList<>();
+						Map<String, String> newsMap = new HashMap<>();
+						newsMap.put("title", item.getTitle());
+						newsMap.put("pubDate", item.getPubDate());
+						newsMap.put("keyword", dto.getKeyword());
+						newsMap.put("link", item.getLink());
 
-           try {
-               for (UserKeywordDTO dto : keywordDTOs) {
-                   NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
+						latestNews.add(newsMap);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-                   for (NaverNewsdto.NewsItem item : newsResponse.getItems()) {
-                       if (addedLinks.contains(item.getLink())) continue;
-                       addedLinks.add(item.getLink());
+			// 최신순 정렬 후 X개만
+			latestNews = latestNews.stream()
+							.sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
+							.limit(100)
+							.collect(Collectors.toList());
 
-                       Map<String, String> newsMap = new HashMap<>();
-                       newsMap.put("title", item.getTitle());
-                       newsMap.put("pubDate", item.getPubDate());
-                       newsMap.put("keyword", dto.getKeyword());
-                       newsMap.put("link", item.getLink());
+			session.setAttribute("latestNews", latestNews);
 
-                       latestNews.add(newsMap);
-                   }
-               }
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
-
-           // 최신순 정렬 후 X개만
-           latestNews = latestNews.stream()
-                                  .sorted((a,b) -> b.get("pubDate").compareTo(a.get("pubDate")))
-                                  .limit(100)
-                                  .collect(Collectors.toList());
-
-           session.setAttribute("latestNews", latestNews);
-
-           return "redirect:/main"; // 메인 페이지
-       } else {
-           model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
-           return "member/login";
-       }
-   }
+			return "redirect:/main"; // 메인 페이지
+		} else {
+			model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
+			return "member/login";
+		}
+	}
 
 
-   // 로그아웃 처리
-   @GetMapping("/logout")
-   public String logout(HttpSession session) {
-      session.invalidate(); // 세션 초기화
-      return "redirect:/main"; // 홈으로 이동
-   }
+	// 로그아웃 처리
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate(); // 세션 초기화
+		return "redirect:/main"; // 홈으로 이동
+	}
 
-   // 회원가입 중복 검사 후, 알림 띄우기
-   @PostMapping("/checkDuplicate")
-   @ResponseBody
-   public String checkDuplicate(@RequestParam("id") String id, @RequestParam("phone") String phone,
-         @RequestParam("email") String email) {
-      StringBuilder json = new StringBuilder();
-      json.append("{");
+	// 회원가입 중복 검사 후, 알림 띄우기
+	@PostMapping("/checkDuplicate")
+	@ResponseBody
+	public String checkDuplicate(@RequestParam("id") String id, @RequestParam("phone") String phone,
+			@RequestParam("email") String email) {
+		StringBuilder json = new StringBuilder();
+		json.append("{");
 
-      if (!memberService.isIdAvailable(id)) {
-         json.append("\"success\":false,");
-         json.append("\"message\":\"아이디가 이미 존재합니다.\"");
-      } else if (!memberService.isPhoneAvailable(phone)) {
-         json.append("\"success\":false,");
-         json.append("\"message\":\"휴대폰 번호가 이미 존재합니다.\"");
-      } else if (!memberService.isEmailAvailable(email)) {
-         json.append("\"success\":false,");
-         json.append("\"message\":\"이메일이 이미 존재합니다.\"");
-      } else {
-         json.append("\"success\":true,");
-         json.append("\"message\":\"사용 가능한 값입니다.\"");
-      }
+		if (!memberService.isIdAvailable(id)) {
+			json.append("\"success\":false,");
+			json.append("\"message\":\"아이디가 이미 존재합니다.\"");
+		} else if (!memberService.isPhoneAvailable(phone)) {
+			json.append("\"success\":false,");
+			json.append("\"message\":\"휴대폰 번호가 이미 존재합니다.\"");
+		} else if (!memberService.isEmailAvailable(email)) {
+			json.append("\"success\":false,");
+			json.append("\"message\":\"이메일이 이미 존재합니다.\"");
+		} else {
+			json.append("\"success\":true,");
+			json.append("\"message\":\"사용 가능한 값입니다.\"");
+		}
 
-      json.append("}");
-      return json.toString();
-   }
+		json.append("}");
+		return json.toString();
+	}
 
 
 //   마이페이지 띄우기
@@ -433,14 +432,38 @@ public class MemberController {
 		
 		OAuth2AccessToken oauthToken;
         oauthToken = naverLoginVO.getAccessToken(session, code, state);
-        //로그인 사용자 정보를 읽어온다.
+        //로그인 사용자 정보(JSON)를 읽어온다.
 	    apiResult = naverLoginVO.getUserProfile(oauthToken);
-		model.addAttribute("result", apiResult);
+	    
+	    // JSON 파싱
+	    ObjectMapper mapper = new ObjectMapper();
+	    JsonNode rootNode = mapper.readTree(apiResult);
+	    JsonNode responseNode = rootNode.path("response");
 
-        /* 네이버 로그인 성공 페이지 View 호출 */
-		return "member/naverSuccess";
+	    // 필요한 값 추출
+	    String name = responseNode.path("name").asText();
+	    String mobile = responseNode.path("mobile").asText();
+	    String email = responseNode.path("email").asText();
+
+		// 휴대폰 중복 Test를 통한 기존 회원 확인, 가입회원이면 로그인 실행
+	    
+		if (!memberService.isPhoneAvailable(mobile)) {
+			session.setAttribute("id", name);
+			session.setAttribute("role", "USER");
+			session.setAttribute("name", name);
+
+			return "redirect:/main"; // 로그인 성공 → 홈으로
+			
+		// 가입회원이 아니면 신규가입 화면으로 이동
+		} else {
+			// Model에 담기
+			model.addAttribute("name", name);
+			model.addAttribute("mobile", mobile);
+			model.addAttribute("email", email);
+
+			/* 네이버 로그인 성공 alert이 필요하면 naverSuccess로 수정 예정 */
+			return "member/naverJoin";
+
+		}
 	}
-	
-
-
 }
