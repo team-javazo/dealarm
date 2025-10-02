@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
 import kr.co.dong.member.MemberDTO;
@@ -106,7 +108,7 @@ public class MemberController {
 		if (loginUser != null) {
 //            session.setAttribute("loginUser", loginUser);
 			session.setAttribute("id", loginUser.getId());
-			session.setAttribute("role", loginUser.getRole());
+			session.setAttribute("role", "USER");
 			session.setAttribute("name", loginUser.getName());
 
 			return "redirect:/main"; // 로그인 성공 → 홈으로
@@ -418,14 +420,40 @@ public class MemberController {
 		
 		OAuth2AccessToken oauthToken;
         oauthToken = naverLoginVO.getAccessToken(session, code, state);
-        //로그인 사용자 정보를 읽어온다.
+        //로그인 사용자 정보(JSON)를 읽어온다.
 	    apiResult = naverLoginVO.getUserProfile(oauthToken);
-		model.addAttribute("result", apiResult);
+	    
+	    // JSON 파싱
+	    ObjectMapper mapper = new ObjectMapper();
+	    JsonNode rootNode = mapper.readTree(apiResult);
+	    JsonNode responseNode = rootNode.path("response");
 
-        /* 네이버 로그인 성공 페이지 View 호출 */
-		return "member/naverSuccess";
+	    // 필요한 값 추출
+	    String name = responseNode.path("name").asText();
+	    String mobile = responseNode.path("mobile").asText();
+	    String email = responseNode.path("email").asText();
+
+		// 휴대폰 중복 Test를 통한 기존 회원 확인, 가입회원이면 로그인 실행
+	    
+		if (!memberService.isPhoneAvailable(mobile)) {
+			session.setAttribute("id", name);
+			session.setAttribute("role", "USER");
+			session.setAttribute("name", name);
+
+			return "redirect:/main"; // 로그인 성공 → 홈으로
+			
+		// 가입회원이 아니면 신규가입 화면으로 이동
+		} else {
+			// Model에 담기
+			model.addAttribute("name", name);
+			model.addAttribute("mobile", mobile);
+			model.addAttribute("email", email);
+
+			/* 네이버 로그인 성공 alert이 필요하면 naverSuccess로 수정 예정 */
+			return "member/naverJoin";
+
+		}
 	}
-	
-	
+
 
 }
