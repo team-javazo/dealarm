@@ -27,7 +27,7 @@
         <!-- 로그인 여부에 따라 타이틀 변경 -->
         <div style="font-weight:bold; margin-bottom:10px; font-size:14px; text-align:center;">
             <c:choose>
-                <c:when test="${not empty sessionScope.loginUser}">
+                <c:when test="${not empty sessionScope.id}">
                     키워드 뉴스
                 </c:when>
                 <c:otherwise>
