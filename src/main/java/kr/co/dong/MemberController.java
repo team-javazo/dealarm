@@ -110,8 +110,6 @@ public class MemberController {
 			session.setAttribute("id", loginUser.getId());
 			session.setAttribute("role", loginUser.getRole());
 			session.setAttribute("name", loginUser.getName());
-			session.setAttribute("phone", loginUser.getPhone());
-
 			return "redirect:/main"; // 로그인 성공 → 홈으로
 		} else {
 			model.addAttribute("errorMsg", "아이디 또는 비밀번호가 올바르지 않습니다.");
@@ -156,8 +154,8 @@ public class MemberController {
 //	마이페이지 띄우기
 	@RequestMapping("/mypage")
 	public String mypage(HttpSession session, Model model) {
-		String phone = (String) session.getAttribute("phone"); // 로그인세션에서 id 추출
-		MemberDTO user = memberService.myDTO(phone); // 내 정보객체 생성
+		String id = (String) session.getAttribute("id"); // 로그인세션에서 id 추출
+		MemberDTO user = memberService.myDTO(id); // 내 정보객체 생성
 		model.addAttribute("user", user); // user를 view로 보냄
 		return "member/mypage";
 	}
@@ -429,18 +427,19 @@ public class MemberController {
 	    JsonNode rootNode = mapper.readTree(apiResult);
 	    JsonNode responseNode = rootNode.path("response");
 
-	    // 필요한 값 추출
+	    // 신규가입 유무 점검과 가입을 위해 필요한 값 추출
 	    String name = responseNode.path("name").asText();
-	    String mobile = responseNode.path("mobile").asText();
+	    String phone = responseNode.path("mobile").asText();
 	    String email = responseNode.path("email").asText();
 
-		// 휴대폰 중복 Test를 통한 기존 회원 확인, 가입회원이면 로그인 실행
+		// 휴대폰 중복 Test를 통한 기존 회원 확인, 가입회원이면 소셜로그인 실행, 가입이 아니면 신규회원가입 추진
 	    
-		if (!memberService.isPhoneAvailable(mobile)) {
-			session.setAttribute("id", name);
-			session.setAttribute("role", "USER");
-			session.setAttribute("name", name);
-			session.setAttribute("phone", mobile);
+		if (!memberService.isPhoneAvailable(phone)) {  //정상적인 소셜로그인
+			//네이버를 위한 DB 회원 정보 불러오기 by Phone
+			MemberDTO loginUser = memberService.myDTONaver(phone);
+			session.setAttribute("id", loginUser.getId());
+			session.setAttribute("role", loginUser.getRole());
+			session.setAttribute("name", loginUser.getName());
 
 			return "redirect:/main"; // 로그인 성공 → 홈으로
 			
@@ -448,7 +447,7 @@ public class MemberController {
 		} else {
 			// Model에 담기
 			model.addAttribute("name", name);
-			model.addAttribute("phone", mobile);
+			model.addAttribute("phone", phone);
 			model.addAttribute("email", email);
 
 			/* 네이버 로그인 성공 alert이 필요하면 naverSuccess로 수정 예정 */

@@ -14,6 +14,7 @@ public interface MemberDAO {
     int emailCheck(String email);
     MemberDTO login(MemberDTO member); // 추가
 	MemberDTO myDTO(String id); // 정보 불러오기
+	MemberDTO myDTONaver(String phone); // 네이버를 위한 내정보 불러오기
 	int memberCount();			// 회원수
 	int searchMembersCount(Map<String,Object> params);	//페이징용 검색 카운트
 	List<MemberDTO> allList(Map<String,Object> params);	//모든회원
@@ -23,7 +24,7 @@ public interface MemberDAO {
     int userupdate(MemberDTO update);
     int adminupdate(MemberDTO update);
     int updatePassword(MemberDTO member);
-    MemberDTO selectone(String phone);
+    MemberDTO selectone(String id);
     int deleteUser(String id);
     int deleteadmin(String id);
     int activeUser(String id);

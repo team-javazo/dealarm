@@ -50,8 +50,14 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override	// 내 정보 불러오기
-	public MemberDTO myDTO(String phone) {
-		return sqlSession.selectOne(namespace + ".myDTO", phone);
+	public MemberDTO myDTO(String id) {
+		return sqlSession.selectOne(namespace + ".myDTO", id);
+	}
+	
+	@Override	// 네이버를 위한 정보 불러오기
+	public MemberDTO myDTONaver(String phone) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(namespace + ".myDTONaver", phone);
 	}
 
 	@Override	// 총 회원수 

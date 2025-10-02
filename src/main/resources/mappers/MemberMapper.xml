@@ -61,6 +61,14 @@
 		select id, password, name, phone, email, birth_date, gender, notification, region, role,
 		is_active, created_at
 		FROM users
+		WHERE id = #{id}
+	</select>
+	
+	<!-- 네이버를 위한 내정보 불러오기 -->
+	<select id="myDTONaver" parameterType="String"  resultType="kr.co.dong.member.MemberDTO">
+		select id, password, name, phone, email, birth_date, gender, notification, region, role,
+		is_active, created_at
+		FROM users
 		WHERE phone = #{phone}
 	</select>
 	
