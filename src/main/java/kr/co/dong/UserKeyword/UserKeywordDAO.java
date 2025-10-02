@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import kr.co.dong.sms.SmsDTO;
-
 public interface UserKeywordDAO {
 	void insert(UserKeywordDTO dto); // 키워드 등록
 

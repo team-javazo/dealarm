@@ -26,49 +26,52 @@ public class NewsController {
     private UserKeywordService userKeywordService;
 
     @GetMapping("/news")
-    public String showNews(@RequestParam(required = false) String query,
-                           Model model,
-                           HttpSession session) {
+    public String showNews(
+            @RequestParam(required = false) String query,
+            Model model,
+            HttpSession session) throws Exception {
 
         Map<String, List<NaverNewsdto.NewsItem>> keywordNewsMap = new LinkedHashMap<>();
         Set<String> addedLinks = new HashSet<>();
 
-        try {
-            // 검색어 뉴스 처리
-            if (query != null && !query.isEmpty()) {
-                // 검색어 뉴스만 보여주고 싶으면 keywordNewsMap 초기화
-                keywordNewsMap.clear();
-                addedLinks.clear();
+        // 검색어 뉴스: 갯수 제한 없음
+        if (query != null && !query.isEmpty()) {
+            NaverNewsdto newsResponse = naverNewsService.searchNews(query);
+            List<NaverNewsdto.NewsItem> items = newsResponse.getItems()
+                    .stream()
+                    .filter(n -> !addedLinks.contains(n.getLink()))
+                    .collect(Collectors.toList());
+            items.forEach(n -> addedLinks.add(n.getLink()));
+            keywordNewsMap.put(query, items);
+        }
 
-                NaverNewsdto newsResponse = naverNewsService.searchNews(query);
-                List<NaverNewsdto.NewsItem> items = newsResponse.getItems();
-                items.removeIf(n -> addedLinks.contains(n.getLink()));
-                items.forEach(n -> addedLinks.add(n.getLink()));
-                keywordNewsMap.put(query, items);
+        // 로그인 사용자 키워드 뉴스: 각 키워드별 최대 5개
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) userId = (String) session.getAttribute("id");
 
-            } else {
-                // 로그인 사용자 키워드 뉴스 처리
-                String userId = (String) session.getAttribute("id");
-                if (userId != null && !userId.isEmpty()) {
-                    List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(userId);
+        if (userId != null && !userId.isEmpty()) {
+            List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(userId);
 
-                    for (UserKeywordDTO dto : keywordDTOs) {
-                        NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
-                        List<NaverNewsdto.NewsItem> items = newsResponse.getItems();
-                        items.removeIf(n -> addedLinks.contains(n.getLink()));
-                        items = items.size() > 5 ? items.subList(0, 5) : items;
-                        items.forEach(n -> addedLinks.add(n.getLink()));
-                        keywordNewsMap.put(dto.getKeyword(), items);
-                    }
+            for (UserKeywordDTO dto : keywordDTOs) {
+                try {
+                    NaverNewsdto newsResponse = naverNewsService.searchNews(dto.getKeyword());
+
+                    Set<String> keywordLinks = new HashSet<>();
+                    List<NaverNewsdto.NewsItem> items = newsResponse.getItems()
+                            .stream()
+                            .filter(n -> !keywordLinks.contains(n.getLink()))
+                            .peek(n -> keywordLinks.add(n.getLink()))
+                            .limit(5)
+                            .collect(Collectors.toList());
+
+                    keywordNewsMap.put(dto.getKeyword(), items);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         model.addAttribute("keywordNewsMap", keywordNewsMap);
-        return "news";
+        return "news"; // JSP로 이동
     }
-
-
 }

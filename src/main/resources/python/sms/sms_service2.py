@@ -25,6 +25,7 @@ TWILIO_FROM_NUMBER = os.getenv("TWILIO_FROM_NUMBER")
 
 twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
+# ❌ stdout print 제거 → stderr 로만 남김
 logging.info(f"DB_USER={os.getenv('DB_USER')}, DB_PASSWORD={'***' if os.getenv('DB_PASSWORD') else None}")
 
 # ==================================================
@@ -56,55 +57,49 @@ def normalize_phone(phone: str) -> str:
     return phone
 
 # ==================================================
-# 4) SMS 전송 (중복 방지 + 키워드 포함)
+# 4) SMS 전송
 # ==================================================
-def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int, keyword: str = None):
+def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int):
     if not (user_id and phone and title and deal_id is not None):
         raise ValueError("userId, phone, title, dealId are required")
 
-    conn = get_connection()
     try:
-        with conn.cursor() as cursor:
-            # 1) 중복 여부 확인
-            cursor.execute("SELECT 1 FROM deal_match WHERE user_id=%s AND deal_id=%s", (user_id, deal_id))
-            exists = cursor.fetchone()
-            if exists:
-                logging.info(f"🔁 이미 발송된 알림: user={user_id}, dealId={deal_id}")
-                return {"result": "skipped", "reason": "already_sent"}
+        deal_id = int(deal_id)
+    except ValueError:
+        raise ValueError("dealId must be an integer")
 
-        # 2) Twilio 문자 발송
-        to_number = normalize_phone(phone)
-        body = (f"[dealarm 알림]\n"
-                f"[{user_id}님 키워드 알림]\n"
-                f"키워드: {keyword or '알 수 없음'}\n"
-                f"제품명: {title}\n"
-                f"제품링크: {url or ''}")
+    to_number = normalize_phone(phone)
+    body = (f"[dealarm 알림]\n"
+            f"[{user_id}님 키워드 알림]\n"
+            f"제품명: {title}\n"
+            f"제품링크: {url or ''}")
 
+    try:
+        # 1) Twilio 발송
         message = twilio_client.messages.create(
             to=to_number,
             from_=TWILIO_FROM_NUMBER,
             body=body
         )
-        logging.info(f"✅ SMS 전송 성공: user={user_id}, dealId={deal_id}, keyword={keyword}, to={to_number}, sid={message.sid}")
+        logging.info(f"✅ SMS 전송 성공: user={user_id}, dealId={deal_id}, to={to_number}, sid={message.sid}")
 
-        # 3) 발송 성공 후 DB 기록
+        # 2) DB 기록
+        conn = get_connection()
         with conn.cursor() as cursor:
             sql = """
-                INSERT INTO deal_match (user_id, deal_id, matched_at)
-                VALUES (%s, %s, CURRENT_TIMESTAMP)
+                INSERT INTO deal_match (user_id, deal_id)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE matched_at = CURRENT_TIMESTAMP
             """
             cursor.execute(sql, (user_id, deal_id))
-        conn.commit()
+            conn.commit()
+        conn.close()
 
         return {"result": "sent", "sid": message.sid}
 
     except Exception as e:
         logging.exception("❌ SMS 전송 실패")
         return {"error": str(e)}
-
-    finally:
-        conn.close()
-
 
 # ==================================================
 # 5) 엔트리포인트
@@ -124,12 +119,7 @@ if __name__ == "__main__":
         data = json.loads(raw_json)
 
         result = send_sms(
-            data["userId"],
-            data["phone"],
-            data["title"],
-            data.get("url", ""),
-            data["dealId"],
-            data.get("keyword")   # ✅ Java에서 dto에 keyword 추가해주면 여기서 사용 가능
+            data["userId"], data["phone"], data["title"], data.get("url", ""), data["dealId"]
         )
 
         # ✅ stdout에는 JSON만 출력

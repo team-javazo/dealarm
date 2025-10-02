@@ -6,7 +6,6 @@ public class SmsDTO {
 	private String title;
 	private String url;
 	private int dealId;
-	private String keyword;
 	
 	public SmsDTO() {}
 
@@ -15,6 +14,14 @@ public class SmsDTO {
 		this.userId = userId;
 		this.phone = phone;
 		this.title = title;
+		this.url = url;
+		this.dealId = dealId;
+	}
+
+	public SmsDTO(String userId, String title, String url, int dealId) {
+		super();
+		this.userId = userId;
+		this.title = title;		
 		this.url = url;
 		this.dealId = dealId;
 	}
@@ -64,14 +71,6 @@ public class SmsDTO {
 
 	public void setDealId(int dealId) {
 		this.dealId = dealId;
-	}
-
-	public String getKeyword() {
-		return keyword;
-	}
-
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
 	}
 	
 	
