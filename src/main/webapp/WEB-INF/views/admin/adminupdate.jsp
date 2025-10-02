@@ -152,44 +152,63 @@
 			        </div>
 			    </div>
 			</div>
-			<!-- 비밀번호 변경 모달 -->
-			<div id="changePwModal"
-				style="display: none; border: 1px solid #000; padding: 10px; background: #eee;">
-				<p>
-					<strong>비밀번호를 변경하시겠습니까?</strong>
-				</p>
+			
+			
+<!-- 비밀번호 변경 모달 -->
+<div class="modal fade" id="changePwModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-				<input type="hidden" id="changePwUserId" value="${user.id}">
+      <div class="modal-header">
+        <h5 class="modal-title">비밀번호 변경</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-				현재 비밀번호: <input type="password" id="currentPw" required><br>
-				<br> 새 비밀번호: <input type="password" id="newPw" required><br>
-				<br> 새 비밀번호 확인: <input type="password" id="confirmNewPw"
-					required><br> <br>
+      <div class="modal-body">
+        <p class="text-center"><strong>비밀번호를 변경하시겠습니까?</strong></p>
 
-				<button type="button" onclick="closePwModal()">취소</button>
-				<button type="button" id="confirmChangePw">변경</button>
-			</div>
+        <input type="hidden" id="changePwUserId" value="${user.id}">
 
+        <div class="mb-3">
+          <label for="currentPw" class="form-label">현재 비밀번호</label>
+          <input type="password" class="form-control" id="currentPw" required>
+        </div>
 
+        <div class="mb-3">
+          <label for="newPw" class="form-label">새 비밀번호</label>
+          <input type="password" class="form-control" id="newPw" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="confirmNewPw" class="form-label">새 비밀번호 확인</label>
+          <input type="password" class="form-control" id="confirmNewPw" required>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" id="confirmChangePw">변경</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 			<!-- =================[로그인페이지 end]============ -->
 			<%@ include file="/WEB-INF/views/include/footer.jsp"%>
 		</div>
 	</div>
 
+<script>
+  // 모달 객체 전역 생성
+  const pwModal = new bootstrap.Modal(document.getElementById("changePwModal"));
 
-
-
-
-
-
-	<script>
   function openPwModal() {
-    document.getElementById("changePwModal").style.display = "block";
+    pwModal.show(); // 부트스트랩 모달 열기
   }
 
   function closePwModal() {
-    document.getElementById("changePwModal").style.display = "none";
+    pwModal.hide(); // 부트스트랩 모달 닫기
     document.getElementById("currentPw").value = "";
     document.getElementById("newPw").value = "";
     document.getElementById("confirmNewPw").value = "";
@@ -211,7 +230,6 @@
       return;
     }
 
-    // JSON → Form 방식으로 변경
     const formData = new URLSearchParams();
     formData.append("id", id);
     formData.append("currentPw", currentPw);
@@ -237,6 +255,7 @@
     });
   });
 </script>
+
 
 </body>
 </html>

@@ -81,7 +81,7 @@
 			        <tr><th>가입일</th><td>${user.created_at}</td></tr>
 			    </table>
 			
-			    <div class="mt-3">
+			    <div class="mt-3 text-center">
 			        <button type="button" class="btn btn-primary" onclick="openPassModal()">수정</button>
 					<button type="button" class="btn btn-secondary" onclick="location.href='<c:url value="/main"/>'">홈으로</button>
 			    </div>
