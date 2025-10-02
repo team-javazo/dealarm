@@ -8,18 +8,8 @@ public class UserKeywordDTO {
 	private int id;
 	private String userId;
 	private String keyword;
-	private int frequency;  // 추가: frequency 필드
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createdAt;
-
-	
-	public int getFrequency() {
-		return frequency;
-	}
-
-	public void setFrequency(int frequency) {
-		this.frequency = frequency;
-	}
 
 	public int getId() {
 		return id;
@@ -56,19 +46,18 @@ public class UserKeywordDTO {
 	public UserKeywordDTO() {
 	}
 
-	public UserKeywordDTO(int id, String userId, String keyword, int frequency, Date createdAt) {
+	@Override
+	public String toString() {
+		return "UserKeywordDTO [userId=" + userId + ", keyword=" + keyword + ", createdAt=" + createdAt + ", id=" + id
+				+ "]";
+	}
+
+	public UserKeywordDTO(String userId, String keyword, Date createdAt, int id) {
 		super();
 		this.id = id;
 		this.userId = userId;
 		this.keyword = keyword;
-		this.frequency = frequency;
 		this.createdAt = createdAt;
-	}
-
-	@Override
-	public String toString() {
-		return "UserKeywordDTO [id=" + id + ", userId=" + userId + ", keyword=" + keyword + ", frequency=" + frequency
-				+ ", createdAt=" + createdAt + "]";
 	}
 
 }

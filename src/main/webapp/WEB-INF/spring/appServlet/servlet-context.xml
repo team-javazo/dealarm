@@ -24,6 +24,9 @@
         <beans:property name="suffix" value=".jsp" />
     </beans:bean>
     
+   	<!-- NaverLoginBO Class에 대한 Bean설정 추가 -->
+	<beans:bean id="naverLoginVO" class="kr.co.dong.oauth.NaverLoginVO" />
+    
     <context:component-scan base-package="kr.co.dong"/>
 
 </beans:beans>

@@ -1,16 +1,12 @@
 package kr.co.dong.UserKeyword;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import kr.co.dong.sms.SmsDTO;
 
 @Repository
 public class UserKeywordDAOImpl implements UserKeywordDAO {
@@ -24,16 +20,7 @@ public class UserKeywordDAOImpl implements UserKeywordDAO {
     public void insert(UserKeywordDTO dto) {
         sqlSession.insert(namespace + ".insert", dto);
     }
-    
-    public List<UserKeywordDTO> findKeywordRankingByGenderAndAge(String gender, int startAge, int endAge, String userId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("gender", gender);
-        params.put("startAge", startAge);
-        params.put("endAge", endAge);
-        params.put("userId", userId);  // userId 추가
 
-        return sqlSession.selectList(namespace + ".findKeywordRankingByGenderAndAge", params);
-    }
 //    @Override
 //	public List<String> findAllUserIds() {
 //		return sqlSession.selectList(namespace + ".findAllUserIds");
@@ -61,7 +48,7 @@ public class UserKeywordDAOImpl implements UserKeywordDAO {
     }
 
     @Override
-    public List<SmsDTO> findMatchingUsers(String title) {
+    public List<String> findMatchingUsers(String title) {
         return sqlSession.selectList(namespace + ".findMatchingUsers", title);
     }
 }
