@@ -34,7 +34,7 @@ public class CrawlScheduler {
 			+ "/dealarm-data/quasarzone_crawling.json";
 
 	// 5분마다 실행
-//	@Scheduled(fixedDelay = 300000)
+	@Scheduled(fixedDelay = 300000)
 	public void runCrawlerAndReadJson() {
 		try {
 			// ====================== 뽐뿌 ======================
