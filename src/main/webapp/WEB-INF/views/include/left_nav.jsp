@@ -39,6 +39,7 @@
 				</select>
 
 				<select id="ages" multiple class="form-select mb-2">
+					<option value="all">전체</option>
 					<option value="10">10대</option>
 					<option value="20">20대</option>
 					<option value="30">30대</option>
@@ -203,10 +204,18 @@ $(function() {
         var gender = $("#gender").val();
         var ageRange = $("#ages").val(); // multiple 선택일 경우 배열로 반환
 
-    	// ✅ 수정된 연령 범위 계산 로직
-        var startAge = parseInt(ageRange[0], 10); // 선택된 첫 번째 연령대 (예: 40)
-        var endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9; // 선택된 마지막 연령대의 끝 (예: 50 + 9 = 59)
+        var startAge, endAge;
 
+        // ✅ "전체"가 선택된 경우
+        if (ageRange.includes("all")) {
+            startAge = 10;
+            endAge = 100;
+        } else {
+            // 선택된 값 중 가장 작은/큰 값으로 범위 계산
+            startAge = parseInt(ageRange[0], 10);
+            endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9;
+        }
+        
         // AJAX 요청
         $.ajax({
             url: contextPath + "/keywords/ranking", // 서버로 키워드 랭킹 요청

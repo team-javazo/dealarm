@@ -210,8 +210,13 @@ header {
     width: 100%;      /* 화면 너비 전체 */
     max-width: 1220px; /* 최대 너비 제한 */
     margin: 0 auto;     /* 중앙 정렬 */
+<<<<<<< HEAD
     height: 250px;
 /*    background-color: #f8f9fa; /* 필요시 배경색 추가 */
+=======
+    height: 300px;
+ /*   background-color: #f8f9fa;  필요시 배경색 추가 */
+>>>>>>> refs/heads/main
 }
 .header-img {
 	
