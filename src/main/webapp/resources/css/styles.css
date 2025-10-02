@@ -211,7 +211,7 @@ header {
     max-width: 1220px; /* 최대 너비 제한 */
     margin: 0 auto;     /* 중앙 정렬 */
     height: 300px;
-    background-color: #f8f9fa; /* 필요시 배경색 추가 */
+ /*   background-color: #f8f9fa;  필요시 배경색 추가 */
 }
 .header-img {
     width: 550px;       /* 이미지 가로 크기 조절 */
