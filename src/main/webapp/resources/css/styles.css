@@ -210,19 +210,25 @@ header {
     width: 100%;      /* 화면 너비 전체 */
     max-width: 1220px; /* 최대 너비 제한 */
     margin: 0 auto;     /* 중앙 정렬 */
+<<<<<<< HEAD
+    height: 250px;
+/*    background-color: #f8f9fa; /* 필요시 배경색 추가 */
+=======
     height: 300px;
  /*   background-color: #f8f9fa;  필요시 배경색 추가 */
+>>>>>>> refs/heads/main
 }
 .header-img {
-    width: 550px;       /* 이미지 가로 크기 조절 */
-    height: auto;       /* 세로 비율 유지 */
-    object-fit: contain;
+	
+    width: 550px;       /* 가로 고정 */
+    height: 250px;      /* 세로 고정 */
+    object-fit: cover;  /* 비율 유지하면서 넘치는 부분 잘림 */
     display: block;
 }
 
 .center-container {
     position: absolute;  /* 헤더 기준 절대 위치 */
-    top: 50px;           /* 헤더 상단에서 세로 위치 */
+    top: 0px;           /* 헤더 상단에서 세로 위치 */
     left: 335px;          /* 헤더 좌측에서 가로 위치 */
     display: flex;
     justify-content: flex-start;
@@ -232,10 +238,10 @@ header {
 /* 이미지 왼쪽 컨테이너 */
 .left-container {
     position: absolute;
-    top: 50px;                            /* 이미지와 세로 위치 맞춤 */
+    top: 00px;                            /* 이미지와 세로 위치 맞춤 */
     left: 0px;                            /* 이미지 왼쪽 기준 */
     width: 300px;
-    height: 300px;
+    height: 250px;
     display: flex;
     align-items: center;
     border: 1px solid #999999;
@@ -247,10 +253,10 @@ header {
 /* 이미지 오른쪽 컨테이너 */
 .right-container {
     position: absolute;
-    top: 50px;                            /* 이미지와 세로 위치 맞춤 */
+    top: 00px;                            /* 이미지와 세로 위치 맞춤 */
     left: 925px;                          /* 이미지 left + 이미지 width + 여유 공간 */
     width: 300px;
-    height: 300px;
+    height: 790px;
     display: flex;
     align-items: center;
     border: 1px solid #999999;
@@ -325,19 +331,9 @@ body {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-#mainContainer {
-    width: 1220px;
-    margin: 0 auto;
-    display: flex;
-    gap: 20px;
-    padding-top: 20px;
-    min-height: 500px; /* 내부 컨텐츠가 안 잘리도록 */
-}
 
-#dealContainer {
-  border: 1px solid red;
-  min-height: 500px;
-}
+
+
 /* 카드 스타일 */
 .deal-card {
 	width: 100%;   /* 부모 폭 꽉 차도록 */
