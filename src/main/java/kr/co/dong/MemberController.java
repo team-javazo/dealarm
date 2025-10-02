@@ -108,7 +108,7 @@ public class MemberController {
 		if (loginUser != null) {
 //            session.setAttribute("loginUser", loginUser);
 			session.setAttribute("id", loginUser.getId());
-			session.setAttribute("role", "USER");
+			session.setAttribute("role", loginUser.getRole());
 			session.setAttribute("name", loginUser.getName());
 
 			return "redirect:/main"; // 로그인 성공 → 홈으로
