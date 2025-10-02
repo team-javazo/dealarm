@@ -1,5 +1,10 @@
 package kr.co.dong.news;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +13,12 @@ import java.util.stream.Collectors;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.co.dong.UserKeyword.UserKeywordDTO;
+import kr.co.dong.UserKeyword.UserKeywordService;
 
 @Service
 public class NaverNewsService {
@@ -16,6 +26,7 @@ public class NaverNewsService {
     private static final String CLIENT_ID = "3XWB4YotcPwPrZ0rZdUa";
     private static final String CLIENT_SECRET = "wQC3oL7RGQ";
 
+    // Naver 뉴스 검색
     public NaverNewsdto searchNews(String query) throws Exception {
        String url = "https://openapi.naver.com/v1/search/news.json?query=" + query;
 

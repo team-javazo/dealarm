@@ -65,4 +65,5 @@
     GROUP BY uk.keyword
     ORDER BY frequency DESC
     LIMIT 10; </select>
+
 </mapper>
