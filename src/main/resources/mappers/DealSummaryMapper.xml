@@ -8,7 +8,7 @@
 	<!-- 딜 저장 -->
 	<insert id="insertDeal"
 		parameterType="kr.co.dong.deal.DealSummaryDTO">
-		INSERT INTO project_db.deal_summary
+		INSERT INTO deal_summary
 		(title, url, price,
 		site, posted_at, created_at, likes, img)
 		VALUES (#{title}, #{url},
@@ -20,7 +20,7 @@
 	<select id="existsByUrl" parameterType="string"
 		resultType="boolean">
 		SELECT COUNT(*) > 0
-		FROM project_db.deal_summary
+		FROM deal_summary
 		WHERE url =
 		#{url}
 	</select>
@@ -32,7 +32,7 @@
 		posted_at AS postedAt,
 		created_at AS createdAt,
 		likes, img
-		FROM project_db.deal_summary
+		FROM deal_summary
 		<where>
 			<if test="tokens != null and tokens.size > 0">
 				(
@@ -51,7 +51,7 @@
 		resultType="kr.co.dong.deal.DealSummaryDTO">
 		SELECT id, title, url, price, site, posted_at, created_at,
 		likes
-		FROM project_db.deal_summary
+		FROM deal_summary
 		WHERE title LIKE #{keyword}
 		ORDER BY
 		posted_at DESC
