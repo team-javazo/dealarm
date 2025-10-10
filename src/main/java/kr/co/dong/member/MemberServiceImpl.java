@@ -46,12 +46,18 @@ public class MemberServiceImpl implements MemberService {
 	public MemberDTO myDTO(String id) {
 		return memberDAO.myDTO(id);
 	}
+	
+	@Override
+	public MemberDTO myDTONaver(String phone) {
+		// TODO Auto-generated method stub
+		return memberDAO.myDTONaver(phone);
+	}
 
 	@Override
 	public int memberCount() {
 		return memberDAO.memberCount();
 	}
-
+	
 	@Override
 	public List<MemberDTO> allList(Map<String,Object> params) {
 		return memberDAO.allList(params);

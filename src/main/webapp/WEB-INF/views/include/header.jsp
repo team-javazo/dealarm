@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<header style="position: relative; height: 300px; max-width: 1220px; margin: 0 auto;">
+<header style="position: relative; max-width: 1220px; margin: 0 auto;">
 
     <!-- 중앙 배너 이미지 -->
     <div class="center-container">
@@ -14,7 +14,7 @@
 
     <!-- 왼쪽 인기 순위 영역 -->
     <div class="left-container p-3 bg-white border rounded"
-        style="width: 300px; height: 300px; overflow-y: auto;">
+        style="overflow-y: auto;">
         <h6 class="fw-bold">카테고리별 인기 순위</h6>
         <ul id="trendResultHeader" class="list-group small">
         </ul>
@@ -27,7 +27,7 @@
         <!-- 로그인 여부에 따라 타이틀 변경 -->
         <div style="font-weight:bold; margin-bottom:10px; font-size:14px; text-align:center;">
             <c:choose>
-                <c:when test="${not empty sessionScope.loginUser}">
+                <c:when test="${not empty sessionScope.id}">
                     키워드 뉴스
                 </c:when>
                 <c:otherwise>
@@ -38,7 +38,7 @@
 
         <c:if test="${not empty sessionScope.latestNews}">
             <!-- 스크롤 영역 -->
-            <div style="max-height:250px; overflow-y:auto; padding-right:5px;">
+            <div style="max-height:745px; overflow-y:auto; padding-right:5px;">
                 <ul style="list-style:none; padding-left:0; margin-top:0;">
                     <c:forEach var="item" items="${sessionScope.latestNews}">
                         <li style="margin-bottom:5px;">

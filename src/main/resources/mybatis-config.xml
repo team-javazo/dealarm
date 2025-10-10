@@ -3,5 +3,11 @@
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-
+    <typeAliases>
+        <typeAlias type="kr.co.dong.inquiry.InquiryDTO" alias="InquiryDTO"/>
+    </typeAliases>
+    <mappers>
+        <!-- 리소스 경로 정확히 -->
+        <mapper resource="mappers/InquiryMapper.xml"/>
+    </mappers>
 </configuration>

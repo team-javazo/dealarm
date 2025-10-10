@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.dong.inquiry.InquiryDAO">
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="kr.co.dong.inquiry.InquiryDTO">
+        INSERT INTO inquiry
+        (title, writer, content, category, secret, regdate, hit, status)
+        VALUES
+        (#{title}, #{writer}, #{content}, #{category}, #{secret}, NOW(), 0, '대기')
+    </insert>
+
+    <!-- 목록 -->
+    <select id="list" resultType="kr.co.dong.inquiry.InquiryDTO">
+        SELECT * FROM inquiry ORDER BY id DESC
+    </select>
+
+    <!-- 상세 -->
+    <select id="detail" parameterType="int" resultType="kr.co.dong.inquiry.InquiryDTO">
+        SELECT * FROM inquiry WHERE id = #{id}
+    </select>
+
+    <!-- 조회수 증가 -->
+    <update id="updateHit" parameterType="int">
+        UPDATE inquiry SET hit = hit + 1 WHERE id = #{id}
+    </update>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="kr.co.dong.inquiry.InquiryDTO">
+        UPDATE inquiry
+        SET title=#{title},
+            content=#{content},
+            category=#{category},
+            secret=#{secret},
+            filename=#{filename},
+            filepath=#{filepath}
+        WHERE id=#{id}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM inquiry WHERE id = #{id}
+    </delete>
+
+    <!-- 답변 등록 -->
+    <update id="insertAnswer" parameterType="map">
+        UPDATE inquiry
+        SET answer=#{answer}, answer_date=NOW(), status='답변완료'
+        WHERE id=#{id}
+    </update>
+
+    <!-- 상태 변경 -->
+    <update id="updateStatus" parameterType="map">
+        UPDATE inquiry
+        SET status=#{status}
+        WHERE id=#{id}
+    </update>
+
+    <!-- 검색 -->
+    <select id="search" parameterType="string" resultType="kr.co.dong.inquiry.InquiryDTO">
+        SELECT * FROM inquiry
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+           OR content LIKE CONCAT('%', #{keyword}, '%')
+           OR writer LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY id DESC
+    </select>
+
+    <!-- 카테고리별 조회 -->
+    <select id="listByCategory" parameterType="string" resultType="kr.co.dong.inquiry.InquiryDTO">
+        SELECT * FROM inquiry
+        WHERE category = #{category}
+        ORDER BY id DESC
+    </select>
+
+    <!-- ✅ 페이징 + 검색 -->
+    <select id="listWithPaging" parameterType="map" resultType="kr.co.dong.inquiry.InquiryDTO">
+        SELECT * FROM inquiry
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (title LIKE CONCAT('%', #{keyword}, '%')
+                 OR content LIKE CONCAT('%', #{keyword}, '%')
+                 OR writer LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="count" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM inquiry
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (title LIKE CONCAT('%', #{keyword}, '%')
+                 OR content LIKE CONCAT('%', #{keyword}, '%')
+                 OR writer LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 작성자별 목록 (마이페이지) -->
+    <select id="listByWriter" parameterType="string" resultType="kr.co.dong.inquiry.InquiryDTO">
+        SELECT * FROM inquiry
+        WHERE writer = #{writer}
+        ORDER BY id DESC
+    </select>
+
+    <!-- 통계 (관리자 전용) -->
+    <select id="getStats" resultType="map">
+        SELECT category, COUNT(*) as cnt
+        FROM inquiry
+        GROUP BY category
+    </select>
+
+</mapper>

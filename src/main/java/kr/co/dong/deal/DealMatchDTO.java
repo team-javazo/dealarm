@@ -20,6 +20,24 @@ public class DealMatchDTO {
 	
 	
 	public DealMatchDTO() {}
+	
+	
+
+
+	public DealMatchDTO(String title, String url, int price, String site, Date posted_at, Date created_at, int likes,
+			String img) {
+		super();
+		this.title = title;
+		this.url = url;
+		this.price = price;
+		this.site = site;
+		this.posted_at = posted_at;
+		this.created_at = created_at;
+		this.likes = likes;
+		this.img = img;
+	}
+
+
 
 
 	public DealMatchDTO(int id, String user_id, int deal_id, Date matched_at, String title, String url, int price,
