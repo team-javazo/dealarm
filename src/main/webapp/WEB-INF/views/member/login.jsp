@@ -28,7 +28,7 @@
             <%@ include file="/WEB-INF/views/include/banner.jsp"%>
             <!-- =================[로그인]============ -->
    
-            			<div class="container" style="max-width: 400px; magin-top: 80px;">
+            <div class="container" style="max-width: 400px; magin-top: 80px;">
    				<div class="card shadow-sm">
    					<div class="card-body">
  			            <h2 class="card-title text-center mb-4">로그인</h2>
@@ -46,6 +46,15 @@
 								    				  					
 		        			<button type="submit">로그인</button>
 	    				</form>
+	    				<!-- Naver 소셜 로그인  -->
+						<div style="text-align: center;">
+							<a
+								href="${pageContext.request.contextPath}/member/oauthLogin">
+								<img style="width: 191px; height: 46px; margin-top: 5px;"
+								src="${pageContext.request.contextPath}/resources/images/btnG_naver.png"
+								alt="Naver 로그인" />
+							</a>
+						</div>
 	    				
    					</div>
    				</div>

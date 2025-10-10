@@ -85,8 +85,7 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int, keywo
 
         to_number = normalize_phone(phone)
         body = (f"[dealarm 알림]\n"
-                f"[{user_id}님 키워드 알림]\n"
-                f"키워드: {keyword or '알 수 없음'}\n"
+                f"[{user_id}님 키워드 {keyword} 알림]\n"
                 f"제품명: {title}\n"
                 f"제품링크: {url or ''}")
 

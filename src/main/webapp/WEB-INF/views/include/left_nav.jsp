@@ -6,7 +6,7 @@
 	
 <div class="d-flex">
 	<nav class="d-flex flex-column flex-shrink-0 p-3 bg-light"
-		style="width: 250px; min-height: 100vh;">
+		style="width: 250px; min-height: 700px;">
 
 		<a href="/"
 			class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
@@ -15,14 +15,16 @@
 		<hr>
 
 		<ul class="nav nav-pills flex-column">
-	<li class="nav-item"><a href="${pageContext.request.contextPath}/" class="nav-link active"
-		aria-current="page">카테고리</a></li>
-	<li><a href="${pageContext.request.contextPath}/about" class="nav-link link-dark">아무거나</a></li>
-	<li><a href="${pageContext.request.contextPath}/shop" class="nav-link link-dark">누르지마</a></li>
-	<!-- 🔹 게시판 경로 수정 -->
-	<li><a href="${pageContext.request.contextPath}/inquiry/list" class="nav-link link-dark">고객문의</a></li> 
-	<li><a href="${pageContext.request.contextPath}/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
-</ul>
+<!-- 
+			<li class="nav-item"><a href="/" class="nav-link active"
+				aria-current="page">카테고리</a></li>
+			<li><a href="/about" class="nav-link link-dark">아무거나</a></li>
+			<li><a href="/shop" class="nav-link link-dark">누르지마</a></li>
+			<li><a href="/contact" class="nav-link link-dark">오류나</a></li>
+ -->
+ 			<li><a href="${pageContext.request.contextPath}/inquiry/list" class="nav-link link-dark">고객문의</a></li> 
+			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
+		</ul>
 
 
 		<hr>
@@ -39,6 +41,7 @@
 				</select>
 
 				<select id="ages" multiple class="form-select mb-2">
+					<option value="all">전체</option>
 					<option value="10">10대</option>
 					<option value="20">20대</option>
 					<option value="30">30대</option>
@@ -203,10 +206,18 @@ $(function() {
         var gender = $("#gender").val();
         var ageRange = $("#ages").val(); // multiple 선택일 경우 배열로 반환
 
-    	// ✅ 수정된 연령 범위 계산 로직
-        var startAge = parseInt(ageRange[0], 10); // 선택된 첫 번째 연령대 (예: 40)
-        var endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9; // 선택된 마지막 연령대의 끝 (예: 50 + 9 = 59)
+        var startAge, endAge;
 
+        // ✅ "전체"가 선택된 경우
+        if (ageRange.includes("all")) {
+            startAge = 10;
+            endAge = 100;
+        } else {
+            // 선택된 값 중 가장 작은/큰 값으로 범위 계산
+            startAge = parseInt(ageRange[0], 10);
+            endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9;
+        }
+        
         // AJAX 요청
         $.ajax({
             url: contextPath + "/keywords/ranking", // 서버로 키워드 랭킹 요청

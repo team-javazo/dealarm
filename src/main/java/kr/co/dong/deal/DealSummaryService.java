@@ -3,7 +3,8 @@ package kr.co.dong.deal;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DealSummaryService {
@@ -11,33 +12,51 @@ public class DealSummaryService {
     @Inject
     private DealSummaryDAO dao;
 
-    // DB 저장 시 중복 방지 (URL → 제목+판매처)
-    public void saveIfNotExists(DealSummaryDTO dto) {
+    public boolean saveIfNotExists(DealSummaryDTO dto) {
+        if (dto == null) return false;
+
         // 1. URL 중복 체크
-        if (dao.existsByUrl(dto.getUrl())) {
+        if (dto.getUrl() != null && dao.existsByUrl(dto.getUrl())) {
             System.out.println("⏩ 이미 존재(URL): " + dto.getTitle());
-            return;
+            return false;
         }
 
-        // 2. 기존 데이터 중 비슷한 제목 있는지 확인
-        //    (키워드 검색: 제목 첫 단어 기준, 필요시 최근 N개로 최적화 가능)
-        String firstWord = dto.getTitle().split(" ")[0];
-        List<DealSummaryDTO> candidates = dao.findDealsByKeyword("%" + firstWord + "%");
+        // 2. 제목 전처리 및 토큰화 (cleanedTitle은 여기서 선언되어 사용 가능)
+        String cleanedTitle = TitleSimilarityUtil.preprocessTitle(dto.getTitle());
+        List<String> allTokens = cleanedTitle.isBlank() ?
+                Collections.emptyList() :
+                Arrays.asList(cleanedTitle.split("\\s+"));
 
+        // 한 글자 토큰 제거, 상위 3개만 사용
+        List<String> tokens = allTokens.stream()
+                .filter(t -> t != null && t.length() > 1)
+                .limit(3)
+                .collect(Collectors.toList());
+
+        // 3. 토큰이 없으면 후보군 검색 불필요 — 바로 저장
+        if (tokens.isEmpty()) {
+            dao.insertDeal(dto);
+            System.out.println("✅ 저장 성공(토큰 없음): " + dto.getTitle());
+            return true;
+        }
+
+        // 4. 후보군 조회 (Map 파라미터)
+        Map<String, Object> params = new HashMap<>();
+        params.put("tokens", tokens);
+        List<DealSummaryDTO> candidates = dao.findDealsByTokens(params);
+
+        // 5. 후보군에서 코사인 유사도 검사 (TitleSimilarityUtil, 기준 0.9)
         for (DealSummaryDTO existing : candidates) {
-            boolean sameSite = dto.getSite() != null &&
-                               existing.getSite() != null &&
-                               dto.getSite().equalsIgnoreCase(existing.getSite());
-
-            if (TitleSimilarityUtil.isSameProduct(dto.getTitle(), existing.getTitle(), sameSite)) {
-                System.out.println("⏩ 이미 존재(제목+판매처): " + dto.getTitle());
-                return;
+            if (TitleSimilarityUtil.isSameProduct(dto.getTitle(), existing.getTitle())) {
+                System.out.println("⏩ 이미 존재(제목 유사): " + dto.getTitle());
+                return false; // 중복이면 저장하지 않음
             }
         }
 
-        // 3. 최종 저장
+        // 6. 최종 저장
         dao.insertDeal(dto);
         System.out.println("✅ 저장 성공: " + dto.getTitle());
+        return true;
     }
 
     public List<DealSummaryDTO> getDealsByKeyword(String keyword) {
