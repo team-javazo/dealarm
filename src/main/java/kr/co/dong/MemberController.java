@@ -239,7 +239,7 @@ public class MemberController {
 
       return "member/userupdate";
    }
-   
+
 // 관리자 회원관리 전체 리스트
    @RequestMapping("/members")
    public String members(@RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage,
@@ -276,7 +276,6 @@ public class MemberController {
       
       return "admin/members";
    }
-
 
    // 관리자 회원검색 리스트
    @RequestMapping("/members_search")

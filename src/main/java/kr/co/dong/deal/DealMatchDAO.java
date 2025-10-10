@@ -14,6 +14,7 @@ public interface DealMatchDAO {
     
     int deleteMatch(@Param("matchId") int matchId, @Param("userId") String userId);	
 
-	
+	List<DealMatchDAO> newDeal(Map<String, Object> params);
+
 	
 }

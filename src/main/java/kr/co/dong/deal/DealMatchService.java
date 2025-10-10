@@ -7,7 +7,5 @@ public interface DealMatchService {
 	void deleteMatch(int matchId, String userId);
 	void deleteMultiMatch(List<Integer> matchIds, String userId);
 	
-	
-	
 
 }

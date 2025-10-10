@@ -20,10 +20,12 @@
 				aria-current="page">카테고리</a></li>
 			<li><a href="/about" class="nav-link link-dark">아무거나</a></li>
 			<li><a href="/shop" class="nav-link link-dark">누르지마</a></li>
-			<li><a href="/contact" class="nav-link link-dark">오류나</a></li>
  -->
+ 			<li><a href="${pageContext.request.contextPath}/inquiry/list" class="nav-link link-dark">고객문의</a></li> 
 			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
+			<li><a href="/dong/newDeal" class="nav-link link-dark">NEW DEAL </a></li>
 		</ul>
+
 
 		<hr>
 
