@@ -151,7 +151,7 @@ public class CrawlScheduler {
 
 			// ====================== 문자 발송 시작 ======================
 			System.out.println("========== 📩 SMS 발송 시작 ==========");
-			//smsDBService.processDeals();
+			smsDBService.processDeals();
 
 		} catch (Exception e) {
 			System.err.println("❌ 크롤러 실행/DB 저장/문자 발송 실패: " + e.getMessage());
