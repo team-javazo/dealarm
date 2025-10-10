@@ -46,6 +46,15 @@
 								    				  					
 		        			<button type="submit">로그인</button>
 	    				</form>
+	    				<!-- Naver 소셜 로그인  -->
+						<div style="text-align: center;">
+							<a
+								href="${pageContext.request.contextPath}/member/oauthLogin">
+								<img style="width: 191px; height: 46px; margin-top: 5px;"
+								src="${pageContext.request.contextPath}/resources/images/btnG_naver.png"
+								alt="Naver 로그인" />
+							</a>
+						</div>
 	    				
    					</div>
    				</div>
