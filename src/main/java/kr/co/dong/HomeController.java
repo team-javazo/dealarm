@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -170,5 +171,30 @@ public class HomeController {
 		model.addAttribute("list", dealList);
 		return "newDeal";
 	}
+	
+	@PostMapping("/deleteDeal")
+	@ResponseBody
+	public String deleteDeal(@RequestParam("matchId") int matchId, HttpSession session) {
+	    Object userId = session.getAttribute("id");
+	    if(userId == null) {
+	        return "fail"; // 로그인 안 되어 있을 때 처리
+	    }
 
+	    String uId = userId.toString();
+	    int result = 0;
+
+	    try {
+	        result = dealMatchDAO.deleteDeal(matchId, uId);
+	    } catch(Exception e) {
+	        e.printStackTrace(); // 실제 서버 로그에 에러 기록
+	        return "fail";       // Ajax에는 fail 반환
+	    }
+
+	    return result > 0 ? "success" : "fail";
+	}
+	
+	
+	
+	
+	
 }
