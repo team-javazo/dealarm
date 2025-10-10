@@ -23,7 +23,7 @@
             ds.img as img
         from deal_match dm
         join deal_summary ds on dm.deal_id = ds.id
-        where dm.user_id = #{uid}
+        where dm.user_id = #{uid} and dm.is_active = 1
         order by dm.matched_at desc
         limit #{limit} offset #{offset}
     </select>
@@ -45,10 +45,14 @@
      </select>
     
     
-    <!-- 단일 삭제 -->
-    <delete id="deleteMatch">
-        delete from deal_match
-        where id = #{matchId} and user_id = #{userId}
-    </delete>
+    <!-- 알림 딜 삭제 -->
+    <update id="deleteDeal" parameterType="int">
+        update from deal_match
+        set is_active = 0
+        where id = #{matchId} and user_id = #{uId}
+    </update>
+    
+
+    
 
 </mapper>

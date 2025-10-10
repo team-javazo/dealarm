@@ -18,16 +18,12 @@ public class DealMatchServiceImpl implements DealMatchService {
 	}
 
 	@Override
-	public void deleteMatch(int matchId, String userId) {
-		dealMatchDAO.deleteMatch(matchId, userId);
+	public void deleteDeal(int matchId, String userId) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	@Override
-	public void deleteMultiMatch(List<Integer> matchIds, String userId) {
-		for(Integer matchID : matchIds) {
-			dealMatchDAO.deleteMatch(matchID, userId);
-		}
-	}
+
 
 
 
