@@ -222,7 +222,42 @@ public class MemberController {
 
       return "member/userupdate";
    }
+// 관리자 회원관리 전체 리스트
+   @RequestMapping("/members")
+   public String members(@RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage,
+                    Model model){
+      
+      int limit = 15;   // 페이지당 목록 수
+      int offset = (currentPage -1) * limit;
+      
+      // 검색조건 Map int형 따로 분리 object에서 안들어감
+      Map<String,Object> params = new HashMap<>();
+      params.put("limit", Integer.valueOf(limit));
+      params.put("offset", Integer.valueOf(offset));
+      
+      
+      int totalCount = memberService.memberCount(); // 총 회원 수
+      List<MemberDTO> list = memberService.allList(params); // 전체회원 목록
+      int searchMembersCount = memberService.searchMembersCount(params); // 검색 회원 수
+      
+      int totalPages = totalCount / limit;   // 정수 나눗셈 = 자동 소수점 버림
+       if(totalCount % limit != 0) {         // 나머지가 있으면 한 페이지 추가
+           totalPages += 1;
+       }
+       
+      if(currentPage > totalPages) currentPage = totalPages;
+      if(currentPage < 1) currentPage = 1; 
+      
 
+      model.addAttribute("list", list);
+      model.addAttribute("totalCount", totalCount);
+      model.addAttribute("searchCount", totalCount);   // 검색카운트
+      model.addAttribute("currentPage", currentPage);
+      model.addAttribute("totalPages", totalPages);
+      model.addAttribute("limit", limit);
+      
+      return "admin/members";
+   }
 
    // 관리자 회원검색 리스트
    @RequestMapping("/members_search")
