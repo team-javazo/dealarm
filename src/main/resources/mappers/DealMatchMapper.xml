@@ -28,6 +28,23 @@
         limit #{limit} offset #{offset}
     </select>
 
+    <!-- new 딜 리스트 -->
+    <select id="newDeal" resultType="kr.co.dong.deal.DealMatchDTO" parameterType="map">
+        select 
+            ds.title as title,
+            ds.url as url,
+            ds.price as price,
+            ds.site as site,
+            ds.posted_at as posted_at,
+            ds.created_at as created_at,
+            ds.likes as likes,
+            ds.img as img
+        from deal_summary ds
+        order by ds.posted_at desc
+        limit #{limit} 
+     </select>
+    
+    
     <!-- 단일 삭제 -->
     <delete id="deleteMatch">
         delete from deal_match

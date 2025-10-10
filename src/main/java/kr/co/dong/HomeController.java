@@ -98,6 +98,12 @@ public class HomeController {
 			logger.info(uid);
 			List<DealMatchDTO> dealList = dealMatchDAO.dealMatch(uid, offset, limit);
 			model.addAttribute("list", dealList);
+		}else {
+			Map<String, Object> params = new HashMap<>();
+			params.put("limit", 10);
+			List<DealMatchDAO> dealList = dealMatchDAO.newDeal(params);
+			model.addAttribute("list", dealList);
+					
 		}
 
 		List<Map<String, String>> latestNews = new ArrayList<>();
@@ -155,6 +161,14 @@ public class HomeController {
 
 		return "main"; // main.jsp
 	}
-
+	
+	@GetMapping("/newDeal")
+	public String newDeal(Model model) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("limit", 100);
+		List<DealMatchDAO> dealList = dealMatchDAO.newDeal(params);
+		model.addAttribute("list", dealList);
+		return "newDeal";
+	}
 
 }

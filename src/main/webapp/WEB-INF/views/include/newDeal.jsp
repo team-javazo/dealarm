@@ -8,23 +8,22 @@
 
     <!-- 왼쪽 영역: 딜 리스트 -->
     <div id="leftContainer" style="flex: 1; min-width: 600px; max-width: 900px; border: 1px solid #ccc; padding: 10px; box-sizing: border-box;">
+        
         <!-- 액션 영역: 세련된 버튼 스타일 -->
         <div id="actionContainer" style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
             <label style="display:flex; align-items:center; cursor:pointer; font-size:14px;">
-                        <h3>My 알림 상품</h2>
-                
                 <input type="checkbox" id="selectAll" style="margin-right:5px; accent-color:#007BFF; width:16px; height:16px;">
                 전체 선택
             </label>
-            <button type="button" id="deleteSelected" style="padding:5px 12px; background-color:#dc3545; color:white; border:none; border-radius:4px; cursor:pointer; font-size:14px; transition:0.2s;">
-                선택 삭제
+            <button type="button" id="deleteSelected" style="padding:5px 12px; background-color:#28a745; color:white; border:none; border-radius:4px; cursor:pointer; font-size:14px; transition:0.2s;">
+                선택 담기
             </button>
         </div>
 
         <!-- 딜 리스트 스크롤 영역 -->
         <div id="dealContainer" style="overflow-y: auto; padding-right:5px; height: 410px; box-sizing:border-box;">
             <c:if test="${empty list}">
-                <p id="noDeals" style="font-size: 13px; color: #666;">매칭된 딜이 없습니다.</p>
+                <p id="noDeals" style="font-size: 13px; color: #666;">불러올 딜이 없습니다.</p>
             </c:if>
 
             <c:forEach var="deal" items="${list}">
@@ -48,8 +47,8 @@
                         
                         <!-- 카드 삭제 버튼: 오른쪽 상단에 고정 -->
                         <button type="button" class="deleteBtn" 
-                                style="position:absolute; top:5px; right:5px; padding:4px 8px; background-color:#dc3545; color:white; border:none; border-radius:4px; font-size:12px; cursor:pointer; transition:0.2s;">
-                            삭제
+                                style="position:absolute; top:5px; right:5px; padding:4px 8px; background-color:#28a745; color:white; border:none; border-radius:4px; font-size:12px; cursor:pointer; transition:0.2s;">
+                            장바구니 등록
                         </button>
                     </div>
                 </div>
