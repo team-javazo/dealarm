@@ -5,12 +5,13 @@
 <mapper namespace="kr.co.dong.mappers.MemberMapper">
 
 	<!-- 로그인 -->
+	<!-- 암호화 비번 검토를 위해 id only로 수정 -->
 	<select id="login" parameterType="kr.co.dong.member.MemberDTO"
 		resultType="kr.co.dong.member.MemberDTO">
 		SELECT id, password, name, phone, email, birth_date, gender, notification, region, role,
 		is_active, created_at
 		FROM users
-		WHERE id = #{id} AND password = #{password}
+		WHERE id = #{id}
 	</select>
 
 	<!-- 회원가입 -->
