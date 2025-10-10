@@ -8,10 +8,11 @@
 
     <!-- 왼쪽 영역: 딜 리스트 -->
     <div id="leftContainer" style="flex: 1; min-width: 600px; max-width: 900px; border: 1px solid #ccc; padding: 10px; box-sizing: border-box;">
-        
         <!-- 액션 영역: 세련된 버튼 스타일 -->
         <div id="actionContainer" style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
             <label style="display:flex; align-items:center; cursor:pointer; font-size:14px;">
+                        <h3>My 알림 상품</h2>
+                
                 <input type="checkbox" id="selectAll" style="margin-right:5px; accent-color:#007BFF; width:16px; height:16px;">
                 전체 선택
             </label>
