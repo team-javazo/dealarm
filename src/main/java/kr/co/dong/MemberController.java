@@ -448,9 +448,9 @@ public class MemberController {
            return json.toString();
        }
        
-		//암호화된 비번과 비교
 		String userPassword = password; //user가 입력한 비밀번호
-
+		
+		//암호화된 비번과 비교
 		if (!encoder.matches(userPassword, member.getPassword())) {
            json.append("\"success\":false,");
            json.append("\"message\":\"비밀번호가 일치하지 않습니다.\"");
