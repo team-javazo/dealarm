@@ -38,8 +38,8 @@ public class DealMatchDAOImpl implements DealMatchDAO {
 
 
 	@Override
-	public List<DealMatchDAO> newDeal(Map<String, Object> params) {
-		return sqlSession.selectList(namespace + ".newDeal");
+	public List<DealMatchDTO> newDeal(Map<String, Object> params) {
+		return sqlSession.selectList(namespace + ".newDeal", params);
 	}
 
 

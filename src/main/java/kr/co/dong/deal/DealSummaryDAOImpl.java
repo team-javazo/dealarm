@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.co.dong.sms.SmsDTO;
 
+@Repository
 public class DealSummaryDAOImpl implements DealSummaryDAO {
     @Autowired
     private SqlSession sqlSession;
@@ -39,4 +40,10 @@ public class DealSummaryDAOImpl implements DealSummaryDAO {
     public List<SmsDTO> findAllDeals() {
         return sqlSession.selectList(NAMESPACE + ".findAllDeals");
     }
+
+	@Override
+	public int deleteOlderThan7Days() {
+		
+		 return sqlSession.delete(NAMESPACE + ".deleteOlderThan7Days");
+	}
 }

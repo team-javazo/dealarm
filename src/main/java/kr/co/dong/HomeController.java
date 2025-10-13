@@ -28,8 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.dong.UserKeyword.UserKeywordDTO;
 import kr.co.dong.UserKeyword.UserKeywordService;
-import kr.co.dong.deal.DealMatchDAO;
 import kr.co.dong.deal.DealMatchDTO;
+import kr.co.dong.deal.DealMatchService;
 import kr.co.dong.news.NaverNewsService;
 import kr.co.dong.news.NaverNewsdto;
 
@@ -44,7 +44,7 @@ public class HomeController {
 	@Inject
 	private UserKeywordService userKeywordService;
 	@Autowired
-	private DealMatchDAO dealMatchDAO;
+	private DealMatchService dealMatchService;
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
@@ -97,12 +97,12 @@ public class HomeController {
 		if (userId != null) {
 			String uid = userId.toString();
 			logger.info(uid);
-			List<DealMatchDTO> dealList = dealMatchDAO.dealMatch(uid, offset, limit);
+			List<DealMatchDTO> dealList = dealMatchService.dealMatch(uid, offset, limit);
 			model.addAttribute("list", dealList);
 		}else {
 			Map<String, Object> params = new HashMap<>();
 			params.put("limit", 10);
-			List<DealMatchDAO> dealList = dealMatchDAO.newDeal(params);
+			List<DealMatchDTO> dealList = dealMatchService.newDeal(params);
 			model.addAttribute("list", dealList);
 					
 		}
@@ -167,7 +167,7 @@ public class HomeController {
 	public String newDeal(Model model) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("limit", 100);
-		List<DealMatchDAO> dealList = dealMatchDAO.newDeal(params);
+		List<DealMatchDTO> dealList = dealMatchService.newDeal(params);
 		model.addAttribute("list", dealList);
 		return "newDeal";
 	}
@@ -182,7 +182,7 @@ public class HomeController {
 	    }
 
 	    
-	    int result = dealMatchDAO.deleteDeal(matchId, userId);
+	    int result = dealMatchService.deleteDeal(matchId, userId);
 
 	    return result > 0 ? "success" : "fail";
 	}
