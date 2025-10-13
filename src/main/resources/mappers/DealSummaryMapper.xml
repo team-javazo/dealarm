@@ -1,71 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.dong.deal.DealSummaryDAO">
 
-	<!-- 딜 저장 -->
-	<insert id="insertDeal"
-		parameterType="kr.co.dong.deal.DealSummaryDTO">
-		INSERT INTO deal_summary
-		(title, url, price,
-		site, posted_at, created_at, likes, img)
-		VALUES (#{title}, #{url},
-		#{price}, #{site}, #{postedAt}, #{createdAt},
-		#{likes}, #{img})
-	</insert>
-
-	<!-- 중복 확인 -->
-	<select id="existsByUrl" parameterType="string"
-		resultType="boolean">
-		SELECT COUNT(*) > 0
-		FROM deal_summary
-		WHERE url =
-		#{url}
-	</select>
-
-	<!-- 전처리된 토큰별 LIKE 검색 (모든 토큰 포함 조건) -->
-	<select id="findDealsByTokens" parameterType="map"
-		resultType="kr.co.dong.deal.DealSummaryDTO">
-		SELECT id, title, url, price, site,
-		posted_at AS postedAt,
-		created_at AS createdAt,
-		likes, img
-		FROM deal_summary
-		<where>
-			<if test="tokens != null and tokens.size > 0">
-				(
-				<foreach collection="tokens" item="token" separator=" OR ">
-					LOWER(title) LIKE CONCAT('%', LOWER(#{token}), '%')
-				</foreach>
-				)
-			</if>
-		</where>
-		ORDER BY created_at DESC
-		LIMIT 100
-	</select>
-
-	<!-- 키워드 검색 -->
-	<select id="findDealsByKeyword" parameterType="string"
-		resultType="kr.co.dong.deal.DealSummaryDTO">
-		SELECT id, title, url, price, site, posted_at, created_at,
-		likes
-		FROM deal_summary
-		WHERE title LIKE #{keyword}
-		ORDER BY
-		posted_at DESC
-	</select>
-
-	<!-- deal_summary 전체 조회 -->
-	<select id="findAllDeals" resultType="kr.co.dong.sms.SmsDTO">
-		SELECT
-		id AS dealId,
-		title AS
-		title,
-		url AS url
-		FROM deal_summary
-		ORDER BY created_at DESC
-	</select>
+    <delete id="deleteOlderThan7Days">
+        DELETE FROM deal_summary
+        WHERE posted_at &lt; NOW() - INTERVAL 7 DAY
+    </delete>
 
 </mapper>

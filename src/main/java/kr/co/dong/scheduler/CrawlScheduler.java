@@ -33,6 +33,20 @@ public class CrawlScheduler {
 	private static final String QUASAR_JSON = System.getProperty("user.home")
 			+ "/dealarm-data/quasarzone_crawling.json";
 
+	@Scheduled(fixedDelay = 300000)
+//	@Scheduled(cron = "0 0 10 * * *", zone = "Asia/Seoul")
+	    public void deleteOldDeals() {
+	        try {
+	            int deleted = dealSummaryService.deleteOldDeals(); // 서비스에서 DB 삭제 처리
+	            System.out.println("[🧹스케줄러] 오래된 딜 " + deleted + "건 삭제 완료 (posted_at 기준 7일 경과)");
+	        } catch (Exception e) {
+	            System.err.println("❌ 오래된 딜 삭제 실패: " + e.getMessage());
+	            e.printStackTrace();
+	        }
+	    }
+
+	
+	
 	// 5분마다 실행
 	@Scheduled(fixedDelay = 300000)
 	public void runCrawlerAndReadJson() {
