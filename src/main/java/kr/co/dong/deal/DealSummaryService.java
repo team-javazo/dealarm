@@ -62,4 +62,8 @@ public class DealSummaryService {
     public List<DealSummaryDTO> getDealsByKeyword(String keyword) {
         return dao.findDealsByKeyword("%" + keyword + "%");
     }
+    
+    public int deleteOldDeals() {
+        return dao.deleteOlderThan7Days();
+    }
 }

@@ -120,5 +120,16 @@ public class UserKeywordController {
 	    }
 	    return result;
 	}
+	
+	// 관리자메뉴 회원상세 페이지 키워드 불러오기
+	@GetMapping("/memberKeyword")
+	@ResponseBody
+	public Map<String, Object> memberKeyword(@RequestParam String memberId) {
+		List<UserKeywordDTO> keywordList = userKeywordService.memberKeyword(memberId);
+		Map<String, Object> result = new HashMap<>();
+		result.put("keywordList", keywordList);
+		return result;
+
+	}
 
 }

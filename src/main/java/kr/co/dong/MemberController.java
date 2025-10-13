@@ -121,6 +121,7 @@ public class MemberController {
 			session.setAttribute("id", loginUser.getId());
 			session.setAttribute("role", loginUser.getRole());
 			session.setAttribute("name", loginUser.getName());
+			session.setAttribute("is_active", loginUser.getIs_active());
 			// 키워드 뉴스 최신 10개 가져오기
 			List<UserKeywordDTO> keywordDTOs = userKeywordService.getKeywords(loginUser.getId());
 			Set<String> addedLinks = new HashSet<>();
