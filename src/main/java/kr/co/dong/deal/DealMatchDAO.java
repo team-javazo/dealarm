@@ -12,7 +12,7 @@ public interface DealMatchDAO {
             @Param("offset") int offset,
             @Param("limit") int limit);
     
-    int deleteDeal(@Param("matchId") int matchId, @Param("uId") String uId);	
+    int deleteDeal(@Param("matchId") Integer matchId, @Param("userId") String userId);	
 
 	List<DealMatchDAO> newDeal(Map<String, Object> params);
 	

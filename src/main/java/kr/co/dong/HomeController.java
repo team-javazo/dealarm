@@ -174,21 +174,15 @@ public class HomeController {
 	
 	@PostMapping("/deleteDeal")
 	@ResponseBody
-	public String deleteDeal(@RequestParam("matchId") int matchId, HttpSession session) {
-	    Object userId = session.getAttribute("id");
+	public String deleteDeal(@RequestParam("matchId") Integer matchId, HttpSession session) {
+	    String userId = (String) session.getAttribute("id");
+	    
 	    if(userId == null) {
 	        return "fail"; // 로그인 안 되어 있을 때 처리
 	    }
 
-	    String uId = userId.toString();
-	    int result = 0;
-
-	    try {
-	        result = dealMatchDAO.deleteDeal(matchId, uId);
-	    } catch(Exception e) {
-	        e.printStackTrace(); // 실제 서버 로그에 에러 기록
-	        return "fail";       // Ajax에는 fail 반환
-	    }
+	    
+	    int result = dealMatchDAO.deleteDeal(matchId, userId);
 
 	    return result > 0 ? "success" : "fail";
 	}
