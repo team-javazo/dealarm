@@ -39,4 +39,10 @@ public class DealSummaryDAOImpl implements DealSummaryDAO {
     public List<SmsDTO> findAllDeals() {
         return sqlSession.selectList(NAMESPACE + ".findAllDeals");
     }
+
+	@Override
+	public int deleteOlderThan7Days() {
+		
+		 return sqlSession.delete(NAMESPACE + ".deleteOlderThan7Days");
+	}
 }

@@ -1,9 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.dong.deal.DealSummaryDAO">
+
+    <delete id="deleteOlderThan7Days">
+        DELETE FROM deal_summary
+        WHERE posted_at &lt; NOW() - INTERVAL 7 DAY
+    </delete>
 
 	<!-- 딜 저장 -->
 	<insert id="insertDeal"
@@ -69,3 +74,4 @@
 	</select>
 
 </mapper>
+

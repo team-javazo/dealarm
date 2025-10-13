@@ -14,4 +14,5 @@ public interface DealSummaryDAO {
     List<DealSummaryDTO> findDealsByTokens(Map<String, Object> params);
     List<DealSummaryDTO> findDealsByKeyword(String keyword);
     List<SmsDTO> findAllDeals();
+    int deleteOlderThan7Days();
 }
