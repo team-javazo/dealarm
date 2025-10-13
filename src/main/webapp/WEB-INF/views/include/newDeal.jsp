@@ -48,7 +48,7 @@
                         <!-- 카드 삭제 버튼: 오른쪽 상단에 고정 -->
                         <button type="button" class="deleteBtn" 
                                 style="position:absolute; top:5px; right:5px; padding:4px 8px; background-color:#28a745; color:white; border:none; border-radius:4px; font-size:12px; cursor:pointer; transition:0.2s;">
-                            장바구니 등록
+                            관심상품 등록
                         </button>
                     </div>
                 </div>
