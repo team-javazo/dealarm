@@ -1,47 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.dong.click.ClickDAO">
+<!-- namespace는 ClickDAOImpl에서 SqlSessionTemplate을 통해 호출할 때 사용되는 이름과 일치해야 
+	합니다. ClickDAOImpl에서 정의한 NAMESPACE = "kr.co.dong.click.ClickMapper"를 사용합니다. -->
+<mapper namespace="kr.co.dong.click.ClickMapper">
 
-	<select id="findByDealIdAndUserId"
-		resultType="kr.co.dong.click.ClickDTO">
-		SELECT
-		unique_id, actual_url, category FROM
-		dealarm.click_count
-		WHERE
-		deal_id = #{dealId} AND user_id = #{userId}
-	</select>
-
-	<select id="findByUniqueId"
-		resultType="kr.co.dong.click.ClickDTO">
-		SELECT
-		id, unique_id, actual_url, user_id, deal_id, click_count, created_at,
-		category FROM
-		dealarm.click_count
-		WHERE
-		unique_id = #{uniqueId}
-	</select>
-
-	<insert id="insertLink"
+	<!-- ID: upsertClickHistory (DAO 인터페이스의 메서드 이름과 동일) 테이블 명: click_count SQL: 
+		INSERT ... ON DUPLICATE KEY UPDATE를 사용한 UPSERT 구현 -->
+	<insert id="upsertClickHistory"
 		parameterType="kr.co.dong.click.ClickDTO">
-		INSERT INTO dealarm.click_count
-		(unique_id, actual_url, user_id, deal_id, click_count, category) VALUES
-		(#{uniqueId}, #{actualUrl}, #{userId}, #{dealId}, 0, #{category})
+		INSERT INTO click_count (
+		user_id,
+		deal_id,
+		keyword,
+		count
+		)
+		VALUES (
+		#{userId},
+		#{dealId},
+		#{keyword},
+		1  <!-- 최초 삽입 시 count는 1 -->
+		)
+		ON DUPLICATE KEY UPDATE
+		-- 중복 발생 시 (user_id, deal_id 동일) count만 1 증가
+		count = count + 1,
+		-- 키워드는 최신 값으로 업데이트
+		keyword = #{keyword}
+		-- update_date는 DB 설정에 따라 자동 갱신됩니다.
 	</insert>
 
-	<update id="increaseClickCount">
-		UPDATE dealarm.click_count
-		SET
-		click_count = click_count + 1
-		WHERE
-		unique_id = #{uniqueId}
-	</update>
-
-	<insert id="insertClickHistory"
-		parameterType="kr.co.dong.click.ClickDTO">
-		INSERT INTO dealarm.click_history
-		(user_id, content_type, content_id, category)
-		VALUES
-		(#{userId}, 'deal', #{dealId}, #{category})
-	</insert>
 </mapper>

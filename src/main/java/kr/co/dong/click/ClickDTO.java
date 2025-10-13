@@ -1,41 +1,71 @@
 package kr.co.dong.click;
 
-import java.sql.Timestamp;
-
+/**
+ * 사용자-딜 클릭 이력 데이터를 담는 DTO 테이블 필드: id, user_id, deal_id, keyword, count
+ */
 public class ClickDTO {
-    private int id;
-    private String uniqueId; 
-    private String actualUrl; 
-    private String userId; 
-    private int dealId; 
-    private int clickCount; 
-    private Timestamp createdAt; 
-    private String category; // click_history 기록을 위해 keyword(category) 임시 저장용
 
-    public ClickDTO() {}
+	private long id;
+	private long userId; // user_id (BIGINT)
+	private long dealId; // deal_id (BIGINT)
+	private String keyword; // keyword (VARCHAR)
+	private int count; // count (INT)
 
-    // 링크 생성 시 사용하는 생성자
-    public ClickDTO(String userId, int dealId, String actualUrl) {
-        this.userId = userId;
-        this.dealId = dealId;
-        this.actualUrl = actualUrl;
-    }
+	// 기본 생성자
+	public ClickDTO() {
+	}
 
-    // --- Getter and Setter ---
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getUniqueId() { return uniqueId; }
-    public void setUniqueId(String uniqueId) { this.uniqueId = uniqueId; }
-    public String getActualUrl() { return actualUrl; }
-    public void setActualUrl(String actualUrl) { this.actualUrl = actualUrl; }
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
-    public int getDealId() { return dealId; }
-    public void setDealId(int dealId) { this.dealId = dealId; }
-    public int getClickCount() { return clickCount; }
-    public void setClickCount(int clickCount) { this.clickCount = clickCount; }
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+	// 필수 필드 생성자 (클릭 추적 시 입력되는 값)
+	public ClickDTO(long userId, long dealId, String keyword) {
+		this.userId = userId;
+		this.dealId = dealId;
+		this.keyword = keyword;
+	}
+
+	// Getter와 Setter
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	public long getDealId() {
+		return dealId;
+	}
+
+	public void setDealId(long dealId) {
+		this.dealId = dealId;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	@Override
+	public String toString() {
+		return "ClickDTO{" + "id=" + id + ", userId=" + userId + ", dealId=" + dealId + ", keyword='" + keyword + '\''
+				+ ", count=" + count + '}';
+	}
 }

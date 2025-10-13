@@ -1,55 +1,29 @@
 package kr.co.dong.click;
 
-import org.mybatis.spring.SqlSessionTemplate;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.Map;
+/**
+ * 클릭 이력 DAO 구현체 SqlSessionTemplate을 사용하여 MyBatis SQL을 실행합니다.
+ */
+@Repository("clickDAO")
+public class ClickDAOImpl implements ClickDAO {
 
-@Repository // DAO 구현체에 @Repository 어노테이션을 붙입니다.
-public class ClickDAOImpl implements ClickDAO { // 인터페이스를 implements 합니다.
+	// SqlSessionTemplate 주입
+	// MyBatis 설정이 완료되어 있어야 사용 가능합니다.
+	@Autowired
+	private SqlSession sqlSession;
 
-    private final SqlSessionTemplate sqlSession;
-    
-    // XML Mapper의 네임스페이스를 상수로 정의
-    private static final String NAMESPACE = "kr.co.dong.click.ClickDAO";
+	// 매퍼 XML의 namespace를 정의합니다.
+	private static final String NAMESPACE = "kr.co.dong.click.ClickMapper";
 
-    @Autowired
-    public ClickDAOImpl(SqlSessionTemplate sqlSession) {
-        this.sqlSession = sqlSession;
-    }
-
-    @Override
-    public ClickDTO findByDealIdAndUserId(int dealId, String userId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("dealId", dealId);
-        params.put("userId", userId);
-        // 인터페이스의 메서드를 구현합니다.
-        return sqlSession.selectOne(NAMESPACE + ".findByDealIdAndUserId", params);
-    }
-
-    @Override
-    public ClickDTO findByUniqueId(String uniqueId) {
-        // 인터페이스의 메서드를 구현합니다.
-        return sqlSession.selectOne(NAMESPACE + ".findByUniqueId", uniqueId);
-    }
-
-    @Override
-    public int insertLink(ClickDTO dto) {
-        // 인터페이스의 메서드를 구현합니다.
-        return sqlSession.insert(NAMESPACE + ".insertLink", dto);
-    }
-
-    @Override
-    public int increaseClickCount(String uniqueId) {
-        // 인터페이스의 메서드를 구현합니다.
-        return sqlSession.update(NAMESPACE + ".increaseClickCount", uniqueId);
-    }
-
-    @Override
-    public int insertClickHistory(ClickDTO dto) {
-        // 인터페이스의 메서드를 구현합니다.
-        return sqlSession.insert(NAMESPACE + ".insertClickHistory", dto);
-    }
+	/**
+	 * user_id와 deal_id를 기준으로 클릭 횟수를 업데이트하거나 새로운 레코드를 삽입합니다 (UPSERT).
+	 */
+	@Override
+	public int upsertClickHistory(ClickDTO dto) {
+		// 매퍼 XML의 NAMESPACE와 SQL ID를 조합하여 호출
+		return sqlSession.insert(NAMESPACE + ".upsertClickHistory", dto);
+	}
 }

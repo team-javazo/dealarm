@@ -4,6 +4,8 @@ import json
 import logging
 import base64
 import pymysql
+import requests # HTTP 요청은 더 이상 사용하지 않지만, SMS 전송 로직 자체는 유지
+import urllib.parse
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -13,6 +15,9 @@ from solapi.model import RequestMessage
 
 logging.basicConfig(level=logging.INFO, stream=sys.stderr,
                     format="%(asctime)s [%(levelname)s] %(message)s")
+
+# Spring Controller의 클릭 추적 엔드포인트 URL
+SPRING_TRACK_URL = "http://localhost:8080/dong/track"
 
 # ==================================================
 # 1) 환경 변수 로드
@@ -32,6 +37,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 
 def get_connection():
+    """DB 연결 객체를 반환합니다."""
     return pymysql.connect(
         host=DB_HOST,
         port=DB_PORT,
@@ -51,25 +57,37 @@ message_service = SolapiMessageService(
 )
 
 # ==================================================
-# 3) 번호 변환 유틸
+# 3) 번호 및 URL 유틸리티
 # ==================================================
 def normalize_phone(phone: str) -> str:
+    """전화번호 포맷을 국제 표준(+82)으로 변환합니다."""
     phone = phone.strip()
     if phone.startswith("0"):
         return "+82" + phone[1:]
     return phone
 
+def encode_base64_url(original_url: str) -> str:
+    """
+    원본 URL을 Base64 URL-Safe로 인코딩합니다.
+    URL 매개변수로 사용하기 위해 패딩 문자(=)를 제거합니다.
+    """
+    encoded_bytes = base64.urlsafe_b64encode(original_url.encode('utf-8'))
+    return encoded_bytes.decode('utf-8').rstrip('=')
+
 # ==================================================
-# 4) SMS 전송 (중복 방지 + DB 기록)
+# 4) SMS 전송 (클릭 추적 링크 생성 포함)
 # ==================================================
-def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int, keyword: str = None):
+def send_sms(user_id: str, phone: str, title: str, deal_url: str, deal_id: int, keyword: str = None):
+    """
+    SMS를 발송하고 deal_match 테이블에 기록하며,
+    SMS 본문에 Spring Controller로 리다이렉트되는 클릭 추적 URL을 생성하여 포함합니다.
+    """
     if not (user_id and phone and title and deal_id is not None):
         return {"result": "failed", "error": "필수 값 누락", "userId": user_id, "dealId": deal_id}
 
     conn = get_connection()
     try:
         with conn.cursor() as cursor:
-            # 중복 발송 방지 체크
             # 1) 알림 허용 여부 확인
             cursor.execute("SELECT notification FROM users WHERE id=%s", (user_id,))
             row = cursor.fetchone()
@@ -83,11 +101,29 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int, keywo
                 logging.info(f"🔁 이미 발송된 알림: user={user_id}, dealId={deal_id}")
                 return {"result": "skipped", "reason": "already_sent", "userId": user_id, "dealId": deal_id}
 
+        # --- 클릭 추적 URL 생성 로직 시작 ---
+        # 딜 URL (사용자가 최종적으로 도달할 곳)을 Base64 인코딩
+        encoded_url_param = encode_base64_url(deal_url)
+
+        # Spring Controller로 전달할 매개변수
+        params = {
+            "url": encoded_url_param,
+            "user_id": user_id,
+            "deal_id": deal_id,
+            "keyword": keyword if keyword else "" # None 방지
+        }
+
+        # 최종 추적 URL (SMS에 들어갈 링크)
+        # 이 URL을 클릭하면 Spring Controller의 /dong/track으로 먼저 이동
+        tracking_url = f"{SPRING_TRACK_URL}?{urllib.parse.urlencode(params)}"
+        logging.info(f"🔗 생성된 추적 URL: {tracking_url}")
+        # --- 클릭 추적 URL 생성 로직 끝 ---
+
         to_number = normalize_phone(phone)
         body = (f"[dealarm 알림]\n"
-                f"[{user_id}님 키워드 {keyword} 알림]\n"
+                f"[{user_id}님 키워드 {keyword if keyword else 'N/A'} 알림]\n"
                 f"제품명: {title}\n"
-                f"제품링크: {url or ''}")
+                f"제품링크: {tracking_url}") # 추적 URL을 SMS 본문에 삽입
 
         # Solapi SDK 메시지 객체
         message = RequestMessage(
@@ -125,10 +161,11 @@ def send_sms(user_id: str, phone: str, title: str, url: str, deal_id: int, keywo
         logging.exception("❌ SMS 전송 중 예외 발생")
         return {"result": "failed", "error": str(e), "userId": user_id, "dealId": deal_id}
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 # ==================================================
-# 5) 엔트리포인트
+# 5) 엔트리포인트 (Base64 JSON 인자 처리)
 # ==================================================
 if __name__ == "__main__":
     try:
@@ -142,11 +179,12 @@ if __name__ == "__main__":
 
         data = json.loads(raw_json)
 
+        # data["url"]에 실제 딜 URL이 담겨있다고 가정하고 deal_url 파라미터로 전달
         result = send_sms(
             data["userId"],
             data["phone"],
             data["title"],
-            data.get("url", ""),
+            data.get("url", ""), # 실제 딜 URL (예: https://sj84900...)
             data["dealId"],
             data.get("keyword")
         )

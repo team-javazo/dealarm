@@ -3,31 +3,69 @@ package kr.co.dong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.dong.click.ClickService;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+/**
+ * 클릭 추적 및 리다이렉트 요청을 처리하는 컨트롤러 URL: /dong/track
+ */
 @Controller
+@RequestMapping("/dong")
 public class ClickController {
+
+	// Service를 주입받아 사용 (이름: "trackService"로 지정했음)
 	@Autowired
-	private ClickService clickService; // ⚠️ ClickService 주입
+	private ClickService trackService;
 
 	/**
-	 * 추적 URL 엔드포인트: 클릭 기록 후 실제 URL로 리다이렉트
+	 * 클릭 추적 요청을 처리하고, 디코딩된 URL로 리다이렉트합니다.
+	 * 
+	 * @param encodedUrl Base64 인코딩된 원본 URL
+	 * @param userId     사용자 ID
+	 * @param dealId     딜 ID
+	 * @param keyword    키워드
+	 * @return 리다이렉트 경로
 	 */
-	@GetMapping("/track/{uniqueId}")
-	public String trackAndRedirect(@PathVariable String uniqueId) {
+	@GetMapping("/track")
+	public String trackClick(@RequestParam("url") String encodedUrl, @RequestParam("user_id") long userId,
+			@RequestParam("deal_id") long dealId, @RequestParam("keyword") String keyword) {
+		String decodedUrl = null;
+
 		try {
-			// 1. 클릭 수 기록 및 실제 URL 조회
-			String actualUrl = clickService.increaseClickCountAndGetUrl(uniqueId);
+			// 1. URL-Safe Base64 디코딩
+			// Base64.getUrlDecoder().decode()에서 잘못된 Base64 문자열의 경우 IllegalArgumentException
+			// 발생
+			byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedUrl);
+			decodedUrl = new String(decodedBytes, StandardCharsets.UTF_8);
 
-			// 2. 실제 상품 페이지로 리다이렉트 (HTTP 302 응답)
-			return "redirect:" + actualUrl;
+			// 2. 서비스 로직 호출 (클릭 이력 저장/업데이트)
+			boolean success = trackService.click(userId, dealId, keyword);
 
+			System.out.println("--- Controller Log ---");
+			System.out.println("디코딩된 URL: " + decodedUrl);
+			System.out.println("클릭 추적 처리 결과: " + (success ? "성공" : "실패"));
+
+		} catch (IllegalArgumentException e) {
+			// Base64 디코딩 오류 처리
+			System.err.println("요청 매개변수 오류 발생 (Base64 디코딩 오류): " + e.getMessage());
+			return "redirect:/error/invalidRequest";
 		} catch (Exception e) {
-			System.err.println("❌ 추적 링크 처리 중 오류: ID=" + uniqueId + ", Message=" + e.getMessage());
-			// 오류 발생 시, 미리 정의된 오류 페이지로 이동
-			return "redirect:/error/invalid-link";
+			// Spring의 @RequestParam 바인딩 오류(NumberFormatException 등) 및 서비스 내부 오류 처리
+			System.err.println("클릭 추적 처리 중 내부 오류 발생: " + e.getMessage());
+			return "redirect:/error/internal";
 		}
+
+		// 3. 디코딩된 원본 URL로 리다이렉트
+		if (decodedUrl == null || decodedUrl.isEmpty()) {
+			System.err.println("디코딩된 URL이 비어 리다이렉트할 수 없습니다.");
+			return "redirect:/error/missingUrl";
+		}
+
+		return "redirect:" + decodedUrl;
 	}
 }
