@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.co.dong.sms.SmsDTO;
 
+@Repository
 public class DealSummaryDAOImpl implements DealSummaryDAO {
     @Autowired
     private SqlSession sqlSession;
