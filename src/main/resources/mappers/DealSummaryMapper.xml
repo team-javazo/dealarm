@@ -10,9 +10,9 @@
 		parameterType="kr.co.dong.deal.DealSummaryDTO">
 		INSERT INTO deal_summary
 		(title, url, price,
-		site, posted_at, created_at, likes, img)
+		site, posted_at, likes, img)
 		VALUES (#{title}, #{url},
-		#{price}, #{site}, #{postedAt}, #{createdAt},
+		#{price}, #{site}, #{postedAt},
 		#{likes}, #{img})
 	</insert>
 
