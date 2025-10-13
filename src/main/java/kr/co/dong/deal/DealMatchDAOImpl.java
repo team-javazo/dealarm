@@ -28,10 +28,10 @@ public class DealMatchDAOImpl implements DealMatchDAO {
 
 
 	@Override
-	public int deleteDeal(int matchId, String uId) {
+	public int deleteDeal(Integer matchId, String userId) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("matchId", matchId);
-		params.put("userId", uId);
+		params.put("userId", userId);
 		return sqlSession.update(namespace + ".deleteDeal", params);
 
 	}

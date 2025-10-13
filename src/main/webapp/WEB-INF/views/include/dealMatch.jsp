@@ -11,22 +11,21 @@
 	<div id="leftContainer"
 		style="flex: 1; min-width: 600px; max-width: 900px; border: 1px solid #ccc; padding: 10px; box-sizing: border-box;">
 		<!-- 액션 영역: 세련된 버튼 스타일 -->
-		<div id="actionContainer"
-			style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-			<label
-				style="display: flex; align-items: center; cursor: pointer; font-size: 14px;">
-				<h3>
-					My 알림 상품
-					</h2>
 
-					<input type="checkbox" id="selectAll"
-						style="margin-right: 5px; accent-color: #007BFF; width: 16px; height: 16px;">
+		<c:if test="${not empty sessionScope.id}">
+			<div id="actionContainer"
+				style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+				<label
+					style="display: flex; align-items: center; cursor: pointer; font-size: 14px;">
+					</h2> <input type="checkbox" id="selectAll"
+					style="margin-right: 5px; accent-color: #007BFF; width: 16px; height: 16px;">
 					전체 선택
-			</label>
-			<button type="button" id="deleteSelected"
-				style="padding: 5px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: 0.2s;">
-				선택 삭제</button>
-		</div>
+				</label>
+				<button type="button" id="deleteSelected"
+					style="padding: 5px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: 0.2s;">
+					선택 삭제</button>
+			</div>
+		</c:if>
 
 		<!-- 딜 리스트 스크롤 영역 -->
 		<div id="dealContainer"
@@ -40,16 +39,16 @@
 				<div class="deal-card" data-id="${deal.id}"
 					style="display: flex; align-items: flex-start; border: 1px solid #ccc; padding: 5px; margin-bottom: 5px; border-radius: 8px; position: relative;">
 
-					<div
-						style="flex: 0 0 120px; margin-right: 10px; text-align: center;">
-						<input type="checkbox" class="deal-check" value="${deal.id}"
-							style="margin-bottom: 5px; accent-color: #007BFF; width: 16px; height: 16px;">
+					<div style="flex: 0 0 120px; margin-right: 10px; text-align: center;">
+						<c:if test="${not empty sessionScope.id}">
+							<input type="checkbox" class="deal-check" value="${deal.id}"
+								style="margin-bottom: 5px; accent-color: #007BFF; width: 16px; height: 16px;">
+						</c:if>	
 						<img src="${deal.img}" alt="${deal.title}"
 							style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px;">
 					</div>
 
-					<div
-						style="flex: 1; font-size: 12px; line-height: 1.2; padding-right: 60px; position: relative;">
+					<div style="flex: 1; font-size: 12px; line-height: 1.2; padding-right: 60px; position: relative;">
 						<p style="margin: 0;">ID: ${deal.id}</p>
 						<p style="margin: 0;">제목: ${deal.title}</p>
 						<p style="margin: 0;">가격: ${deal.price}</p>
@@ -62,9 +61,11 @@
 						<p style="margin: 0;">좋아요: ${deal.likes}</p>
 
 						<!-- 카드 삭제 버튼: 오른쪽 상단에 고정 -->
-						<button type="button" class="deleteBtn"
-							style="position: absolute; top: 5px; right: 5px; padding: 4px 8px; background-color: #dc3545; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.2s;">
-							삭제</button>
+						<c:if test="${not empty sessionScope.id}">
+							<button type="button" class="deleteBtn" data-id="${deal.id}"
+								style="position: absolute; top: 5px; right: 5px; padding: 4px 8px; background-color: #dc3545; color: white; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; transition: 0.2s;">
+								삭제</button>
+						</c:if>
 					</div>
 				</div>
 			</c:forEach>
@@ -110,44 +111,49 @@
 
 		// 단일 삭제
 		$('#dealContainer').on('click', '.deleteBtn', function() {
-			const $card = $(this).closest('.deal-card');
-			const matchId = $card.data('id');
+		    const $card = $(this).closest('.deal-card');
+		    const matchId = $(this).data('id');
+		    
+		    console.log('단일 삭제 클릭, matchId =', matchId);
+		
+		    if (!matchId) return; // undefined 방어
+		
+		    $.post('${pageContext.request.contextPath}/deleteDeal', { matchId: matchId })
+		        .done(function(res) {
+		            if (res === 'success') {
+		                $card.fadeOut(300, function() { $(this).remove(); });
+		            } else {
+		                alert('삭제 실패');
+		            }
+		        });
 
-			$.post('${pageContext.request.contextPath}/deleteDeal', {
-				matchId : matchId
-			}, function(res) {
-				if (res === 'success') {
-					$card.fadeOut(300, function() {
-						$(this).remove();
-					});
-				} else {
-					alert('삭제 실패');
-				}
-			});
 		});
-
 		// 선택 삭제
 		$('#deleteSelected').on('click', function() {
-			const $checked = $('.deal-check:checked');
-			if ($checked.length === 0) {
-				alert('삭제할 항목을 선택하세요.');
-				return;
-			}
-
-			$checked.each(function() {
-				const $card = $(this).closest('.deal-card');
-				const matchId = $card.data('id');
-
-				$.post('${pageContext.request.contextPath}/deleteDeal', {
-					matchId : matchId
-				}, function(res) {
-					if (res === 'success') {
-						$card.fadeOut(300, function() {
-							$(this).remove();
-						});
-					}
-				});
-			});
+		    const $checked = $('.deal-check:checked');
+		
+		    if ($checked.length === 0) {
+		        alert('삭제할 항목을 선택하세요.');
+		        return;
+		    }
+		
+		    // 먼저 matchId와 카드 엘리먼트 묶어서 안전하게 순회
+		    const items = $checked.map(function() {
+		        const $card = $(this).closest('.deal-card');
+		        const matchId = $card.data('id');
+		        if (!matchId) return null;
+		        return { card: $card, id: matchId };
+		    }).get();
+		
+		    items.forEach(function(item) {
+		        if (!item) return;
+		        $.post('${pageContext.request.contextPath}/deleteDeal', { matchId: item.id })
+		            .done(function(res) {
+		                if (res === 'success') {
+		                    item.card.fadeOut(300, function() { $(this).remove(); });
+		                }
+		            });
+		    });
 		});
 
 		// 버튼 호버 효과

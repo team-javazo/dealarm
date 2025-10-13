@@ -46,10 +46,10 @@
     
     
     <!-- 알림 딜 삭제 -->
-    <update id="deleteDeal" parameterType="int">
-        update from deal_match
+    <update id="deleteDeal">
+        update deal_match
         set is_active = 0
-        where id = #{matchId} and user_id = #{uId}
+        where id = #{matchId} and user_id = #{userId}
     </update>
     
 
