@@ -94,6 +94,12 @@ while not stop_flag:
                 else:
                     posted_at = now.replace(minute=0, second=0)
 
+            # 30분(1800초) 미경과 게시글은 건너뛰기
+            time_difference = (datetime.now() - posted_at).total_seconds()
+            if time_difference < 1800:
+                print(f"🕒 게시글 {title}은(는 {int(time_difference)}초 전 작성되어 안정성 확보를 위해 건너뜁니다.")
+                continue
+
             # 오래된 게시글 필터링
             if (datetime.now() - posted_at).days >= 7:
                 stop_flag = True
