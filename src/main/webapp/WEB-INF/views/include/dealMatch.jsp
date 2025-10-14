@@ -43,7 +43,7 @@
 							<input type="checkbox" class="deal-check" value="${deal.id}"
 								style="margin-bottom: 5px; accent-color: #007BFF; width: 16px; height: 16px;">
 						</c:if>	
-						<img src="${deal.img}" alt="${deal.title}"
+						<img src="<c:url value='${deal.img}'/>" alt="${deal.title}"
 							style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px;">
 					</div>
 
