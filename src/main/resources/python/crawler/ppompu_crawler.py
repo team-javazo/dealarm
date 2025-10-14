@@ -70,6 +70,12 @@ while not stop_flag:
                 stop_flag = True
                 print("📛 오래된 게시글 감지됨 → 크롤링 종료")
                 break
+            
+            # 현재 시간과 게시일자의 차이가 30분(1800초) 미만인지 확인
+            time_difference = (today - posted_at).total_seconds()
+            if time_difference < 1800:
+                print(f"🕒 게시글 {title}은(는 {int(time_difference)}초 전 작성되어 안정성 확보를 위해 건너뜁니다.")
+                continue
 
             # 추천수 계산
             rec_tag = item.select_one("td.baseList-rec")
