@@ -12,6 +12,7 @@ import kr.co.dong.deal.DealSummaryDTO;
 import kr.co.dong.sms.SmsDBService; // ✅ 문자 발송 서비스 import
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,11 +33,35 @@ public class CrawlScheduler {
 	private static final String PPOM_JSON = System.getProperty("user.home") + "/dealarm-data/ppomppu_crawling.json";
 	private static final String QUASAR_JSON = System.getProperty("user.home")
 			+ "/dealarm-data/quasarzone_crawling.json";
+	private static final String IMAGE_DIR = 
+	        System.getProperty("user.home") + "/dealarm-data/images";
 
 	@Scheduled(fixedDelay = 300000)
 //	@Scheduled(cron = "0 0 10 * * *", zone = "Asia/Seoul")
 	    public void deleteOldDeals() {
-	        try {
+			// 임시 이미지 삭제 프로세스
+			try {
+				File imageDir = new File(IMAGE_DIR);
+
+				if (imageDir.exists() && imageDir.isDirectory()) {
+					File[] files = imageDir.listFiles();
+
+					if (files != null) {
+						int deletedCount = 0;
+
+						for (File file : files) {
+							if (file.isFile() && file.delete()) {
+								deletedCount++;
+							}
+						}
+						System.out.println("로컬 이미지 " + deletedCount + "개 삭제 완료 (경로: " + IMAGE_DIR + ")");
+					}
+				}
+	        } catch (Exception e) {
+	        	System.err.println("❌ 로컬 이미지 파일 삭제 실패: " + e.getMessage());
+	        }
+		
+			try {
 	            int deleted = dealSummaryService.deleteOldDeals(); // 서비스에서 DB 삭제 처리
 	            System.out.println("[🧹스케줄러] 오래된 딜 " + deleted + "건 삭제 완료 (posted_at 기준 7일 경과)");
 	        } catch (Exception e) {
