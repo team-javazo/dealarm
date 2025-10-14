@@ -1,7 +1,8 @@
 package kr.co.dong.click;
 
-import kr.co.dong.sms.SmsDTO;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 클릭 추적 관련 서비스 인터페이스
@@ -16,4 +17,7 @@ public interface ClickService {
 	 * @return 처리 성공 여부
 	 */
 	boolean click(String userId, long dealId, String keyword);
+	
+	// 통계 조회
+	List<Map<String, Object>> getUserClick(String UserId);
 }

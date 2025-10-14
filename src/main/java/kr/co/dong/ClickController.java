@@ -5,11 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.dong.click.ClickService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 클릭 추적 및 리다이렉트 요청을 처리하는 컨트롤러 URL: /dong/track
@@ -68,4 +71,16 @@ public class ClickController {
 
 		return "redirect:" + decodedUrl;
 	}
+	
+	/**
+     * ✅ 그래프 데이터 반환 (Ajax용)
+     */
+    @GetMapping("/mypage/click-stats")
+    @ResponseBody
+    public List<Map<String, Object>> getClickStats(@RequestParam("userId") String userId) {
+        List<Map<String, Object>> result = trackService.getUserClick(userId);
+        System.out.println("📊 [ClickStats] userId=" + userId + " 결과 행수: " + result.size());
+        return result;
+    }
+
 }
