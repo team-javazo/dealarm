@@ -1,5 +1,8 @@
 package kr.co.dong.click;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -25,5 +28,11 @@ public class ClickDAOImpl implements ClickDAO {
 	public int upsertClickHistory(ClickDTO dto) {
 		// 매퍼 XML의 NAMESPACE와 SQL ID를 조합하여 호출
 		return sqlSession.insert(NAMESPACE + ".upsertClickHistory", dto);
+	}
+
+	@Override
+	public List<Map<String, Object>> getUserClick(String userId) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList(NAMESPACE + ".getUserClick", userId);
 	}
 }

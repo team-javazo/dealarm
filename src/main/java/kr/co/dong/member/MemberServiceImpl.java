@@ -5,10 +5,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements MemberService {
+	
+	// 비밀번호 암호화 객체
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	@Inject
 	private MemberDAO memberDAO;
@@ -81,8 +85,10 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public boolean checkPassword(String id, String password) {
+		String userPassword = password; //user가 입력한 비밀번호
+		
 		MemberDTO user = memberDAO.myDTO(id);
-		if (user != null && password.equals(user.getPassword())) {
+		if (user != null && encoder.matches(userPassword, user.getPassword())) {
 			System.out.println("비밀번호 일치 DAO");
 			return true;
 		}

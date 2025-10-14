@@ -15,12 +15,12 @@
 
 	<!-- 왼쪽 인기 순위 영역 -->
 	<div class="p-3 bg-white border rounded mb-3"
-		style="width: 25%; height: 250px; overflow-y: auto;">
-		<h6 class="fw-bold">키워드 인기 키워드</h6>
+	style="width: 25%; height: 250px; overflow-y: auto;">
+	<h6 class="fw-bold">키워드 인기 키워드</h6>
 
-		<ol id="trendResultSidebar"
-			class="list-group list-group-numbered small"></ol>
-	</div>
+	<ol id="trendResultSidebar"
+		class="list-group list-group-numbered small"></ol>
+</div>
 
 
 	<!-- 오른쪽 뉴스 영역 -->
