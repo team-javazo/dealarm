@@ -28,5 +28,13 @@
 		keyword = #{keyword}
 		-- update_date는 DB 설정에 따라 자동 갱신됩니다.
 	</insert>
-
+	
+	<!-- ✅ 그래프용 클릭 데이터 조회 -->
+    <select id="getUserClick" parameterType="String" resultType="map">
+        SELECT keyword, SUM(count) AS total_count
+        FROM click_count
+        WHERE user_id = #{userId}
+        GROUP BY keyword
+        ORDER BY total_count DESC
+    </select>
 </mapper>
