@@ -6,7 +6,7 @@ package kr.co.dong.click;
 public class ClickDTO {
 
 	private long id;
-	private long userId; // user_id (BIGINT)
+	private String userId; // user_id (BIGINT)
 	private long dealId; // deal_id (BIGINT)
 	private String keyword; // keyword (VARCHAR)
 	private int count; // count (INT)
@@ -16,7 +16,7 @@ public class ClickDTO {
 	}
 
 	// 필수 필드 생성자 (클릭 추적 시 입력되는 값)
-	public ClickDTO(long userId, long dealId, String keyword) {
+	public ClickDTO(String userId, long dealId, String keyword) {
 		this.userId = userId;
 		this.dealId = dealId;
 		this.keyword = keyword;
@@ -31,11 +31,11 @@ public class ClickDTO {
 		this.id = id;
 	}
 
-	public long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

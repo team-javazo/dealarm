@@ -15,5 +15,5 @@ public interface ClickService {
 	 * @param keyword 키워드
 	 * @return 처리 성공 여부
 	 */
-	boolean click(long userId, long dealId, String keyword);
+	boolean click(String userId, long dealId, String keyword);
 }
