@@ -15,7 +15,7 @@ import java.util.Base64;
  * 클릭 추적 및 리다이렉트 요청을 처리하는 컨트롤러 URL: /dong/track
  */
 @Controller
-@RequestMapping("/dong")
+@RequestMapping("/")
 public class ClickController {
 
 	// Service를 주입받아 사용 (이름: "trackService"로 지정했음)
