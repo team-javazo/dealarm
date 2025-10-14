@@ -1,5 +1,8 @@
 package kr.co.dong.click;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 클릭 이력 데이터 접근 객체 인터페이스 (DAO)
  */
@@ -12,4 +15,7 @@ public interface ClickDAO {
 	 * @return DB에 영향을 준 행의 수
 	 */
 	int upsertClickHistory(ClickDTO dto);
+	
+	// 키워드 별 클릭 통계 조회
+	List<Map<String, Object>> getUserClick(String userId);
 }

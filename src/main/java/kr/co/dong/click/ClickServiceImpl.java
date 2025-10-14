@@ -1,5 +1,8 @@
 package kr.co.dong.click;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,4 +35,10 @@ public class ClickServiceImpl implements ClickService {
 			return false;
 		}
 	}
+
+	@Override
+    public List<Map<String, Object>> getUserClick(String userId) {
+        System.out.println("📈 [ClickService] 클릭 통계 조회 userId=" + userId);
+        return clickDAO.getUserClick(userId);
+    }
 }
