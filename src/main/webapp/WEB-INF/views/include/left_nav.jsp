@@ -231,12 +231,20 @@ $(function() {
                 var html = "";
                 if (response.keywordRankings && response.keywordRankings.length > 0) {
                     // 키워드 랭킹 결과 HTML 생성
+                	// **⚠️ <ol> 태그와 list-group-numbered 클래스에 맞게 수정합니다.**
                     response.keywordRankings.forEach(function(keyword) {
-                        html += "<li class='list-group-item'>"
-                            + keyword.keyword
-                            + " - "
-                            + keyword.frequency
-                            + "회</li>";
+                        // list-group-item 클래스는 각 <li> 항목을 확실하게 세로 블록으로 분리합니다.
+                        html += "<li class='list-group-item d-flex justify-content-between align-items-start'>";
+                        
+                        // 텍스트 내용은 <li> 내부에 넣습니다.
+                        // list-group-numbered를 사용하면 번호는 자동으로 붙습니다.
+                        html += "   <div class='ms-2 me-auto'>"
+                             +      keyword.keyword
+                             +      " - "
+                             +      keyword.frequency
+                             +      "회"
+                             +  "</div>";
+                        html += "</li>";
                     });
                 } else {
                     html = "<li class='list-group-item'>등록된 키워드가 없습니다.</li>";
