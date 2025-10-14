@@ -20,7 +20,7 @@ public class ClickServiceImpl implements ClickService {
 	 * user_id와 deal_id를 기준으로 count를 증가시키거나 새로 삽입하는 UPSERT 로직을 수행합니다.
 	 */
 	@Override
-	public boolean click(long userId, long dealId, String keyword) {
+	public boolean click(String userId, long dealId, String keyword) {
 		// DTO 객체 생성
 		ClickDTO dto = new ClickDTO(userId, dealId, keyword);
 

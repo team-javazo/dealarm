@@ -35,7 +35,7 @@ public class ClickController {
 	 * @return 리다이렉트 경로
 	 */
 	@GetMapping("/track")
-	public String trackClick(@RequestParam("url") String encodedUrl, @RequestParam("user_id") long userId,
+	public String trackClick(@RequestParam("url") String encodedUrl, @RequestParam("user_id") String userId,
 			@RequestParam("deal_id") long dealId, @RequestParam("keyword") String keyword) {
 		String decodedUrl = null;
 
