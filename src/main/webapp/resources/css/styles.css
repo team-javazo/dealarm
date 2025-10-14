@@ -3713,6 +3713,14 @@ textarea.form-control-lg {
 .dropdown-item:hover, .dropdown-item:focus {
   color: var(--bs-dropdown-link-hover-color);
   background-color: var(--bs-dropdown-link-hover-bg);
+  
+  /* 배경 크기 조정 */
+  padding-top: 10px;   /* 위쪽 공간 */
+  padding-bottom: 10px; /* 아래쪽 공간 */
+  padding-left: 20px;   /* 왼쪽 여백 */
+  padding-right: 20px;  /* 오른쪽 여백 */
+
+  border-radius: 6px;   /* 선택 사항: 모서리 둥글게 */
 }
 .dropdown-item.active, .dropdown-item:active {
   color: var(--bs-dropdown-link-active-color);
