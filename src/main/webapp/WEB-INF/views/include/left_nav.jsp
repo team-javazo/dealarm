@@ -15,106 +15,135 @@
 		<hr>
 
 		<ul class="nav nav-pills flex-column">
-			<!-- 
-			<li class="nav-item"><a href="/" class="nav-link active"
-				aria-current="page">카테고리</a></li>
-			<li><a href="/about" class="nav-link link-dark">아무거나</a></li>
-			<li><a href="/shop" class="nav-link link-dark">누르지마</a></li>
- -->
 			<li><a href="${pageContext.request.contextPath}/inquiry/list"
 				class="nav-link link-dark">고객문의</a></li>
 			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
 			<li><a href="/dong/newDeal" class="nav-link link-dark">NEW
 					DEAL </a></li>
 		</ul>
-
 		<hr>
+		<div class="p-3 bg-white border rounded mb-3"
+			style="width: 100%; max-height: 400px; overflow-y: auto;">
+
+			<h6 class="fw-bold" id="trendToggle" style="cursor: pointer;">
+				카테고리 인기 키워드 <i class="bi bi-chevron-down"></i>
+			</h6>
+
+			<div id="trendSection" style="display: block;">
+
+				<form id="trendForm" class="mb-2">
+					<select id="gender" class="form-select mb-2">
+						<option value="all">전체</option>
+						<option value="m">남성</option>
+						<option value="f">여성</option>
+					</select>  <select id="ages" multiple class="form-select mb-2">
+						<option value="all">전체</option>
+						<option value="10">10대</option>
+						<option value="20">20대</option>
+						<option value="30">30대</option>
+						<option value="40">40대</option>
+						<option value="50">50대</option>
+						<option value="60">60대</option>
+					</select>
+
+					<button type="submit" class="btn btn-primary w-100">조회</button>
+				</form>
+
+			</div>
+		</div>
+
 
 		<%-- 🆕 My 키워드 기반 추천 섹션 (로그인 시 노출) --%>
 		<c:if test="${not empty sessionScope.id}">
 			<div class="p-3 bg-white border rounded mb-3"
 				style="width: 100%; max-height: 250px; overflow-y: auto;">
-				<h6 class="fw-bold">My 키워드 기반 추천</h6>
-				<ul id="myKeywordRecommendation"
-					class="list-group list-group-flush small">
-					<li class="list-group-item px-0 py-1">추천 키워드를 로딩 중입니다...</li>
-				</ul>
+
+				<h6 class="fw-bold" id="myRecommendationToggle"
+					style="cursor: pointer;">
+					My 키워드 기반 추천 <i class="bi bi-chevron-down"></i>
+				</h6>
+
+				<div id="myRecommendationSection" style="display: none;">
+					<ul id="myKeywordRecommendation"
+						class="list-group list-group-flush small">
+						<li class="list-group-item px-0 py-1">추천 키워드를 로딩 중입니다...</li>
+					</ul>
+				</div>
 			</div>
 		</c:if>
 
 		<div class="p-3 bg-white border rounded mb-3"
 			style="width: 100%; max-height: 400px; overflow-y: auto;">
-			<h6 class="fw-bold">연관 검색어 검색</h6>
-			<form id="relatedKeywordForm" class="mb-2">
-				<div class="input-group mb-2">
-					<input type="text" id="mainKeyword" name="mainKeyword"
-						class="form-control" placeholder="검색 키워드 입력" required>
-					<button type="submit" class="btn btn-primary">
-						<i class="bi bi-search"></i>
-					</button>
-				</div>
-			</form>
-			<hr>
-			<h6 class="fw-bold small">연관 검색 결과</h6>
-			<ul id="relatedKeywordResult"
-				class="list-group list-group-flush small">
-				<li class="list-group-item px-0 py-1">키워드를 검색해주세요.</li>
-			</ul>
+			<h6 class="fw-bold" id="relatedKeywordToggle"
+				style="cursor: pointer;">
+				🔎 연관 검색어 검색 <i class="bi bi-chevron-down"></i>
+			</h6>
+
+			<%-- ⬇️ 이 영역을 토글할 섹션으로 지정하고, id를 추가합니다. --%>
+			<div id="relatedKeywordSection" style="display: none;">
+				<form id="relatedKeywordForm" class="mb-2">
+					<div class="input-group mb-2">
+						<input type="text" id="mainKeyword" name="mainKeyword"
+							class="form-control" placeholder="검색 키워드 입력" required>
+						<button type="submit" class="btn btn-primary">
+							<i class="bi bi-search"></i>
+						</button>
+					</div>
+				</form>
+				<hr>
+				<h6 class="fw-bold small">연관 검색 결과</h6>
+				<ul id="relatedKeywordResult"
+					class="list-group list-group-flush small">
+					<li class="list-group-item px-0 py-1">키워드를 검색해주세요.</li>
+				</ul>
+			</div>
+			<%-- ⬆️ relatedKeywordSection 종료 --%>
 		</div>
 
-		<div class="p-3 bg-white border rounded mb-3"
-			style="width: 100%; height: 300px; overflow-y: auto;">
-			<h6 class="fw-bold">카테고리 인기 키워드</h6>
+<%-- 🆕 My 키워드 섹션 (카드/토글 형태로 변경) --%>
+<div class="mb-auto">
+    <c:choose>
+        <c:when test="${not empty sessionScope.id}">
+            <div class="p-3 bg-white border rounded mb-3"
+                 style="width: 100%; max-height: 400px; overflow-y: auto;">
+                
+                <%-- 토글 버튼: My키워드 제목 영역 --%>
+                <h6 class="fw-bold" id="myKeywordToggle"
+                    style="cursor: pointer;"
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#keywordCollapseSection" 
+                    aria-expanded="false" 
+                    aria-controls="keywordCollapseSection">
+                    🔑 My 키워드 <i class="bi bi-chevron-down"></i>
+                </h6>
 
-			<form id="trendForm" class="mb-2">
-				<select id="gender" class="form-select mb-2">
-					<option value="all">전체</option>
-					<option value="m">남성</option>
-					<option value="f">여성</option>
-				</select> <select id="ages" multiple class="form-select mb-2">
-					<option value="all">전체</option>
-					<option value="10">10대</option>
-					<option value="20">20대</option>
-					<option value="30">30대</option>
-					<option value="40">40대</option>
-					<option value="50">50대</option>
-					<option value="60">60대</option>
-				</select>
-
-				<button type="submit" class="btn btn-primary w-100">조회</button>
-			</form>
-
-
-			<%-- <ol id="trendResultSidebar"
-				class="list-group list-group-numbered small"></ol> --%>
-		</div>
-
-		<ul class="nav nav-pills flex-column mb-auto">
-			<c:choose>
-				<c:when test="${not empty sessionScope.id}">
-					<li class="nav-item"><a class="nav-link dropdown-toggle"
-						href="#" id="myKeywordDropdown">My키워드</a>
-						<div id="keywordSection" class="mt-2 p-3 bg-light border rounded"
-							style="display: none; width: 100%;">
-							<form id="addKeywordForm">
-								<input type="hidden" name="userId" value="${sessionScope.id}" />
-								<div class="mb-2">
-									<input type="text" id="keyword" name="keyword"
-										class="form-control" placeholder="키워드 입력" required />
-								</div>
-								<button type="submit" class="btn btn-primary w-100">추가</button>
-							</form>
-							<hr>
-							<h6>내 키워드</h6>
-							<ul id="keywordList" class="list-unstyled small"></ul>
-						</div></li>
-				</c:when>
-				<c:otherwise>
-					<a href="${pageContext.request.contextPath}/member/login"
-						class="btn btn-outline-primary w-100">로그인</a>
-				</c:otherwise>
-			</c:choose>
-		</ul>
+                <%-- ⬇️ 이 영역이 토글될 섹션입니다. (id: keywordCollapseSection) --%>
+                <div id="keywordCollapseSection" class="collapse">
+                    <hr>
+                    <form id="addKeywordForm">
+                        <input type="hidden" name="userId" value="${sessionScope.id}" />
+                        <div class="mb-2">
+                            <input type="text" id="keyword" name="keyword"
+                                class="form-control form-control-sm" placeholder="키워드 입력" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">추가</button>
+                    </form>
+                    <hr>
+                    <h6 class="fw-bold small">내 키워드 목록</h6>
+                    <ul id="keywordList" class="list-unstyled small"></ul>
+                </div>
+                <%-- ⬆️ keywordCollapseSection 종료 --%>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="p-3"> <%-- 이 영역은 로그인 버튼을 감싸는 div입니다. --%>
+                <a href="${pageContext.request.contextPath}/member/login"
+                    class="btn btn-outline-primary w-100">로그인</a>
+            </div>
+        </c:otherwise>
+    </c:choose>
+</div>
+<%-- ⬆️ My 키워드 섹션 종료 --%>
 	</nav>
 </div>
 
@@ -138,6 +167,88 @@ if (keywordToggle) {
             localStorage.setItem("keywordOpen", "false");
         }
     });
+}
+
+//🔑 연관 검색어 클릭 시 열고/닫기 (새로 추가된 로직)
+const relatedKeywordToggle = document.getElementById('relatedKeywordToggle');
+const relatedKeywordSection = document.getElementById('relatedKeywordSection');
+
+if (relatedKeywordToggle && relatedKeywordSection) {
+    // 💡 localStorage에서 상태 불러와 적용
+    if (localStorage.getItem("relatedKeywordOpen") === "true") {
+        relatedKeywordSection.style.display = "block";
+    }
+
+    relatedKeywordToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // 💡 토글 로직
+        if (relatedKeywordSection.style.display === 'none' || relatedKeywordSection.style.display === '') {
+            relatedKeywordSection.style.display = 'block';
+            localStorage.setItem("relatedKeywordOpen", "true");
+        } else {
+            relatedKeywordSection.style.display = 'none';
+            localStorage.setItem("relatedKeywordOpen", "false");
+        }
+    });
+}
+
+//⭐ 카테고리 인기 키워드 클릭 시 열고/닫기 로직 (새로 추가)
+const trendToggle = document.getElementById('trendToggle');
+const trendSection = document.getElementById('trendSection');
+
+if (trendToggle && trendSection) {
+    // 기본적으로 펼쳐져 있게 하려면 아래 주석 처리
+    trendSection.style.display = "block"; 
+    
+    // localStorage에서 상태 불러와 적용 (선택 사항)
+    if (localStorage.getItem("trendOpen") === "false") {
+        trendSection.style.display = "none";
+    }
+
+    trendToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (trendSection.style.display === 'none' || trendSection.style.display === '') {
+            trendSection.style.display = 'block';
+            localStorage.setItem("trendOpen", "true");
+        } else {
+            trendSection.style.display = 'none';
+            localStorage.setItem("trendOpen", "false");
+        }
+    });
+}
+
+//⭐ My 키워드 기반 추천 클릭 시 열고/닫기 로직 (새로 추가)
+const myRecommendationToggle = document.getElementById('myRecommendationToggle');
+const myRecommendationSection = document.getElementById('myRecommendationSection');
+
+if (myRecommendationToggle && myRecommendationSection) {
+    // 💡 localStorage에서 상태 불러와 적용 (선택 사항)
+    if (localStorage.getItem("myRecOpen") === "true") {
+        // localStorage에 'true'가 있으면 펼칩니다.
+        myRecommendationSection.style.display = "block";
+    } else {
+        // localStorage에 값이 없거나 'false'인 경우, 
+        // HTML의 기본값(display: none;)을 유지하여 접힌 상태로 시작합니다.
+        myRecommendationSection.style.display = "none"; // 💡 명확하게 'none'으로 설정
+    }
+
+    myRecommendationToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // 💡 토글 로직
+        if (myRecommendationSection.style.display === 'none' || myRecommendationSection.style.display === '') {
+            myRecommendationSection.style.display = 'block';
+            localStorage.setItem("myRecOpen", "true");
+        } else {
+            myRecommendationSection.style.display = 'none';
+            localStorage.setItem("myRecOpen", "false");
+        }
+    });
 }
 </script>
 
