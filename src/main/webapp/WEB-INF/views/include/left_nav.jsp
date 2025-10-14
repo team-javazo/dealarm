@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-	
+
 <div class="d-flex">
 	<nav class="d-flex flex-column flex-shrink-0 p-3 bg-light"
 		style="width: 250px; min-height: 700px;">
@@ -15,19 +15,52 @@
 		<hr>
 
 		<ul class="nav nav-pills flex-column">
-<!-- 
+			<!-- 
 			<li class="nav-item"><a href="/" class="nav-link active"
 				aria-current="page">카테고리</a></li>
 			<li><a href="/about" class="nav-link link-dark">아무거나</a></li>
 			<li><a href="/shop" class="nav-link link-dark">누르지마</a></li>
  -->
- 			<li><a href="${pageContext.request.contextPath}/inquiry/list" class="nav-link link-dark">고객문의</a></li> 
+			<li><a href="${pageContext.request.contextPath}/inquiry/list"
+				class="nav-link link-dark">고객문의</a></li>
 			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
-			<li><a href="/dong/newDeal" class="nav-link link-dark">NEW DEAL </a></li>
+			<li><a href="/dong/newDeal" class="nav-link link-dark">NEW
+					DEAL </a></li>
 		</ul>
 
-
 		<hr>
+
+		<%-- 🆕 My 키워드 기반 추천 섹션 (로그인 시 노출) --%>
+		<c:if test="${not empty sessionScope.id}">
+			<div class="p-3 bg-white border rounded mb-3"
+				style="width: 100%; max-height: 250px; overflow-y: auto;">
+				<h6 class="fw-bold">My 키워드 기반 추천</h6>
+				<ul id="myKeywordRecommendation"
+					class="list-group list-group-flush small">
+					<li class="list-group-item px-0 py-1">추천 키워드를 로딩 중입니다...</li>
+				</ul>
+			</div>
+		</c:if>
+
+		<div class="p-3 bg-white border rounded mb-3"
+			style="width: 100%; max-height: 400px; overflow-y: auto;">
+			<h6 class="fw-bold">연관 검색어 검색</h6>
+			<form id="relatedKeywordForm" class="mb-2">
+				<div class="input-group mb-2">
+					<input type="text" id="mainKeyword" name="mainKeyword"
+						class="form-control" placeholder="검색 키워드 입력" required>
+					<button type="submit" class="btn btn-primary">
+						<i class="bi bi-search"></i>
+					</button>
+				</div>
+			</form>
+			<hr>
+			<h6 class="fw-bold small">연관 검색 결과</h6>
+			<ul id="relatedKeywordResult"
+				class="list-group list-group-flush small">
+				<li class="list-group-item px-0 py-1">키워드를 검색해주세요.</li>
+			</ul>
+		</div>
 
 		<div class="p-3 bg-white border rounded mb-3"
 			style="width: 100%; height: 300px; overflow-y: auto;">
@@ -38,9 +71,7 @@
 					<option value="all">전체</option>
 					<option value="m">남성</option>
 					<option value="f">여성</option>
-				</select>
-
-				<select id="ages" multiple class="form-select mb-2">
+				</select> <select id="ages" multiple class="form-select mb-2">
 					<option value="all">전체</option>
 					<option value="10">10대</option>
 					<option value="20">20대</option>
@@ -53,7 +84,7 @@
 				<button type="submit" class="btn btn-primary w-100">조회</button>
 			</form>
 
-				
+
 			<%-- <ol id="trendResultSidebar"
 				class="list-group list-group-numbered small"></ol> --%>
 		</div>
@@ -112,148 +143,251 @@ if (keywordToggle) {
 
 <script>
 $(function() {
-    // ------------------------------------
-    // My 키워드 관리 로직 (기존 유지)
-    // ------------------------------------
-    const $keywordList = $("#keywordList");
-    const userId = "${sessionScope.id}";
-    const contextPath = "${pageContext.request.contextPath}";
-
-    function loadKeywords() {
-        $.ajax({
-            url: contextPath + "/keywords/list?userId=" + userId,
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
-                let htmls = "";
-                if (response.keywords && response.keywords.length > 0) {
-                    response.keywords.forEach(k => {
-                        htmls += "<li>" + k.keyword +
-                                 "<button class='deleteBtn btn btn-sm p-0 text-danger' data-id='" + k.id + "' title='삭제'>" +
-                                 "<i class='bi bi-x-circle-fill'></i>" +
-                                 "</button></li>";
-                    });
-                } else {
-                    htmls = "<li>등록된 키워드가 없습니다.</li>";
-                }
-                $keywordList.html(htmls);
-            },
-            error: function() {
-                alert("키워드 목록 불러오기 실패");
-            }
-        });
-    }
-
-    $("#addKeywordForm").on("submit", function(e) {
-        e.preventDefault();
-        const keyword = $("#keyword").val().trim();
-        if (!keyword) return alert("키워드를 입력해주세요.");
-
-        $.ajax({
-            url: contextPath + "/keywords/add",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ userId: userId, keyword: keyword }),
-            success: function(response) {
-                if (response.success) {
-                    $("#keyword").val("");
-                    loadKeywords();
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function() { alert("서버 오류"); }
-        });
-    });
-
-    $(document).on("click", ".deleteBtn", function() {
-        const keywordId = $(this).data("id");
-        if (!confirm("삭제하시겠습니까?")) return;
-
-        $.ajax({
-            url: contextPath + "/keywords/delete/" + keywordId,
-            method: "POST",
-            success: function(response) {
-                if (response.success) loadKeywords();
-                else alert("삭제 실패");
-            },
-            error: function() { alert("서버 오류"); }
-        });
-    });
-
-    loadKeywords();
+	// ------------------------------------
+	// 전역 변수 설정
+	// ------------------------------------
+	const $keywordList = $("#keywordList");
+	const userId = "${sessionScope.id}"; 
+	const contextPath = "${pageContext.request.contextPath}";
+	const $relatedKeywordResult = $("#relatedKeywordResult");
+	// 🔑 My 키워드 추천 영역 선택자 추가
+	const $myKeywordRecommendation = $("#myKeywordRecommendation"); 
 
 
-    // ------------------------------------
-    // ✅ 카테고리별 인기 키워드 랭킹 로직 (수정 및 통합)
-    // ------------------------------------
-    
-    // 페이지 로딩 시 기본값 설정
-    var defaultGender = "all"; // 기본값: 전체 성별
-    // 기본값: 10대부터 60대까지 모든 옵션의 'value' 배열
-    var defaultAgeRange = ["10", "20", "30", "40", "50", "60"]; 
-
-    // 기본값 설정
-    $("#gender").val(defaultGender);
-    // multiple select에 기본값 설정
-    $("#ages").val(defaultAgeRange); 
-
-    // 폼 제출 이벤트 핸들러
-    $("#trendForm").on("submit", function(e) {
-        e.preventDefault(); // 폼 기본 동작 방지
-
-        // 성별과 연령 값 가져오기
-        var gender = $("#gender").val();
-        var ageRange = $("#ages").val(); // multiple 선택일 경우 배열로 반환
-
-        var startAge, endAge;
-
-        // ✅ "전체"가 선택된 경우
-        if (ageRange.includes("all")) {
-            startAge = 10;
-            endAge = 100;
-        } else {
-            // 선택된 값 중 가장 작은/큰 값으로 범위 계산
-            startAge = parseInt(ageRange[0], 10);
-            endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9;
-        }
+	// ------------------------------------
+	// My 키워드 관리 로직
+	// ------------------------------------
+	function loadKeywords() {
+        if (!userId) return; // 로그인 안 했으면 실행 안 함
         
-        // AJAX 요청
-        $.ajax({
-            url: contextPath + "/keywords/ranking", // 서버로 키워드 랭킹 요청
-            type: "GET",
-            data: {
-                gender: gender, 
-                startAge: startAge, 
-                endAge: endAge 
-            }, 
-            success: function(response) {
-                var html = "";
-                if (response.keywordRankings && response.keywordRankings.length > 0) {
-                    // 키워드 랭킹 결과 HTML 생성
-                    response.keywordRankings.forEach(function(keyword) {
-                        html += "<li class='list-group-item'>"
-                            + keyword.keyword
-                            + " - "
-                            + keyword.frequency
-                            + "회</li>";
-                    });
-                } else {
-                    html = "<li class='list-group-item'>등록된 키워드가 없습니다.</li>";
+		$.ajax({
+			url: contextPath + "/keywords/list?userId=" + userId,
+			type: "GET",
+			dataType: "json",
+			success: function(response) {
+				let htmls = "";
+				if (response.keywords && response.keywords.length > 0) {
+					response.keywords.forEach(k => {
+						htmls += "<li>" + k.keyword +
+							 "<button class='deleteBtn btn btn-sm p-0 text-danger' data-id='" + k.id + "' title='삭제'>" +
+							 "<i class='bi bi-x-circle-fill'></i>" +
+							 "</button></li>";
+					});
+				} else {
+					htmls = "<li>등록된 키워드가 없습니다.</li>";
+				}
+				$keywordList.html(htmls);
+			},
+			error: function() {
+				console.error("키워드 목록 불러오기 실패");
+			}
+		});
+	}
+
+	$("#addKeywordForm").on("submit", function(e) {
+		e.preventDefault();
+		const keyword = $("#keyword").val().trim();
+		if (!keyword) return alert("키워드를 입력해주세요.");
+
+		$.ajax({
+			url: contextPath + "/keywords/add",
+			method: "POST",
+			contentType: "application/json",
+			data: JSON.stringify({ userId: userId, keyword: keyword }),
+			success: function(response) {
+				if (response.success) {
+					$("#keyword").val("");
+					loadKeywords();
+                    // 🔑 키워드 추가 후 추천 목록도 새로고침
+                    loadMyKeywordRecommendation(); 
+				} else {
+					alert(response.message);
+				}
+			},
+			error: function() { alert("서버 오류"); }
+		});
+	});
+
+	$(document).on("click", ".deleteBtn", function() {
+		const keywordId = $(this).data("id");
+		if (!confirm("삭제하시겠습니까?")) return;
+
+		$.ajax({
+			url: contextPath + "/keywords/delete/" + keywordId,
+			method: "POST",
+			success: function(response) {
+				if (response.success) {
+                    loadKeywords();
+                    // 🔑 키워드 삭제 후 추천 목록도 새로고침
+                    loadMyKeywordRecommendation(); 
                 }
+				else alert("삭제 실패");
+			},
+			error: function() { alert("서버 오류"); }
+		});
+	});
 
-                // ✅ 결과 리스트 업데이트: 헤더와 사이드바 두 곳 모두 반영
-                $("#trendResultHeader").html(html);  // 헤더의 결과
-                $("#trendResultSidebar").html(html); // 사이드바의 결과
-            },
-            error: function(xhr, status, error) {
-                console.log("Error:", xhr.responseText); 
-                alert("키워드 랭킹 조회 실패");
-            }
-        });
-    });
+	if (userId) loadKeywords(); // 로그인 했을 때만 키워드 로드
 
-    // 페이지 로딩 시 기본값으로 전체 유저 키워드 랭킹 불러오기
-    $("#trendForm").trigger("submit"); 
+
+	// ------------------------------------
+	// 카테고리별 인기 키워드 랭킹 로직
+	// ------------------------------------
+	
+	// 기본값 설정 및 submit
+	var defaultGender = "all"; 
+	var defaultAgeRange = ["10", "20", "30", "40", "50", "60"]; 
+
+	$("#gender").val(defaultGender);
+	$("#ages").val(defaultAgeRange); 
+
+	$("#trendForm").on("submit", function(e) {
+		e.preventDefault(); 
+
+		var gender = $("#gender").val();
+		var ageRange = $("#ages").val(); 
+
+		var startAge, endAge;
+
+		if (ageRange.includes("all") || ageRange.length === 0) {
+			startAge = 10;
+			endAge = 100;
+		} else {
+            // 선택된 연령대를 오름차순 정렬 후 최소/최대 연령 범위 계산
+            ageRange.sort((a, b) => parseInt(a) - parseInt(b));
+			startAge = parseInt(ageRange[0], 10);
+			endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9; 
+		}
+		
+		$.ajax({
+			url: contextPath + "/keywords/ranking", 
+			type: "GET",
+			data: {
+				gender: gender,	
+				startAge: startAge,	
+				endAge: endAge	
+			},	
+			success: function(response) {
+				var html = "";
+				if (response.keywordRankings && response.keywordRankings.length > 0) {
+					response.keywordRankings.forEach(function(keyword) {
+						html += "<li class='list-group-item d-flex justify-content-between align-items-start'>";
+						 
+						html += "	<div class='ms-2 me-auto'>"
+							 +	 	 keyword.keyword
+							 +	 	 " - "
+							 +	 	 keyword.frequency
+							 +	 	 "회"
+							 +	 "</div>";
+						html += "</li>";
+					});
+				} else {
+					html = "<li class='list-group-item'>조회된 키워드가 없습니다.</li>";
+				}
+
+				$("#trendResultSidebar").html(html); 
+			},
+			error: function(xhr, status, error) {
+				console.error("키워드 랭킹 조회 실패:", xhr.responseText);	
+			}
+		});
+	});
+
+	// 페이지 로딩 시 기본값으로 전체 유저 키워드 랭킹 불러오기
+	$("#trendForm").trigger("submit");	
+	
+	// ------------------------------------
+	// 🔑 My 키워드 기반 추천 키워드 자동 로딩 로직 (추가된 기능)
+	// ------------------------------------
+	function loadMyKeywordRecommendation() {
+        if (!userId) return; // 로그인하지 않았으면 실행하지 않음
+        
+        $myKeywordRecommendation.html("<li class='list-group-item px-0 py-1'>My 키워드 분석 중...</li>"); 
+
+		$.ajax({
+			url: contextPath + "/keywords/related/user", // 💡 새로 추가한 엔드포인트 호출
+			type: "GET",
+			dataType: "json",
+			success: function(response) {
+				var html = "";
+				
+				if (!response.success) {
+					html = "<li class='list-group-item px-0 py-1 text-danger'>" + (response.message || response.error || "알 수 없는 오류") + "</li>";
+				} 
+                else if (response.relatedKeywords && response.relatedKeywords.length > 0) {
+					// 검색에 사용된 키워드 표시 (선택 사항) - 필요하다면 주석 해제하여 사용
+                    // var searchKeywordsHtml = Array.isArray(response.searchKeywords) ? response.searchKeywords.join(', ') : (response.searchKeywords || 'N/A');
+                    // html += '<li class="list-group-item px-0 py-1 text-muted small">💡 기반 키워드: ' + searchKeywordsHtml + '</li>';
+                    
+					// 연관 검색어 목록 표시
+					$.each(response.relatedKeywords, function(i, relatedKeyword) {
+						html += '<li class="list-group-item px-0 py-1" style="cursor:pointer;" data-keyword="' + relatedKeyword + '">'
+							 +	 '<i class="bi bi-dot"></i> ' + relatedKeyword
+							 +	 '</li>';
+					});
+				} else {
+					html = "<li class='list-group-item px-0 py-1'>" + (response.message || "등록된 키워드가 없거나, 추천 키워드를 찾을 수 없습니다.") + "</li>";
+				}
+
+				$myKeywordRecommendation.html(html);
+			},
+			error: function(xhr, status, error) {
+				console.error("My 키워드 연관 검색 실패:", xhr.responseText);
+				$myKeywordRecommendation.html("<li class='list-group-item px-0 py-1 text-danger'>추천 키워드 조회 실패</li>");
+			}
+		});
+	}
+
+    // 🔑 페이지 로딩 시 My 키워드 추천 로딩
+    if (userId) loadMyKeywordRecommendation();
+
+
+	// ------------------------------------
+	// 수동 입력 연관 검색어 검색 로직
+	// ------------------------------------
+	
+	$("#relatedKeywordForm").on("submit", function(e) {
+		e.preventDefault(); 
+
+		var mainKeyword = $("#mainKeyword").val().trim();
+		if (!mainKeyword) {
+			$relatedKeywordResult.html("<li class='list-group-item px-0 py-1 text-danger'>검색 키워드를 입력해주세요.</li>");
+			return;
+		}
+
+		$relatedKeywordResult.html("<li class='list-group-item px-0 py-1'>검색 중...</li>"); 
+
+		$.ajax({
+			url: contextPath + "/keywords/related",	
+			type: "GET",
+			data: { keyword: mainKeyword },
+			success: function(response) {
+				var html = "";
+				
+				if (response.relatedKeywords && response.relatedKeywords.length > 0) {
+					$.each(response.relatedKeywords, function(i, relatedKeyword) {
+						html += '<li class="list-group-item px-0 py-1" style="cursor:pointer;" data-keyword="' + relatedKeyword + '">'
+							 +	 '<i class="bi bi-dot"></i> ' + relatedKeyword
+							 +	 '</li>';
+					});
+				} else {
+					html = "<li class='list-group-item px-0 py-1'>연관 검색어를 찾을 수 없습니다.</li>";
+				}
+
+				$relatedKeywordResult.html(html);
+			},
+			error: function(xhr, status, error) {
+				console.error("연관 검색어 조회 실패:", xhr.responseText);
+				$relatedKeywordResult.html("<li class='list-group-item px-0 py-1 text-danger'>연관 검색어 조회 실패 (서버 오류 또는 API 문제)</li>");
+			}
+		});
+	});
+	
+	// 🔑 연관 검색어 클릭 이벤트 (My 추천과 수동 검색 결과 모두에 적용)
+	$(document).on("click", "#relatedKeywordResult li[data-keyword], #myKeywordRecommendation li[data-keyword]", function() {
+		var clickedKeyword = $(this).data("keyword");
+		$("#mainKeyword").val(clickedKeyword); 
+		$("#relatedKeywordForm").trigger("submit"); 
+	});
 });
 </script>
