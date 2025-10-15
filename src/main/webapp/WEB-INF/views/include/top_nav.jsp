@@ -70,7 +70,7 @@
 		                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">관리자메뉴</a>
 		                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 		                                <li><a class="dropdown-item" href="<c:url value='/member/members'/>">회원관리</a></li>
-		                                <li><a class="dropdown-item" href="<c:url value='/member/stats'/>">통계</a></li>
+		                                <li><a class="dropdown-item" href="<c:url value='/stats'/>">통계</a></li>
 		                                <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
 		                                <li><hr class="dropdown-divider" /></li>
 		                            </ul>

@@ -539,10 +539,6 @@ public class MemberController {
 		}
 	}
 	
-	// 통계페이지 동
-	@GetMapping("/stats")
-	public String stats() {
-		return "admin/stats"; 
-	}
+
 	
 }

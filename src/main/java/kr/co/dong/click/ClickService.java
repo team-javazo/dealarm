@@ -18,6 +18,9 @@ public interface ClickService {
 	 */
 	boolean click(String userId, long dealId, String keyword);
 	
-	// 통계 조회
+	// 개인 통계 조회
 	List<Map<String, Object>> getUserClick(String UserId);
+	
+	// 통합 통계 조회
+	List<ClickDTO> keywordStats(Map<String, Object>params); 
 }
