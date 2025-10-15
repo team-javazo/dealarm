@@ -46,6 +46,7 @@
 
 
 <script>
+	Chart.register(ChartDataLabels);
 	let doughnutChart = null;
 	let barChart = null;
 
@@ -91,7 +92,25 @@
 							backgroundColor: [
 								'#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF',
 								'#FF9F40','#C9CBCF','#8A89A6','#FF6F61','#9CCC65','#AAAAAA'
-							]
+							],
+							datalabels: {
+							    color: '#fff',       
+							    font: { weight: 'bold', size: 16 },
+							    display: true,
+							    anchor: 'center',
+							    align: 'center',
+							    offset: 0,           // 라벨 위치 조정						    
+							    formatter: (value, context) => {
+							        const data = context.dataset.data;           // dataset 데이터 배열
+							        const total = data.reduce((a,b)=>a+b,0);    // 전체 합
+							        const currentValue = data[context.dataIndex]; // 현재 값
+							        const percent = total ? ((currentValue / total) * 100).toFixed(1) : 0;
+									console.log("라벨커런트값: ", currentValue, "라벨퍼센트: ", percent);
+
+							       // return `${currentValue} (${percent}%)`;
+							        return `${currentValue}`;
+							    }
+							}
 						}]
 					},
 					options: { 
@@ -106,27 +125,18 @@
 							tooltip:{
 								callbacks:{
 									label: function(context){
+										const dataset = context.dataset.data;
 										const total = context.dataset.data.reduce((a,b)=>a+b,0);
 										const value = context.raw;
 										const percent = total ? ((value / total) * 100).toFixed(1) : 0;
-										console.log("전체 토탈: ", total, "현재 값: ", value, "퍼센트: ", percent);
-										return `${context.label}: ${value} (${percent}%)`;
+										console.log("옵션토탈: ", total, "옵션현재 값: ", value, "옵션퍼센트: ", percent);
+									//	return `${context.label}: ${value} (${percent}%)`;
+										return `${context.label}: ${value} `;
 									}
 								}
-							},
-							datalabels: {
-							    color: '#fff',
-							    font: { weight: 'bold', size: 14 },
-							    formatter: (value, context) => {
-							        const data = context.chart.data.datasets[0].data;
-							        const total = data.reduce((a,b)=>a+b,0);
-							        const percent = total ? ((value / total) * 100).toFixed(1) : 0;
-							        return `${percent}%`;
-							    }
 							}
 						}
-					},
-					plugins: [ChartDataLabels]
+					}
 				});
 
 				// -----------[막대 그래프]-----------
