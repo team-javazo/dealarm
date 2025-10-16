@@ -88,20 +88,24 @@
 								class="btn btn-sm btn-outline-secondary me-1">전체선택</button>
 							<button type="button" id="deselectAllAges"
 								class="btn btn-sm btn-outline-secondary me-3">전체해제</button>
-							<div class="d-inline-flex flex-wrap">
+							<div class="d-inline-flex flex-wrap align-items-center gap-2">
 								<c:forEach var="age"
-									items="${fn:split('10-19,20-29,30-39,40-49,50-59,60-69', ',')}">
+									items="${fn:split('0-9,10-19,20-29,30-39,40-49,50-59,60-69', ',')}">
 									<div class="form-check form-check-inline">
 										<input class="form-check-input" type="checkbox"
 											name="ageGroup" value="${age}"> <label
-											class="form-check-label">${fn:substring(age, 0, 2)}대</label>
+											class="form-check-label"> <c:choose>
+												<c:when test="${age eq '0-9'}">10대 이하</c:when>
+												<c:otherwise>${fn:substring(age, 0, 2)}대</c:otherwise>
+											</c:choose>
+										</label>
 									</div>
 								</c:forEach>
-							</div>
-						</div>
 
-						<div>
-							<button type="button" id="loadRanking" class="btn btn-success">조회</button>
+								<button type="button" id="loadRanking" class="btn btn-success">조회</button>
+							</div>
+							
+
 						</div>
 					</form>
 
