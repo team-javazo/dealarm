@@ -20,7 +20,7 @@ public class GoogleApiUtil {
 //    private static final String GOOGLE_API_KEY = "AIzaSyBpRyiNcDTCq5EivSfzUBjrqYOwn2pCDc0"; // <-- ⚠️ 실제 API Key로 변경
 //    private static final String GOOGLE_CX = "730e7a6fa4c1344c4"; // <-- ⚠️ 실제 CX ID로 변경
     private static final String GOOGLE_API_KEY = ""; // <-- ⚠️ 실제 API Key로 변경
-    private static final String GOOGLE_CX = ""; // <-- ⚠️ 실제 CX ID로 변경
+    private static final String GOOGLE_CX = ""; // <-- ⚠️ 실제 CX ID로 변경 
     
     // Google Custom Search JSON API URL
     private static final String GOOGLE_API_BASE_URL = "https://www.googleapis.com/customsearch/v1";
