@@ -100,50 +100,50 @@
 			<%-- ⬆️ relatedKeywordSection 종료 --%>
 		</div>
 
-<%-- 🆕 My 키워드 섹션 (카드/토글 형태로 변경) --%>
-<div class="mb-auto">
-    <c:choose>
-        <c:when test="${not empty sessionScope.id}">
-            <div class="p-3 bg-white border rounded mb-3"
-                 style="width: 100%; max-height: 400px; overflow-y: auto;">
-                
-                <%-- 토글 버튼: My키워드 제목 영역 --%>
-                <h6 class="fw-bold" id="myKeywordToggle"
-                    style="cursor: pointer;"
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#keywordCollapseSection" 
-                    aria-expanded="false" 
-                    aria-controls="keywordCollapseSection">
-                    🔑 My 키워드 <i class="bi bi-chevron-down"></i>
-                </h6>
+		<%-- 🆕 My 키워드 섹션 (카드/토글 형태로 변경) --%>
+		<div class="mb-auto">
+			<c:choose>
+				<c:when test="${not empty sessionScope.id}">
+					<div class="p-3 bg-white border rounded mb-3"
+						style="width: 100%; max-height: 400px; overflow-y: auto;">
 
-                <%-- ⬇️ 이 영역이 토글될 섹션입니다. (id: keywordCollapseSection) --%>
-                <div id="keywordCollapseSection" class="collapse">
-                    <hr>
-                    <form id="addKeywordForm">
-                        <input type="hidden" name="userId" value="${sessionScope.id}" />
-                        <div class="mb-2">
-                            <input type="text" id="keyword" name="keyword"
-                                class="form-control form-control-sm" placeholder="키워드 입력" required />
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-sm w-100">추가</button>
-                    </form>
-                    <hr>
-                    <h6 class="fw-bold small">내 키워드 목록</h6>
-                    <ul id="keywordList" class="list-unstyled small"></ul>
-                </div>
-                <%-- ⬆️ keywordCollapseSection 종료 --%>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="p-3"> <%-- 이 영역은 로그인 버튼을 감싸는 div입니다. --%>
-                <a href="${pageContext.request.contextPath}/member/login"
-                    class="btn btn-outline-primary w-100">로그인</a>
-            </div>
-        </c:otherwise>
-    </c:choose>
-</div>
-<%-- ⬆️ My 키워드 섹션 종료 --%>
+						<%-- 토글 버튼: My키워드 제목 영역 --%>
+						<h6 class="fw-bold" id="myKeywordToggle" style="cursor: pointer;"
+							data-bs-toggle="collapse"
+							data-bs-target="#keywordCollapseSection" aria-expanded="false"
+							aria-controls="keywordCollapseSection">
+							🔑 My 키워드 <i class="bi bi-chevron-down"></i>
+						</h6>
+
+						<%-- ⬇️ 이 영역이 토글될 섹션입니다. (id: keywordCollapseSection) --%>
+						<div id="keywordCollapseSection" class="collapse">
+							<hr>
+							<form id="addKeywordForm">
+								<input type="hidden" name="userId" value="${sessionScope.id}" />
+								<div class="mb-2">
+									<input type="text" id="keyword" name="keyword"
+										class="form-control form-control-sm" placeholder="키워드 입력"
+										required />
+								</div>
+								<button type="submit" class="btn btn-primary btn-sm w-100">추가</button>
+							</form>
+							<hr>
+							<h6 class="fw-bold small">내 키워드 목록</h6>
+							<ul id="keywordList" class="list-unstyled small"></ul>
+						</div>
+						<%-- ⬆️ keywordCollapseSection 종료 --%>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="p-3">
+						<%-- 이 영역은 로그인 버튼을 감싸는 div입니다. --%>
+						<a href="${pageContext.request.contextPath}/member/login"
+							class="btn btn-outline-primary w-100">로그인</a>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</div>
+		<%-- ⬆️ My 키워드 섹션 종료 --%>
 	</nav>
 </div>
 
@@ -347,7 +347,7 @@ $(function() {
 	
 	// 기본값 설정 및 submit
 	var defaultGender = "all"; 
-	var defaultAgeRange = ["10", "20", "30", "40", "50", "60"]; 
+	var defaultAgeRange = ["0", "10", "20", "30", "40", "50", "60"]; 
 
 	$("#gender").val(defaultGender);
 	$("#ages").val(defaultAgeRange); 
@@ -361,13 +361,24 @@ $(function() {
 		var startAge, endAge;
 
 		if (ageRange.includes("all") || ageRange.length === 0) {
-			startAge = 10;
+			startAge = 0;
 			endAge = 100;
 		} else {
-            // 선택된 연령대를 오름차순 정렬 후 최소/최대 연령 범위 계산
-            ageRange.sort((a, b) => parseInt(a) - parseInt(b));
-			startAge = parseInt(ageRange[0], 10);
-			endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9; 
+			// 선택된 연령대를 오름차순 정렬
+			        ageRange.sort((a, b) => parseInt(a) - parseInt(b));
+			        
+			        // 💡 startAge 계산 로직 수정: 가장 낮은 선택 연령이 "10"대일 경우 0세부터 시작하도록 조정
+			        var lowestSelectedAge = parseInt(ageRange[0], 10);
+			        
+			        // 가장 낮은 연령대가 10대("10")이면 startAge를 0으로 설정하여 0~9세를 포함
+			        if (lowestSelectedAge === 10) {
+			            startAge = 0; 
+			        } else {
+			            startAge = lowestSelectedAge;
+			        }
+
+			        // endAge는 선택된 가장 높은 연령대 + 9
+			        endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9;
 		}
 		
 		$.ajax({
