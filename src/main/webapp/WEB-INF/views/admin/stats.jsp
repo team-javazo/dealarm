@@ -12,97 +12,111 @@
 	rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body style="margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh;">
+<body
+	style="margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh;">
 
-<%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
+	<%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
 
-<div class="d-flex flex-grow-1">
-    <%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
+	<div class="d-flex flex-grow-1">
+		<%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
 
-    <div class="flex-grow-1 p-4 bg-light">
+		<div class="flex-grow-1 p-4 bg-light">
 
-        <!-- 키워드 클릭 통계 -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">키워드별 클릭 통계</h2>
-            </div>
-            <div class="card-body">
-                <form id="searchForm" class="row g-3 align-items-center mb-3">
-                    <div class="col-auto"><label for="startDate" class="col-form-label">시작일</label></div>
-                    <div class="col-auto"><input type="date" id="startDate" class="form-control"></div>
-                    <div class="col-auto"><label for="endDate" class="col-form-label">종료일</label></div>
-                    <div class="col-auto"><input type="date" id="endDate" class="form-control"></div>
-                    <div class="col-auto"><button type="button" id="searchBtn" class="btn btn-primary">조회</button></div>
-                </form>
+			<!-- 키워드 클릭 통계 -->
+			<div class="card shadow-sm mb-4">
+				<div class="card-header bg-primary text-white">
+					<h2 class="mb-0">키워드별 클릭 통계</h2>
+				</div>
+				<div class="card-body">
+					<form id="searchForm" class="row g-3 align-items-center mb-3">
+						<div class="col-auto">
+							<label for="startDate" class="col-form-label">시작일</label>
+						</div>
+						<div class="col-auto">
+							<input type="date" id="startDate" class="form-control">
+						</div>
+						<div class="col-auto">
+							<label for="endDate" class="col-form-label">종료일</label>
+						</div>
+						<div class="col-auto">
+							<input type="date" id="endDate" class="form-control">
+						</div>
+						<div class="col-auto">
+							<button type="button" id="searchBtn" class="btn btn-primary">조회</button>
+						</div>
+					</form>
 
-                <div class="chart-container">
-                    <div class="card p-3 doughnut-card">
-                        <canvas id="doughnutChart"></canvas>
-                    </div>
-                    <div class="card p-3 bar-card">
-                        <canvas id="barChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+					<div class="chart-container">
+						<div class="card p-3 doughnut-card">
+							<canvas id="doughnutChart"></canvas>
+						</div>
+						<div class="card p-3 bar-card">
+							<canvas id="barChart"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
 
-        <!-- 사용자 키워드 랭킹 -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-success text-white">
-                <h2 class="mb-0">사용자 키워드 랭킹</h2>
-            </div>
-            <div class="card-body">
-                <form id="rankingForm" class="mb-3">
-                    <!-- 성별 -->
-                    <div class="mb-3">
-                        <label class="fw-bold me-3">성별:</label>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="gender" value="all" checked>
-                            <label class="form-check-label">전체</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="gender" value="m">
-                            <label class="form-check-label">남자</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="gender" value="f">
-                            <label class="form-check-label">여자</label>
-                        </div>
-                    </div>
+			<!-- 사용자 키워드 랭킹 -->
+			<div class="card shadow-sm mb-4">
+				<div class="card-header bg-success text-white">
+					<h2 class="mb-0">사용자 키워드 랭킹</h2>
+				</div>
+				<div class="card-body">
+					<form id="rankingForm" class="mb-3">
+						<!-- 성별 -->
+						<div class="mb-3">
+							<label class="fw-bold me-3">성별:</label>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="gender"
+									value="all" checked> <label class="form-check-label">전체</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="gender"
+									value="m"> <label class="form-check-label">남자</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="gender"
+									value="f"> <label class="form-check-label">여자</label>
+							</div>
+						</div>
 
-                    <!-- 연령 -->
-                    <div class="mb-3">
-                        <label class="fw-bold me-3">연령:</label>
-                        <button type="button" id="selectAllAges" class="btn btn-sm btn-outline-secondary me-1">전체선택</button>
-                        <button type="button" id="deselectAllAges" class="btn btn-sm btn-outline-secondary me-3">전체해제</button>
-                        <div class="d-inline-flex flex-wrap">
-                            <c:forEach var="age"
-                                items="${fn:split('10-19,20-29,30-39,40-49,50-59,60-69', ',')}">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="ageGroup" value="${age}">
-                                    <label class="form-check-label">${age.replace('-', '대 ')}</label>
-                                </div>
-                            </c:forEach>
-                        </div>
-                    </div>
+						<!-- 연령 -->
+						<div class="mb-3">
+							<label class="fw-bold me-3">연령:</label>
+							<button type="button" id="selectAllAges"
+								class="btn btn-sm btn-outline-secondary me-1">전체선택</button>
+							<button type="button" id="deselectAllAges"
+								class="btn btn-sm btn-outline-secondary me-3">전체해제</button>
+							<div class="d-inline-flex flex-wrap">
+								<c:forEach var="age"
+									items="${fn:split('10-19,20-29,30-39,40-49,50-59,60-69', ',')}">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox"
+											name="ageGroup" value="${age}"> <label
+											class="form-check-label">${fn:substring(age, 0, 2)}대</label>
+									</div>
+								</c:forEach>
+							</div>
+						</div>
 
-                    <div>
-                        <button type="button" id="loadRanking" class="btn btn-success">조회</button>
-                    </div>
-                </form>
+						<div>
+							<button type="button" id="loadRanking" class="btn btn-success">조회</button>
+						</div>
+					</form>
 
-                <div class="rankChart-container">
-                    <canvas id="rankingBarChart"></canvas>
-                </div>
-            </div>
-        </div>
+					<div class="rankChart-container">
+						<canvas id="rankingBarChart"></canvas>
+					</div>
+				</div>
+			</div>
 
-    </div>
-</div>
+		</div>
+	</div>
 
-<%@ include file="/WEB-INF/views/include/footer.jsp"%>
+	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
 
-<script>
+	<script>
 document.addEventListener("DOMContentLoaded", function() {
     loadStats();
     loadDefaultRanking();
