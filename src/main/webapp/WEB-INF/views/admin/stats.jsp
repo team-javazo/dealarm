@@ -1,197 +1,238 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
 <html>
 <head>
-	<title>회원관리</title>
-	<link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<title>통계페이지</title>
+<link href="${pageContext.request.contextPath}/resources/css/styles.css"
+	rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+<body style="margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh;">
 
-<body style="margin:0; padding:0; display: flex; flex-direction: column; height: 100vh;">
-   <%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
+<%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
 
-    <div class="d-flex">
-        <%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
-        <div class="flex-grow-1">
+<div class="d-flex flex-grow-1">
+    <%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
 
-			<div class="container mt-4">
-				<h2 class="mb-3">통계 페이지</h2>
+    <div class="flex-grow-1 p-4 bg-light">
 
-				<!-- 기간 선택 -->
-				<div style="margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
-					<label>시작일: <input type="date" id="startDate"></label>
-					<label>종료일: <input type="date" id="endDate"></label>
-					<button id="searchBtn">조회</button>
-					<button onclick="loadStats()">전체</button>
-				</div>
+        <!-- 키워드 클릭 통계 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">키워드별 클릭 통계</h2>
+            </div>
+            <div class="card-body">
+                <form id="searchForm" class="row g-3 align-items-center mb-3">
+                    <div class="col-auto"><label for="startDate" class="col-form-label">시작일</label></div>
+                    <div class="col-auto"><input type="date" id="startDate" class="form-control"></div>
+                    <div class="col-auto"><label for="endDate" class="col-form-label">종료일</label></div>
+                    <div class="col-auto"><input type="date" id="endDate" class="form-control"></div>
+                    <div class="col-auto"><button type="button" id="searchBtn" class="btn btn-primary">조회</button></div>
+                </form>
 
-				<!-- 그래프 -->
-				<div class="chart-container">
-					<div class="chart-box">
-						<canvas id="doughnutChart"></canvas>
-					</div>
-					<div class="chart-box">
-						<canvas id="barChart"></canvas>
-					</div>
-				</div>
-
-				<%@ include file="/WEB-INF/views/include/footer.jsp"%>
-			</div>
+                <div class="chart-container">
+                    <div class="card p-3 doughnut-card">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                    <div class="card p-3 bar-card">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <!-- 사용자 키워드 랭킹 -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">사용자 키워드 랭킹</h2>
+            </div>
+            <div class="card-body">
+                <form id="rankingForm" class="mb-3">
+                    <!-- 성별 -->
+                    <div class="mb-3">
+                        <label class="fw-bold me-3">성별:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" value="all" checked>
+                            <label class="form-check-label">전체</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" value="m">
+                            <label class="form-check-label">남자</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gender" value="f">
+                            <label class="form-check-label">여자</label>
+                        </div>
+                    </div>
+
+                    <!-- 연령 -->
+                    <div class="mb-3">
+                        <label class="fw-bold me-3">연령:</label>
+                        <button type="button" id="selectAllAges" class="btn btn-sm btn-outline-secondary me-1">전체선택</button>
+                        <button type="button" id="deselectAllAges" class="btn btn-sm btn-outline-secondary me-3">전체해제</button>
+                        <div class="d-inline-flex flex-wrap">
+                            <c:forEach var="age"
+                                items="${fn:split('10-19,20-29,30-39,40-49,50-59,60-69', ',')}">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="ageGroup" value="${age}">
+                                    <label class="form-check-label">${age.replace('-', '대 ')}</label>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="button" id="loadRanking" class="btn btn-success">조회</button>
+                    </div>
+                </form>
+
+                <div class="rankChart-container">
+                    <canvas id="rankingBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
     </div>
+</div>
 
-
-
+<%@ include file="/WEB-INF/views/include/footer.jsp"%>
 
 <script>
-	Chart.register(ChartDataLabels);
-	let doughnutChart = null;
-	let barChart = null;
+document.addEventListener("DOMContentLoaded", function() {
+    loadStats();
+    loadDefaultRanking();
 
-	function loadStats(startDate, endDate){
-		let url = '${pageContext.request.contextPath}/statsData';
-		if(startDate && endDate){
-			url += `?startDate=${startDate}&endDate=${endDate}`;
-		}
-		
-		fetch(url)
-			.then(res => res.json())
-			.then(res => {
-				console.log(res);
-				const data = res.data;
-				if(!data || data.length === 0){
-					console.warn("데이터가 없습니다.");
-					return;
-				}
+    document.getElementById("searchBtn").addEventListener("click", loadStats);
+    document.getElementById("loadRanking").addEventListener("click", loadRanking);
 
-				// -----------[도넛 그래프]-----------
-				data.sort((a, b) => b.totalCount - a.totalCount);
+    document.getElementById("selectAllAges").addEventListener("click", function() {
+        document.querySelectorAll('input[name="ageGroup"]').forEach(cb => cb.checked = true);
+    });
+    document.getElementById("deselectAllAges").addEventListener("click", function() {
+        document.querySelectorAll('input[name="ageGroup"]').forEach(cb => cb.checked = false);
+    });
+});
 
-				const top10 = data.slice(0, 10);
-				const etc = data.slice(10);
-				const etcSum = etc.reduce((sum, item) => sum + item.totalCount, 0);
+var doughnutChart, barChart, rankingChart;
 
-				const doughnutLabels = top10.map(d => d.keyword);
-				const doughnutData = top10.map(d => d.totalCount);
+const doughnutColors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#66FF66','#FF6666','#66FFFF','#FF66FF','#C0C0C0'];
+const rankingColors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#66FF66','#FF6666','#66FFFF','#FF66FF'];
 
-				if(etcSum > 0){
-					doughnutLabels.push("기타");
-					doughnutData.push(etcSum);
-				}
-				
-				const doughnutCtx = document.getElementById('doughnutChart').getContext('2d')
-				if(doughnutChart) doughnutChart.destroy();
-				doughnutChart = new Chart(doughnutCtx, {
-					type: 'doughnut',
-					data: {
-						labels: doughnutLabels,
-						datasets: [{
-							data: doughnutData,
-							backgroundColor: [
-								'#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF',
-								'#FF9F40','#C9CBCF','#8A89A6','#FF6F61','#9CCC65','#AAAAAA'
-							],
-							datalabels: {
-							    color: '#fff',       
-							    font: { weight: 'bold', size: 16 },
-							    display: true,
-							    anchor: 'center',
-							    align: 'center',
-							    offset: 0,           // 라벨 위치 조정						    
-							    formatter: (value, context) => {
-							        const data = context.dataset.data;           // dataset 데이터 배열
-							        const total = data.reduce((a,b)=>a+b,0);    // 전체 합
-							        const currentValue = data[context.dataIndex]; // 현재 값
-							        const percent = total ? ((currentValue / total) * 100).toFixed(1) : 0;
-									console.log("라벨커런트값: ", currentValue, "라벨퍼센트: ", percent);
+function loadStats() {
+    var startDate = document.getElementById("startDate").value || "2000-01-01";
+    var endDate = document.getElementById("endDate").value || "2100-12-31";
+    var url = "${pageContext.request.contextPath}/statsData?startDate=" + startDate + "&endDate=" + endDate;
 
-							       // return `${currentValue} (${percent}%)`;
-							        return `${currentValue}`;
-							    }
-							}
-						}]
-					},
-					options: { 
-						responsive: true,
-						maintainAspectRatio: false,
-						plugins: {
-							title: {
-								display: true,
-								text: 'TOP10 키워드 클릭 비율'
-							},
-							legend: { position: 'top' },
-							tooltip:{
-								callbacks:{
-									label: function(context){
-										const dataset = context.dataset.data;
-										const total = context.dataset.data.reduce((a,b)=>a+b,0);
-										const value = context.raw;
-										const percent = total ? ((value / total) * 100).toFixed(1) : 0;
-										console.log("옵션토탈: ", total, "옵션현재 값: ", value, "옵션퍼센트: ", percent);
-									//	return `${context.label}: ${value} (${percent}%)`;
-										return `${context.label}: ${value} `;
-									}
-								}
-							}
-						}
-					}
-				});
+    fetch(url)
+        .then(res => { if(!res.ok) throw new Error("서버 에러: "+res.status); return res.json(); })
+        .then(result => {
+            var data = result.data;
+            if(!data || data.length===0){ alert("통계 데이터가 없습니다."); return; }
 
-				// -----------[막대 그래프]-----------
-				const barCtx = document.getElementById('barChart').getContext('2d');
-				const barData = data.slice(10, 25);
-				const etcBarSum = data.slice(25).reduce((sum, d) => sum + d.totalCount, 0);
-				const barLabels = barData.map(d => d.keyword);
-				const barCounts = barData.map(d => d.totalCount);
+            var labels = data.map(d=>d.keyword);
+            var counts = data.map(d=>d.totalCount);
 
-				if(etcBarSum > 0){
-					barLabels.push("기타");
-					barCounts.push(etcBarSum);
-				}
+            var top10Labels = labels.slice(0,10);
+            var top10Counts = counts.slice(0,10);
+            var otherSum = counts.slice(10).reduce((a,b)=>a+b,0);
+            if(otherSum>0){ top10Labels.push("기타"); top10Counts.push(otherSum); }
 
-				if(barChart) barChart.destroy();
-				barChart = new Chart(barCtx, {
-					type: 'bar',
-					data: {
-						labels: barLabels,
-						datasets: [{
-							label: '클릭 수',
-							data: barCounts,
-							backgroundColor:'#36A2EB'
-						}]
-					},
-					options: {
-						responsive:true,
-						maintainAspectRatio: false,
-						plugins:{
-							title: {display:true, text: '11~25위 키워드 클릭 수'},
-							legend: {display: false}
-						},
-						scales:{y:{beginAtZero:true}}
-					}
-				});
-			})
-			.catch(err => {
-				console.error("데이터 로드 실패: ", err);
-				alert("통계 데이터를 불러오지 못했습니다.");
-			});
-	}
+            var barLabels = labels.slice(10,25);
+            var barCounts = counts.slice(10,25);
+            var otherBarSum = counts.slice(25).reduce((a,b)=>a+b,0);
+            if(otherBarSum>0){ barLabels.push("기타"); barCounts.push(otherBarSum); }
 
-	// 페이지 로드시 전체 데이터
-	window.onload = () => loadStats();
+            drawCharts(top10Labels, top10Counts, barLabels, barCounts);
+        })
+        .catch(err => alert(err.message));
+}
 
-	// 기간 조회 버튼
-	document.getElementById('searchBtn').onclick = () => {
-		const start = document.getElementById('startDate').value;
-		const end = document.getElementById('endDate').value;
-		if(!start || !end){
-			alert("기간을 선택해주세요.");
-			return;
-		}
-		loadStats(start, end);
-	}
+function drawCharts(dLabels, dCounts, bLabels, bCounts){
+    if(doughnutChart) doughnutChart.destroy();
+    doughnutChart = new Chart(document.getElementById("doughnutChart").getContext("2d"), {
+        type:"doughnut",
+        data:{ labels:dLabels, datasets:[{data:dCounts, backgroundColor:dLabels.map((_,i)=>doughnutColors[i % doughnutColors.length])}]},
+        options:{
+            responsive:true,
+            maintainAspectRatio:true,
+            plugins:{
+                tooltip:{callbacks:{label:ctx=>{
+                    const total=dCounts.reduce((a,b)=>a+b,0);
+                    const val=ctx.parsed||0;
+                    const percent=total?((val/total)*100).toFixed(1):0;
+                    return ctx.label+": "+val+" ("+percent+"%)";
+                }}},
+                legend:{position:"right"}
+            }
+        }
+    });
+
+    if(barChart) barChart.destroy();
+    barChart = new Chart(document.getElementById("barChart").getContext("2d"), {
+        type:"bar",
+        data:{ labels:bLabels, datasets:[{label:"클릭 수", data:bCounts, backgroundColor:bLabels.map((_,i)=>doughnutColors[i % doughnutColors.length])}]},
+        options:{
+            responsive:true,
+            maintainAspectRatio:false, // 카드에 맞춤
+            scales:{y:{beginAtZero:true}},
+            plugins:{legend:{display:false}}
+        }
+    });
+}
+
+function loadDefaultRanking() {
+    fetch("${pageContext.request.contextPath}/keywords/ranking/default")
+    .then(res=>{if(!res.ok)throw new Error("서버 에러: "+res.status); return res.json();})
+    .then(data=>{
+        if(!data.keywordRankings || data.keywordRankings.length===0){ if(rankingChart) rankingChart.destroy(); return; }
+        var labels = data.keywordRankings.map(k=>k.keyword);
+        var counts = data.keywordRankings.map(k=>k.frequency||k.count);
+        drawRankingChart(labels, counts);
+    })
+    .catch(err=>console.log(err.message));
+}
+
+function loadRanking() {
+    var gender = document.querySelector('input[name="gender"]:checked')?.value || 'all';
+    var ageChecked = Array.from(document.querySelectorAll('input[name="ageGroup"]:checked')).map(cb=>cb.value);
+    if(ageChecked.length===0){ alert("연령 그룹을 최소 하나 선택해 주세요."); return; }
+
+    var ages = ageChecked.flatMap(a=>a.split('-').map(Number));
+    var startAge = Math.min(...ages);
+    var endAge = Math.max(...ages);
+
+    var url = "${pageContext.request.contextPath}/keywords/ranking?gender="+encodeURIComponent(gender)+"&startAge="+encodeURIComponent(startAge)+"&endAge="+encodeURIComponent(endAge);
+
+    fetch(url)
+    .then(res=>{if(!res.ok)throw new Error("서버 에러: "+res.status); return res.json();})
+    .then(data=>{
+        if(!data.keywordRankings || data.keywordRankings.length===0){ alert("데이터가 없습니다."); if(rankingChart) rankingChart.destroy(); return; }
+        var labels = data.keywordRankings.map(k=>k.keyword);
+        var counts = data.keywordRankings.map(k=>k.frequency||k.count);
+        drawRankingChart(labels, counts);
+    })
+    .catch(err=>alert(err.message));
+}
+
+function drawRankingChart(labels, counts){
+    if(rankingChart) rankingChart.destroy();
+    rankingChart = new Chart(document.getElementById("rankingBarChart").getContext("2d"), {
+        type:"bar",
+        data:{ labels:labels, datasets:[{label:"등록 수", data:counts, backgroundColor:labels.map((_,i)=>rankingColors[i % rankingColors.length])}]},
+        options:{
+            responsive:true,
+            maintainAspectRatio:true,
+            scales:{y:{beginAtZero:true}},
+            plugins:{legend:{display:false}}
+        }
+    });
+}
 </script>
+
 </body>
 </html>
