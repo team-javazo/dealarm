@@ -29,6 +29,7 @@
                 	<!--  왼쪽메뉴 -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="${pageContext.request.contextPath}/main">Main</a></li>
+ <!-- 
                         <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
@@ -39,6 +40,7 @@
                                 <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
                             </ul>
                         </li>
+ -->                    
                     </ul>
                     <!-- 오른쪽 메뉴 -->
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -71,7 +73,8 @@
 		                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 		                                <li><a class="dropdown-item" href="<c:url value='/member/members'/>">회원관리</a></li>
 		                                <li><a class="dropdown-item" href="<c:url value='/stats'/>">통계</a></li>
-		                                <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+<!--  	                                <li><a class="dropdown-item" href="#!">New Arrivals</a></li>   -->
+		                              
 		                                <li><hr class="dropdown-divider" /></li>
 		                            </ul>
 		                        </li>
@@ -101,7 +104,6 @@
 		                 				                 	
 		                 	</c:otherwise>
 					    </c:choose>
-		                 
 		                 
 						<li class="nav-item d-flex align-items-center">
 				            <form class="d-flex align-items-center mb-0">
