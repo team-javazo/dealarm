@@ -6,8 +6,8 @@
     <typeAliases>
         <typeAlias type="kr.co.dong.inquiry.InquiryDTO" alias="InquiryDTO"/>
     </typeAliases>
-    <mappers>
-        <!-- 리소스 경로 정확히 -->
-        <mapper resource="mappers/InquiryMapper.xml"/>
-    </mappers>
+   <mappers>
+  <mapper resource="mappers/InquiryMapper.xml"/>
+  <mapper resource="mappers/InquiryCommentMapper.xml"/>
+</mappers>
 </configuration>
