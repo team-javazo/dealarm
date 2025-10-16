@@ -1,57 +1,70 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page session="true" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>게시글 수정</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <style>
-        body {margin:0;padding:0;height:100vh;display:flex;flex-direction:column;}
-        .main-wrapper {flex-grow:1;display:flex;overflow:hidden;}
-        nav.sidebar {width:250px;background:#f8f9fa;border-right:1px solid #ddd;padding:1rem;overflow-y:auto;}
-        main.content {flex-grow:1;padding:2rem;overflow-y:auto;background:#fff;}
-    </style>
+  <meta charset="UTF-8"/>
+  <title>문의 수정</title>
+  <link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
 </head>
-<body>
-    <%@ include file="/WEB-INF/views/include/top_nav.jsp" %>
-    <div class="main-wrapper">
-        <%@ include file="/WEB-INF/views/include/left_nav.jsp" %>
+<body style="margin:0; padding:0; display:flex; flex-direction:column; min-height:100vh;">
 
-        <!-- ✅ 본문: 수정 -->
-        <main class="content">
-            <h4 class="mb-3">게시글 수정</h4>
-            <form action="${pageContext.request.contextPath}/board/edit" method="post">
-    <input type="hidden" name="id" value="${board.id}"/>
+  <%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
 
-    <div class="mb-3">
-        <label class="form-label">제목</label>
-        <input type="text" class="form-control" name="title" value="${board.title}" required>
+  <div class="d-flex" style="flex:1 1 auto;">
+    <%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
+
+    <div class="flex-grow-1" style="padding:24px;">
+      <div class="content-wrapper" style="background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.05); padding:24px;">
+
+        <section class="content-header" style="margin-bottom:16px;">
+          <h2 class="fw-bold mb-1" style="border-bottom:2px solid #007bff; padding-bottom:8px;">문의 수정</h2>
+          <ol class="breadcrumb">
+            <li><a href="${pageContext.request.contextPath}/"><i class="fa fa-home"></i> 홈</a></li>
+            <li><a href="${pageContext.request.contextPath}/inquiry/list">문의 목록</a></li>
+            <li class="active">수정</li>
+          </ol>
+        </section>
+
+        <section class="content">
+          <form method="post" action="${pageContext.request.contextPath}/inquiry/update">
+            <input type="hidden" name="id" value="${dto.id}"/>
+
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>제목</label>
+              <input class="form-control" type="text" name="title" value="${dto.title}" required/>
+            </div>
+
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>작성자</label>
+              <input class="form-control" type="text" value="${dto.writer}" readonly/>
+              <small class="text-muted">작성자는 변경될 수 없습니다.</small>
+            </div>
+
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>내용</label>
+              <textarea class="form-control" name="content" rows="8" required>${dto.content}</textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom:12px;">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="secret" value="true" <c:if test="${dto.secret}">checked</c:if> />
+                  비밀글
+                </label>
+              </div>
+            </div>
+
+            <div class="text-end">
+              <a class="btn btn-default" href="${pageContext.request.contextPath}/inquiry/detail?id=${dto.id}&hit=false">취소</a>
+              <button class="btn btn-primary" type="submit">저장</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <%@ include file="/WEB-INF/views/include/footer.jsp"%>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">작성자</label>
-        <input type="text" class="form-control" name="writer" value="${board.writer}" readonly>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">내용</label>
-        <textarea class="form-control" name="content" rows="5">${board.content}</textarea>
-    </div>
-
-    <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input" name="notice" value="true"
-               <c:if test="${board.notice}">checked</c:if>>
-        <label class="form-check-label">공지글</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">수정하기</button>
-    <a href="${pageContext.request.contextPath}/board/list" class="btn btn-secondary">목록</a>
-</form>
-
-        </main>
-    </div>
+  </div>
 </body>
 </html>

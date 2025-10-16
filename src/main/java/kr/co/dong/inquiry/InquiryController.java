@@ -1,200 +1,213 @@
 package kr.co.dong.inquiry;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
+
+import kr.co.dong.member.MemberDTO; // 로그인 세션 객체
 
 @Controller
 @RequestMapping("/inquiry")
 public class InquiryController {
 
-    @Autowired
-    private InquiryService inquiryService;
+    @Inject
+    private InquiryService service;
 
-    // 📋 문의 목록 (페이징 + 검색)
+    /* ==============================
+       📜 목록
+       - 로그인 정보와 관리자 여부 전달 (JSP 권한 표시용)
+    ============================== */
     @GetMapping("/list")
-    public String list(@RequestParam(value = "page", defaultValue = "1") int page,
-                       @RequestParam(value = "keyword", required = false) String keyword,
-                       Model model) {
-        List<InquiryDTO> inquiries = inquiryService.list(page, keyword);
-        int totalPages = inquiryService.getTotalPages(keyword);
+    public String list(HttpSession session, Model model) {
+        model.addAttribute("list", service.list());
 
-        model.addAttribute("inquiryList", inquiries);
-        model.addAttribute("page", page);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("keyword", keyword);
+        // ✅ 로그인 사용자 정보 JSP에 전달
+        String loginId = resolveLoginWriter(session);
+        model.addAttribute("currentLoginId", loginId);
 
-        return "inquiry/list"; // /WEB-INF/views/inquiry/list.jsp
+        // ✅ 관리자 여부 JSP에서 활용 가능하게 전달
+        boolean admin = isAdmin(session);
+        model.addAttribute("isAdmin", admin);
+
+        return "inquiry/list";
     }
 
-    // ✏️ 등록 폼
+    /* ==============================
+       📄 상세 (쿼리 & 패스 공통)
+       - 비밀글 접근권한: 관리자 or 작성자만 가능
+    ============================== */
+    @GetMapping("/detail")
+    public String detailByQuery(@RequestParam("id") int id, HttpSession session, Model model) {
+        return handleDetail(id, session, model);
+    }
+
+    @GetMapping("/detail/{id}")
+    public String detailByPath(@PathVariable("id") int id, HttpSession session, Model model) {
+        return handleDetail(id, session, model);
+    }
+
+    /* ==============================
+       ✍️ 글쓰기 폼 (작성자 자동기입)
+    ============================== */
     @GetMapping("/write")
     public String writeForm(HttpSession session, Model model) {
-        String loginName = (String) session.getAttribute("name");
-        model.addAttribute("writer", loginName != null ? loginName : "익명");
-        model.addAttribute("categories", List.of("일반문의", "결제문의", "계정문의", "기타"));
-        return "inquiry/write"; // /WEB-INF/views/inquiry/write.jsp
+        String writer = resolveLoginWriter(session);
+        model.addAttribute("currentWriter", writer == null ? "" : writer);
+        return "inquiry/write";
     }
 
-    // ✏️ 등록 처리 (파일 업로드 포함)
+    /* ==============================
+       💾 글쓰기 저장 (POST)
+    ============================== */
     @PostMapping("/write")
-    public String write(InquiryDTO dto,
-                        @RequestParam(value = "uploadFile", required = false) MultipartFile file,
-                        HttpSession session) throws IOException {
-        String loginName = (String) session.getAttribute("name");
-        dto.setWriter(loginName != null ? loginName : "익명");
-
-        // 파일 업로드 처리
-        if (file != null && !file.isEmpty()) {
-            String uploadDir = "C:/upload/";
-            File dest = new File(uploadDir, file.getOriginalFilename());
-            file.transferTo(dest);
-
-            dto.setFilename(file.getOriginalFilename());
-            dto.setFilepath(dest.getAbsolutePath());
+    public String writeSubmit(@ModelAttribute InquiryDTO dto, HttpSession session) {
+        if (isEmpty(dto.getWriter())) {
+            String writer = resolveLoginWriter(session);
+            if (!isEmpty(writer)) dto.setWriter(writer);
         }
-
-        inquiryService.insert(dto);
-
-        // 📢 알림 서비스 연동 가능 (추후 구현)
+        service.insert(dto);
         return "redirect:/inquiry/list";
     }
 
-    // 🔍 상세보기
-    @GetMapping("/detail")
-    public String detail(@RequestParam("id") int id, HttpSession session, Model model) {
-        InquiryDTO dto = inquiryService.detail(id);
-        String loginName = (String) session.getAttribute("name");
-        String role = (String) session.getAttribute("role");
+    /* ==============================
+       🧩 (호환용) /insert 저장
+    ============================== */
+    @PostMapping("/insert")
+    public String insert(@ModelAttribute InquiryDTO dto, HttpSession session) {
+        if (isEmpty(dto.getWriter())) {
+            String writer = resolveLoginWriter(session);
+            if (!isEmpty(writer)) dto.setWriter(writer);
+        }
+        service.insert(dto);
+        return "redirect:/inquiry/list";
+    }
 
-        // 비밀글 체크
-        if (dto.isSecret() && (loginName == null || (!loginName.equals(dto.getWriter()) && !"admin".equals(role)))) {
-            model.addAttribute("error", "비밀글은 작성자와 관리자만 볼 수 있습니다.");
-            return "redirect:/inquiry/list";
+    /* ==============================
+       🗣️ 관리자 답변 등록
+    ============================== */
+    @PostMapping("/answer")
+    public String answer(@RequestParam("id") int id,
+                         @RequestParam("answer") String answer,
+                         HttpSession session, Model model) {
+        if (!isAdmin(session)) {
+            model.addAttribute("msg", "관리자만 답변을 등록할 수 있습니다.");
+            return "error/403";
+        }
+        service.insertAnswer(id, answer);
+        service.updateStatus(id, "답변완료");
+        return "redirect:/inquiry/detail?id=" + id;
+    }
+
+    /* ==============================
+       ⚙️ 관리자 모드 토글 (개발용)
+    ============================== */
+    @GetMapping("/dev/admin/on")
+    public String devAdminOn(HttpSession session) {
+        session.setAttribute("isAdmin", true);
+        session.setAttribute("role", "admin");
+        return "redirect:/inquiry/list";
+    }
+
+    @GetMapping("/dev/admin/off")
+    public String devAdminOff(HttpSession session) {
+        session.setAttribute("isAdmin", false);
+        return "redirect:/inquiry/list";
+    }
+
+    /* ==============================
+       🔍 상세 공통 처리
+       - 비밀글 접근: 관리자 or 작성자만 허용
+       - 그 외: 403 반환
+    ============================== */
+    private String handleDetail(int id, HttpSession session, Model model) {
+        InquiryDTO dto = service.detail(id);
+        if (dto == null) {
+            model.addAttribute("msg", "존재하지 않는 글입니다.");
+            return "error/404";
         }
 
-        model.addAttribute("dto", dto);
+        String loginId = resolveLoginWriter(session);  // 로그인한 유저의 ID
+        boolean admin = isAdmin(session);
+        boolean owner = !isEmpty(loginId) && loginId.equals(dto.getWriter());
+
+        // ✅ 비밀글 접근 제한
+        if (dto.isSecret() && !(admin || owner)) {
+            model.addAttribute("msg", "비밀글은 작성자 또는 관리자만 열람할 수 있습니다.");
+            return "error/403";
+        }
+
+        // 조회수 증가 및 데이터 전달
+        service.updateHit(id);
+        model.addAttribute("inquiry", dto);
+        model.addAttribute("isAdmin", admin);
+        model.addAttribute("isOwner", owner);
         return "inquiry/detail";
     }
 
-    // ✏️ 수정 폼
-    @GetMapping("/update")
-    public String updateForm(@RequestParam("id") int id, HttpSession session, Model model) {
-        String loginName = (String) session.getAttribute("name");
-        String role = (String) session.getAttribute("role");
+    /* ==============================
+       🧠 관리자 판별
+       - role 속성 또는 dev 토글값 기준
+    ============================== */
+    private boolean isAdmin(HttpSession session) {
+        Object roleObj = session.getAttribute("role");
+        String role = roleObj == null ? "" : roleObj.toString();
 
-        InquiryDTO dto = inquiryService.detail(id);
+        boolean byRole = "admin".equalsIgnoreCase(role)
+                      || "role_admin".equalsIgnoreCase(role)
+                      || role.toUpperCase().contains("ADMIN");
 
-        if (loginName == null || (!loginName.equals(dto.getWriter()) && !"admin".equals(role))) {
-            return "redirect:/inquiry/detail?id=" + id;
-        }
-
-        model.addAttribute("dto", dto);
-        model.addAttribute("categories", List.of("일반문의", "결제문의", "계정문의", "기타"));
-        return "inquiry/update";
+        boolean byToggle = Boolean.TRUE.equals(session.getAttribute("isAdmin"));
+        return byRole || byToggle;
     }
 
-    // ✏️ 수정 처리
-    @PostMapping("/update")
-    public String update(InquiryDTO dto,
-                         @RequestParam(value = "uploadFile", required = false) MultipartFile file,
-                         HttpSession session) throws IOException {
-        String loginName = (String) session.getAttribute("name");
-        String role = (String) session.getAttribute("role");
-
-        InquiryDTO origin = inquiryService.detail(dto.getId());
-        if (loginName == null || (!loginName.equals(origin.getWriter()) && !"admin".equals(role))) {
-            return "redirect:/inquiry/detail?id=" + dto.getId();
+    /* ==============================
+       👤 로그인 사용자 식별자 추출
+       - loginUser(MemberDTO) → 세션 키 순서로 탐색
+    ============================== */
+    private String resolveLoginWriter(HttpSession session) {
+        // 1️⃣ MemberDTO 세션 객체에서 가져오기
+        Object userObj = session.getAttribute("loginUser");
+        if (userObj != null) {
+            if (userObj instanceof MemberDTO) {
+                MemberDTO m = (MemberDTO) userObj;
+                if (!isEmpty(m.getId())) return m.getId();
+                if (!isEmpty(m.getName())) return m.getName();
+            }
+            // 2️⃣ 리플렉션으로 대체 필드 추적
+            String viaReflect = tryMethods(userObj,
+                    "getId", "getUserId", "getUserid",
+                    "getUsername", "getName", "getEmail");
+            if (!isEmpty(viaReflect)) return viaReflect;
         }
 
-        if (file != null && !file.isEmpty()) {
-            String uploadDir = "C:/upload/";
-            File dest = new File(uploadDir, file.getOriginalFilename());
-            file.transferTo(dest);
-
-            dto.setFilename(file.getOriginalFilename());
-            dto.setFilepath(dest.getAbsolutePath());
+        // 3️⃣ 세션 키값에서 직접 추출
+        String[] keys = { "loginId", "userId", "userid", "username", "name", "email" };
+        for (String k : keys) {
+            Object v = session.getAttribute(k);
+            if (v != null && !isEmpty(v.toString())) return v.toString();
         }
 
-        inquiryService.update(dto);
-        return "redirect:/inquiry/detail?id=" + dto.getId();
+        return null;
     }
 
-    // ❌ 삭제
-    @PostMapping("/delete")
-    public String delete(@RequestParam("id") int id, HttpSession session) {
-        String loginName = (String) session.getAttribute("name");
-        String role = (String) session.getAttribute("role");
-
-        InquiryDTO dto = inquiryService.detail(id);
-        if (loginName == null || (!loginName.equals(dto.getWriter()) && !"admin".equals(role))) {
-            return "redirect:/inquiry/detail?id=" + id;
+    private String tryMethods(Object target, String... methodNames) {
+        for (String m : methodNames) {
+            try {
+                java.lang.reflect.Method md = target.getClass().getMethod(m);
+                Object val = md.invoke(target);
+                if (val != null) {
+                    String s = val.toString().trim();
+                    if (!s.isEmpty()) return s;
+                }
+            } catch (Exception ignore) { }
         }
-
-        inquiryService.delete(id);
-        return "redirect:/inquiry/list";
+        return null;
     }
 
-    // 📨 답변 등록 (관리자만)
-    @PostMapping("/answer")
-    public String insertAnswer(@RequestParam("id") int id,
-                               @RequestParam("answer") String answer,
-                               HttpSession session) {
-        String role = (String) session.getAttribute("role");
-        if (!"admin".equals(role)) {
-            return "redirect:/inquiry/detail?id=" + id;
-        }
-
-        inquiryService.insertAnswer(id, answer);
-
-        // 📢 알림 서비스 연동 가능
-        return "redirect:/inquiry/detail?id=" + id;
-    }
-
-    // 🔄 상태 변경 (관리자만)
-    @PostMapping("/status")
-    public String updateStatus(@RequestParam("id") int id,
-                               @RequestParam("status") String status,
-                               HttpSession session) {
-        String role = (String) session.getAttribute("role");
-        if (!"admin".equals(role)) {
-            return "redirect:/inquiry/detail?id=" + id;
-        }
-
-        inquiryService.updateStatus(id, status);
-        return "redirect:/inquiry/detail?id=" + id;
-    }
-
-    // 🙋‍♂️ 마이페이지 - 내가 쓴 문의
-    @GetMapping("/myInquiries")
-    public String myInquiries(HttpSession session, Model model) {
-        String loginName = (String) session.getAttribute("name");
-        List<InquiryDTO> myList = inquiryService.listByWriter(loginName);
-        model.addAttribute("inquiryList", myList);
-        return "inquiry/myList";
-    }
-
-    // 📊 통계 (관리자 전용)
-    @GetMapping("/stats")
-    public String stats(HttpSession session, Model model) {
-        String role = (String) session.getAttribute("role");
-        if (!"admin".equals(role)) {
-            return "redirect:/inquiry/list";
-        }
-
-        Map<String, Integer> stats = inquiryService.getStats();
-        model.addAttribute("stats", stats);
-        return "inquiry/stats";
+    private boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
     }
 }
