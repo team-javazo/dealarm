@@ -37,4 +37,14 @@
         GROUP BY keyword
         ORDER BY total_count DESC
     </select>
+    
+    <!--  키워드별 클릭 통계 -->
+    <select id="keywordStats" parameterType="map" resultType="kr.co.dong.click.ClickDTO">
+    	select keyword, sum(`count`) as totalCount
+    	from click_count
+    	where reg_date between #{startDate} and #{endDate}
+    	group by keyword
+    	order by totalCount desc 
+    </select>
+    
 </mapper>
