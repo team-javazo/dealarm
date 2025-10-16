@@ -10,11 +10,19 @@ public class ClickDTO {
 	private long dealId; // deal_id (BIGINT)
 	private String keyword; // keyword (VARCHAR)
 	private int count; // count (INT)
+	
+	private int totalCount;		// 클릭 합계
+	private double clickRate;	// 클릭비율계산용
 
 	// 기본 생성자
 	public ClickDTO() {
 	}
 
+	public ClickDTO(String keyword, int count) {
+		this.keyword = keyword;
+		this.count = count;		
+	}
+	
 	// 필수 필드 생성자 (클릭 추적 시 입력되는 값)
 	public ClickDTO(String userId, long dealId, String keyword) {
 		this.userId = userId;
@@ -22,7 +30,17 @@ public class ClickDTO {
 		this.keyword = keyword;
 	}
 
-	// Getter와 Setter
+	public ClickDTO(long id, String userId, long dealId, String keyword, int count, int totalCount, double clickRate) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.dealId = dealId;
+		this.keyword = keyword;
+		this.count = count;
+		this.totalCount = totalCount;
+		this.clickRate = clickRate;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -63,9 +81,27 @@ public class ClickDTO {
 		this.count = count;
 	}
 
+	public int getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public double getClickRate() {
+		return clickRate;
+	}
+
+	public void setClickRate(double clickRate) {
+		this.clickRate = clickRate;
+	}
+
 	@Override
 	public String toString() {
-		return "ClickDTO{" + "id=" + id + ", userId=" + userId + ", dealId=" + dealId + ", keyword='" + keyword + '\''
-				+ ", count=" + count + '}';
+		return "ClickDTO [id=" + id + ", userId=" + userId + ", dealId=" + dealId + ", keyword=" + keyword + ", count="
+				+ count + ", totalCount=" + totalCount + ", clickRate=" + clickRate + "]";
 	}
+
+
 }

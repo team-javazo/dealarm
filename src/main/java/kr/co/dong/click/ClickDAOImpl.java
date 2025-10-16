@@ -35,4 +35,9 @@ public class ClickDAOImpl implements ClickDAO {
 		// TODO Auto-generated method stub
 		return sqlSession.selectList(NAMESPACE + ".getUserClick", userId);
 	}
+
+	@Override
+	public List<ClickDTO> keywordStats(Map<String, Object> params) {
+		return sqlSession.selectList(NAMESPACE + ".keywordStats", params);
+	}
 }
