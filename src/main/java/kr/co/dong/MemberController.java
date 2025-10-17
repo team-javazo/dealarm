@@ -281,7 +281,7 @@ public class MemberController {
     	  
       }else
    		   session.invalidate(); // 세션 초기화
-	return "redirect:/main";
+	   return "error/405?msg=invalidAccess";
      
    }
 
@@ -320,7 +320,7 @@ public class MemberController {
 		   
 	   }else
 		   session.invalidate(); // 세션 초기화
-		     return "redirect:/main";
+	   return "error/405?msg=invalidAccess";
 	  
     
    }
@@ -348,7 +348,7 @@ public class MemberController {
 	        return "admin/adminupdate";  
 	   }else
 		   session.invalidate(); // 세션 초기화
-	    return "redirect:/member/login";
+	   return "error/405?msg=invalidAccess";
       
    }
 
@@ -368,7 +368,7 @@ public class MemberController {
 	        return "redirect:/member/members";  
 	   }else
 		   session.invalidate(); // 세션 초기화
-	    return "redirect:/member/login";
+	   return "error/405?msg=invalidAccess";
       
    }
    // 관리자 삭제
@@ -380,7 +380,7 @@ public class MemberController {
 		      return "redirect:/member/members";  
 	   }else
 		   session.invalidate(); // 세션 초기화
-	    return "redirect:/member/login";
+	   return "error/405?msg=invalidAccess";
      
    }
    @PostMapping("/change-password")
@@ -513,7 +513,7 @@ public class MemberController {
 		      return "admin/detail";
 	   }else
 		   session.invalidate(); // 세션 초기화
-		    return "redirect:/member/login";
+	   return "error/405?msg=invalidAccess";
      
       
    }
