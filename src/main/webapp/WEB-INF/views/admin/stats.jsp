@@ -48,9 +48,11 @@
 
 					<div class="chart-container">
 						<div class="card p-3 doughnut-card">
+							<h3>TOP10 키워드 클릭</h3>
 							<canvas id="doughnutChart"></canvas>
 						</div>
 						<div class="card p-3 bar-card">
+							<h3>기타 키워드 클릭</h3>
 							<canvas id="barChart"></canvas>
 						</div>
 					</div>
