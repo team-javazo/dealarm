@@ -12,7 +12,6 @@
     <meta name="author" content="" />
     <title>Top 네비</title>
 	<link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
-	<link rel="icon" type="image/jpeg" href="${pageContext.request.contextPath}/resources/images/icon.jpg" />
 </head>
 <body style="margin:0; padding:0; display: flex; flex-direction: column; height: 100vh;">
     
