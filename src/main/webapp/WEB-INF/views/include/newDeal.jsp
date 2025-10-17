@@ -90,16 +90,19 @@ $(document).ready(function() {
         $('.deal-check').prop('checked', $(this).prop('checked'));
     });
 
-    // 선택 삭제
+    // 선택 담기(미구현) 추후지원지능
     $('#deleteSelected').on('click', function() {
-        $('.deal-check:checked').each(function() {
-            $(this).closest('.deal-card').remove();
-        });
+    //   $('.deal-check:checked').each(function() {
+    //        $(this).closest('.deal-card').remove();
+    //    });
+    	alert("추후 지원될 기능 입니다.");
+    
     });
 
-    // 단일 삭제
+    // 단일 담기
     $('#dealContainer').on('click', '.deleteBtn', function() {
-        $(this).closest('.deal-card').remove();
+    //    $(this).closest('.deal-card').remove();
+    	alert("추후 지원될 기능 입니다.");	
     });
 
     // 버튼 호버 효과
