@@ -246,6 +246,7 @@ public class MemberController {
    public String members(@RequestParam(value="currentPage", required=false, defaultValue="1") int currentPage,
                     Model model){
       
+	   
       int limit = 15;   // 페이지당 목록 수
       int offset = (currentPage -1) * limit;
       
