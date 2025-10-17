@@ -17,8 +17,8 @@
 		<ul class="nav nav-pills flex-column">
 			<li><a href="${pageContext.request.contextPath}/inquiry/list"
 				class="nav-link link-dark">고객문의</a></li>
-			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
-			<li><a href="/dong/newDeal" class="nav-link link-dark">NEW
+			<li><a href="${pageContext.request.contextPath}/news" class="nav-link link-dark">뉴스 검색</a></li>
+			<li><a href="${pageContext.request.contextPath}/newDeal" class="nav-link link-dark">NEW
 					DEAL </a></li>
 		</ul>
 		<hr>
