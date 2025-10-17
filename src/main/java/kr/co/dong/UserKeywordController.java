@@ -81,7 +81,7 @@ public class UserKeywordController {
 			}
 
 			// 기본값 조회: 성별 = all, 나이 범위 = 10~60
-			List<UserKeywordDTO> keywordRankings = userKeywordService.getKeywordRankingByFilters("all", 10, 60, userId);
+			List<UserKeywordDTO> keywordRankings = userKeywordService.getKeywordRankingByFilters("all", 0, 60, userId);
 			result.put("keywordRankings", keywordRankings);
 		} catch (Exception e) {
 			e.printStackTrace();

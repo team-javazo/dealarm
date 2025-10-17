@@ -10,15 +10,16 @@
     <div id="leftContainer" style="flex: 1; min-width: 600px; max-width: 900px; border: 1px solid #ccc; padding: 10px; box-sizing: border-box;">
         
         <!-- 액션 영역: 세련된 버튼 스타일 -->
-        <div id="actionContainer" style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-            <label style="display:flex; align-items:center; cursor:pointer; font-size:14px;">
-                <input type="checkbox" id="selectAll" style="margin-right:5px; accent-color:#007BFF; width:16px; height:16px;">
-                전체 선택
-            </label>
-            <button type="button" id="deleteSelected" style="padding:5px 12px; background-color:#28a745; color:white; border:none; border-radius:4px; cursor:pointer; font-size:14px; transition:0.2s;">
-                선택 담기
-            </button>
-        </div>
+	<div id="actionContainer" class="mb-3 d-flex align-items-center gap-2">
+	    <div class="form-check">
+	        <input class="form-check-input" type="checkbox" id="selectAll" disabled>
+	        <label class="form-check-label" for="selectAll">전체 선택</label>
+	    </div>
+	
+	    <button type="button" id="deleteSelected" class="btn btn-success" disabled>
+	        선택 등록
+	    </button>
+	</div>
 
         <!-- 딜 리스트 스크롤 영역 -->
         <div id="dealContainer" style="overflow-y: auto; padding-right:5px; height: 410px; box-sizing:border-box;">
@@ -31,7 +32,7 @@
                      style="display: flex; align-items:flex-start; border: 1px solid #ccc; padding: 5px; margin-bottom: 5px; border-radius: 8px; position:relative;">
                     
                     <div style="flex: 0 0 120px; margin-right: 10px; text-align: center;">
-                        <input type="checkbox" class="deal-check" value="${deal.id}" style="margin-bottom: 5px; accent-color:#007BFF; width:16px; height:16px;">
+                    <!--     <input type="checkbox" class="deal-check" value="${deal.id}" style="margin-bottom: 5px; accent-color:#007BFF; width:16px; height:16px;"> -->
                         <img src="<c:url value='${deal.img}'/>" alt="${deal.title}" style="width: 120px; height: 120px; object-fit: cover; border-radius:4px;">
                     </div>
                     
@@ -45,11 +46,11 @@
                         <p style="margin: 0;">생성일: ${deal.created_at}</p>
                         <p style="margin: 0;">좋아요: ${deal.likes}</p>
                         
-                        <!-- 카드 삭제 버튼: 오른쪽 상단에 고정 -->
+                        <!-- 카드 삭제 버튼: 오른쪽 상단에 고정 
                         <button type="button" class="deleteBtn" 
                                 style="position:absolute; top:5px; right:5px; padding:4px 8px; background-color:#28a745; color:white; border:none; border-radius:4px; font-size:12px; cursor:pointer; transition:0.2s;">
                             관심상품 등록
-                        </button>
+                        </button>  -->
                     </div>
                 </div>
             </c:forEach>

@@ -12,19 +12,18 @@
 		style="flex: 1; min-width: 600px; max-width: 900px; border: 1px solid #ccc; padding: 10px; box-sizing: border-box;">
 		<!-- 액션 영역: 세련된 버튼 스타일 -->
 
-		<div id="actionContainer"
-			style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-			<label style="display: flex; align-items: center; cursor: pointer; font-size: 14px;">
-				</h2> <input type="checkbox" id="selectAll"
-				style="margin-right: 5px; accent-color: #007BFF; width: 16px; height: 16px;"
-				<c:if test = "${empty sessionScope.id}">disabled</c:if>>
-				전체 선택
-			</label>
-			<button type="button" id="deleteSelected"
-				tyle="padding: 5px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: 0.2s;"
-				<c:if test = "${empty sessionScope.id}">disabled</c:if>>
-				선택 삭제</button>
-		</div>
+	<div id="actionContainer" class="mb-3 d-flex align-items-center gap-2">
+	    <div class="form-check">
+	        <input class="form-check-input" type="checkbox" id="selectAll"
+	            <c:if test="${empty sessionScope.id}">disabled</c:if>>
+	        <label class="form-check-label" for="selectAll">전체 선택</label>
+	    </div>
+	
+	    <button type="button" id="deleteSelected" class="btn btn-danger"
+	        <c:if test="${empty sessionScope.id}">disabled</c:if>>
+	        선택 삭제
+	    </button>
+	</div>
 
 		<!-- 딜 리스트 스크롤 영역 -->
 		<div id="dealContainer"
