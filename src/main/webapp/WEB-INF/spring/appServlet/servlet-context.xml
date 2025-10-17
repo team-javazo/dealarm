@@ -19,6 +19,9 @@
     <resources mapping="/images/**" location="/resources/images/" />
     <resources mapping="/dealarm/images/**" 
            location="file:///${user.home}/dealarm-data/images/" />
+           
+    <resources mapping="/favicon.ico" location="/favicon.ico" />
+           
 
     <!-- ViewResolver -->
     <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -31,5 +34,7 @@
 	<beans:bean id="naverLoginVO" class="kr.co.dong.oauth.NaverLoginVO" />
     
     <context:component-scan base-package="kr.co.dong"/>
+    
+    
 
 </beans:beans>
