@@ -90,16 +90,21 @@ $(document).ready(function() {
         $('.deal-check').prop('checked', $(this).prop('checked'));
     });
 
-    // 선택 삭제
-    $('#deleteSelected').on('click', function() {
-        $('.deal-check:checked').each(function() {
-            $(this).closest('.deal-card').remove();
-        });
+    // 선택 담기(미구현) 추후지원지능
+    $('#deleteSelected').on('click', function(e) {
+    //   $('.deal-check:checked').each(function() {
+    //        $(this).closest('.deal-card').remove();
+    //    });
+        e.stopPropagation();
+    	alert("추후 지원될 기능 입니다.");
+    
     });
 
-    // 단일 삭제
-    $('#dealContainer').on('click', '.deleteBtn', function() {
-        $(this).closest('.deal-card').remove();
+    // 단일 담기
+    $('#dealContainer').on('click', '.deleteBtn', function(e) {
+    //    $(this).closest('.deal-card').remove();
+        e.stopPropagation();
+    	alert("추후 지원될 기능 입니다.");	
     });
 
     // 버튼 호버 효과

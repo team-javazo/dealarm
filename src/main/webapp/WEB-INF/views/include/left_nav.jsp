@@ -8,7 +8,7 @@
 	<nav class="d-flex flex-column flex-shrink-0 p-3 bg-light"
 		style="width: 250px; min-height: 700px;">
 
-		<a href="${pageContext.request.contextPath}/"
+		<a href="${pageContext.request.contextPath}/main"
 			class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
 			<span class="fs-4">Dealarm</span>
 		</a>
@@ -17,8 +17,8 @@
 		<ul class="nav nav-pills flex-column">
 			<li><a href="${pageContext.request.contextPath}/inquiry/list"
 				class="nav-link link-dark">고객문의</a></li>
-			<li><a href="/dong/news" class="nav-link link-dark">뉴스 검색</a></li>
-			<li><a href="/dong/newDeal" class="nav-link link-dark">NEW
+			<li><a href="${pageContext.request.contextPath}/news" class="nav-link link-dark">뉴스 검색</a></li>
+			<li><a href="${pageContext.request.contextPath}/newDeal" class="nav-link link-dark">NEW
 					DEAL </a></li>
 		</ul>
 		<hr>
@@ -100,81 +100,103 @@
 			<%-- ⬆️ relatedKeywordSection 종료 --%>
 		</div>
 
-<%-- 🆕 My 키워드 섹션 (카드/토글 형태로 변경) --%>
-<div class="mb-auto">
-    <c:choose>
-        <c:when test="${not empty sessionScope.id}">
-            <div class="p-3 bg-white border rounded mb-3"
-                 style="width: 100%; max-height: 400px; overflow-y: auto;">
-                
-                <%-- 토글 버튼: My키워드 제목 영역 --%>
-                <h6 class="fw-bold" id="myKeywordToggle"
-                    style="cursor: pointer;"
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#keywordCollapseSection" 
-                    aria-expanded="false" 
-                    aria-controls="keywordCollapseSection">
-                    🔑 My 키워드 <i class="bi bi-chevron-down"></i>
-                </h6>
+		<%-- 🆕 My 키워드 섹션 (카드/토글 형태로 변경) --%>
+		<div class="mb-auto">
+			<c:choose>
+				<c:when test="${not empty sessionScope.id}">
+					<div class="p-3 bg-white border rounded mb-3"
+						style="width: 100%; max-height: 400px; overflow-y: auto;">
 
-                <%-- ⬇️ 이 영역이 토글될 섹션입니다. (id: keywordCollapseSection) --%>
-                <div id="keywordCollapseSection" class="collapse">
-                    <hr>
-                    <form id="addKeywordForm">
-                        <input type="hidden" name="userId" value="${sessionScope.id}" />
-                        <div class="mb-2">
-                            <input type="text" id="keyword" name="keyword"
-                                class="form-control form-control-sm" placeholder="키워드 입력" required />
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-sm w-100">추가</button>
-                    </form>
-                    <hr>
-                    <h6 class="fw-bold small">내 키워드 목록</h6>
-                    <ul id="keywordList" class="list-unstyled small"></ul>
-                </div>
-                <%-- ⬆️ keywordCollapseSection 종료 --%>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="p-3"> <%-- 이 영역은 로그인 버튼을 감싸는 div입니다. --%>
-                <a href="${pageContext.request.contextPath}/member/login"
-                    class="btn btn-outline-primary w-100">로그인</a>
-            </div>
-        </c:otherwise>
-    </c:choose>
-</div>
-<%-- ⬆️ My 키워드 섹션 종료 --%>
+						<%-- 토글 버튼: My키워드 제목 영역 --%>
+						<h6 class="fw-bold" id="myKeywordToggle" style="cursor: pointer;"
+							data-bs-toggle="collapse"
+							data-bs-target="#keywordCollapseSection" aria-expanded="false"
+							aria-controls="keywordCollapseSection">
+							🔑 My 키워드 <i class="bi bi-chevron-down"></i>
+						</h6>
+
+						<%-- ⬇️ 이 영역이 토글될 섹션입니다. (id: keywordCollapseSection) --%>
+						<div id="keywordCollapseSection" class="collapse">
+							<hr>
+							<form id="addKeywordForm">
+								<input type="hidden" name="userId" value="${sessionScope.id}" />
+								<div class="mb-2">
+									<input type="text" id="keyword" name="keyword"
+										class="form-control form-control-sm" placeholder="키워드 입력"
+										required />
+								</div>
+								<button type="submit" class="btn btn-primary btn-sm w-100">추가</button>
+							</form>
+							<hr>
+							<h6 class="fw-bold small">내 키워드 목록</h6>
+							<ul id="keywordList" class="list-unstyled small"></ul>
+						</div>
+						<%-- ⬆️ keywordCollapseSection 종료 --%>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<div class="p-3">
+						<%-- 이 영역은 로그인 버튼을 감싸는 div입니다. --%>
+						<a href="${pageContext.request.contextPath}/member/login"
+							class="btn btn-outline-primary w-100">로그인</a>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</div>
+		<%-- ⬆️ My 키워드 섹션 종료 --%>
 	</nav>
 </div>
 
 <script>
-// My키워드 클릭 시 열고/닫기
-const keywordToggle = document.getElementById('myKeywordDropdown');
-const keywordSection = document.getElementById('keywordSection');
+// ## 1. My키워드 클릭 시 열고/닫기 (myKeywordDropdown/keywordSection)
 
-if (keywordToggle) {
-    if (localStorage.getItem("keywordOpen") === "true") {
-        keywordSection.style.display = "block";
+const keywordToggle = document.getElementById('myKeywordToggle');
+const keywordSection = document.getElementById('keywordCollapseSection'); // Bootstrap Collapse 영역 ID
+
+if (keywordToggle && keywordSection) {
+    const KEYWORD_OPEN_KEY = "keywordOpen";
+    
+    // 💡 페이지 로드 시 localStorage 상태 적용
+    if (localStorage.getItem(KEYWORD_OPEN_KEY) === "true") {
+        // Bootstrap Collapse는 'show' 클래스로 열린 상태를 제어합니다.
+        keywordSection.classList.add('show');
     }
+    // else { class="collapse"가 기본적으로 닫힌 상태를 제공하므로 별도의 display:none 설정 불필요 }
+
+    // 💡 이벤트 리스너: 클릭 시 상태를 토글하고 localStorage에 저장
     keywordToggle.addEventListener('click', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        if (keywordSection.style.display === 'none' || keywordSection.style.display === '') {
-            keywordSection.style.display = 'block';
-            localStorage.setItem("keywordOpen", "true");
-        } else {
-            keywordSection.style.display = 'none';
-            localStorage.setItem("keywordOpen", "false");
-        }
+        // 기본 Collapse 동작을 막지 않고, 상태만 localStorage에 저장합니다.
+        // e.preventDefault(); // Bootstrap 동작을 위해 제거
+
+        // 다음 프레임에서 상태를 확인하거나, 토글 직후 상태를 확인하기 위해 setTimeout 사용
+        // 또는, 'hide'/'show' 클래스를 직접 확인하는 대신, Bootstrap 이벤트를 사용합니다.
+        
+        // **Bootstrap의 'hidden.bs.collapse' 및 'shown.bs.collapse' 이벤트를 사용하는 것이 가장 확실합니다.**
+    });
+    
+    // Bootstrap Collapse 이벤트 리스너 추가: 상태 저장 로직을 분리
+    // 닫힐 때
+    keywordSection.addEventListener('hidden.bs.collapse', function () {
+        localStorage.setItem(KEYWORD_OPEN_KEY, "false");
+    });
+    // 열릴 때
+    keywordSection.addEventListener('shown.bs.collapse', function () {
+        localStorage.setItem(KEYWORD_OPEN_KEY, "true");
     });
 }
 
-//🔑 연관 검색어 클릭 시 열고/닫기 (새로 추가된 로직)
+// ----------------------------------------------------
+
+// ## 2. 🔑 연관 검색어 클릭 시 열고/닫기 (relatedKeywordToggle/relatedKeywordSection)
+
 const relatedKeywordToggle = document.getElementById('relatedKeywordToggle');
 const relatedKeywordSection = document.getElementById('relatedKeywordSection');
 
 if (relatedKeywordToggle && relatedKeywordSection) {
-    // 💡 localStorage에서 상태 불러와 적용
+    // 💡 기본적으로 닫힌 상태 (display: none)로 시작
+    relatedKeywordSection.style.display = "none";
+
+    // localStorage에서 상태 불러와 적용: 'true'일 때만 엽니다.
     if (localStorage.getItem("relatedKeywordOpen") === "true") {
         relatedKeywordSection.style.display = "block";
     }
@@ -183,7 +205,7 @@ if (relatedKeywordToggle && relatedKeywordSection) {
         e.preventDefault();
         e.stopPropagation();
         
-        // 💡 토글 로직
+        // 토글 로직
         if (relatedKeywordSection.style.display === 'none' || relatedKeywordSection.style.display === '') {
             relatedKeywordSection.style.display = 'block';
             localStorage.setItem("relatedKeywordOpen", "true");
@@ -194,23 +216,30 @@ if (relatedKeywordToggle && relatedKeywordSection) {
     });
 }
 
-//⭐ 카테고리 인기 키워드 클릭 시 열고/닫기 로직 (새로 추가)
+// ----------------------------------------------------
+
+// ## 3. ⭐ 카테고리 인기 키워드 클릭 시 열고/닫기 (trendToggle/trendSection)
+
 const trendToggle = document.getElementById('trendToggle');
 const trendSection = document.getElementById('trendSection');
 
 if (trendToggle && trendSection) {
-    // 기본적으로 펼쳐져 있게 하려면 아래 주석 처리
-    trendSection.style.display = "block"; 
+    // 💡 기본적으로 닫힌 상태 (display: none)로 시작. (원래 'block'으로 강제 설정한 부분을 수정)
+    trendSection.style.display = "none"; 
     
-    // localStorage에서 상태 불러와 적용 (선택 사항)
-    if (localStorage.getItem("trendOpen") === "false") {
-        trendSection.style.display = "none";
+    // localStorage에서 상태 불러와 적용: 'true'일 때만 엽니다.
+    // 참고: 원래 로직은 'true'일 때 'none'으로 설정했으나, 이는 닫힌 상태를 의미하는 것으로 해석하고,
+    // 여기서는 localStorage에 "open" 상태를 저장하므로, 'true'일 때 'block'으로 설정해야 일관성이 있습니다.
+    // 기존 로직을 '기본 닫힘'에 맞게 수정했습니다.
+    if (localStorage.getItem("trendOpen") === "true") {
+        trendSection.style.display = "block";
     }
 
     trendToggle.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
+        // 토글 로직
         if (trendSection.style.display === 'none' || trendSection.style.display === '') {
             trendSection.style.display = 'block';
             localStorage.setItem("trendOpen", "true");
@@ -221,34 +250,36 @@ if (trendToggle && trendSection) {
     });
 }
 
-//⭐ My 키워드 기반 추천 클릭 시 열고/닫기 로직 (새로 추가)
+// ----------------------------------------------------
+
+// ## 4. ⭐ My 키워드 기반 추천 클릭 시 열고/닫기 (myRecommendationToggle/myRecommendationSection)
+
 const myRecommendationToggle = document.getElementById('myRecommendationToggle');
 const myRecommendationSection = document.getElementById('myRecommendationSection');
 
 if (myRecommendationToggle && myRecommendationSection) {
-    // 💡 localStorage에서 상태 불러와 적용 (선택 사항)
-    if (localStorage.getItem("myRecOpen") === "true") {
-        // localStorage에 'true'가 있으면 펼칩니다.
-        myRecommendationSection.style.display = "block";
-    } else {
-        // localStorage에 값이 없거나 'false'인 경우, 
-        // HTML의 기본값(display: none;)을 유지하여 접힌 상태로 시작합니다.
-        myRecommendationSection.style.display = "none"; // 💡 명확하게 'none'으로 설정
-    }
+    // 💡 기본적으로 닫힌 상태 (display: none)로 시작
+    myRecommendationSection.style.display = "none";
 
-    myRecommendationToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // 💡 토글 로직
-        if (myRecommendationSection.style.display === 'none' || myRecommendationSection.style.display === '') {
-            myRecommendationSection.style.display = 'block';
-            localStorage.setItem("myRecOpen", "true");
-        } else {
-            myRecommendationSection.style.display = 'none';
-            localStorage.setItem("myRecOpen", "false");
-        }
-    });
+    // localStorage에서 상태 불러와 적용: 'true'일 때만 엽니다.
+    if (localStorage.getItem("myRecOpen") === "true") {
+        myRecommendationSection.style.display = "block";
+    }
+    // else { myRecommendationSection.style.display = "none"; } // 기본 설정이 'none'이므로 생략 가능
+
+    myRecommendationToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // 토글 로직
+        if (myRecommendationSection.style.display === 'none' || myRecommendationSection.style.display === '') {
+            myRecommendationSection.style.display = 'block';
+            localStorage.setItem("myRecOpen", "true");
+        } else {
+            myRecommendationSection.style.display = 'none';
+            localStorage.setItem("myRecOpen", "false");
+        }
+    });
 }
 </script>
 
@@ -347,7 +378,7 @@ $(function() {
 	
 	// 기본값 설정 및 submit
 	var defaultGender = "all"; 
-	var defaultAgeRange = ["10", "20", "30", "40", "50", "60"]; 
+	var defaultAgeRange = ["0", "10", "20", "30", "40", "50", "60"]; 
 
 	$("#gender").val(defaultGender);
 	$("#ages").val(defaultAgeRange); 
@@ -361,13 +392,24 @@ $(function() {
 		var startAge, endAge;
 
 		if (ageRange.includes("all") || ageRange.length === 0) {
-			startAge = 10;
+			startAge = 0;
 			endAge = 100;
 		} else {
-            // 선택된 연령대를 오름차순 정렬 후 최소/최대 연령 범위 계산
-            ageRange.sort((a, b) => parseInt(a) - parseInt(b));
-			startAge = parseInt(ageRange[0], 10);
-			endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9; 
+			// 선택된 연령대를 오름차순 정렬
+			        ageRange.sort((a, b) => parseInt(a) - parseInt(b));
+			        
+			        // 💡 startAge 계산 로직 수정: 가장 낮은 선택 연령이 "10"대일 경우 0세부터 시작하도록 조정
+			        var lowestSelectedAge = parseInt(ageRange[0], 10);
+			        
+			        // 가장 낮은 연령대가 10대("10")이면 startAge를 0으로 설정하여 0~9세를 포함
+			        if (lowestSelectedAge === 10) {
+			            startAge = 0; 
+			        } else {
+			            startAge = lowestSelectedAge;
+			        }
+
+			        // endAge는 선택된 가장 높은 연령대 + 9
+			        endAge = parseInt(ageRange[ageRange.length - 1], 10) + 9;
 		}
 		
 		$.ajax({

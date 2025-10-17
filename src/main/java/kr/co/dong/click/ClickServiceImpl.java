@@ -41,4 +41,11 @@ public class ClickServiceImpl implements ClickService {
         System.out.println("📈 [ClickService] 클릭 통계 조회 userId=" + userId);
         return clickDAO.getUserClick(userId);
     }
+
+	@Override
+	public List<ClickDTO> keywordStats(Map<String, Object> params) {
+		return clickDAO.keywordStats(params);
+	
+	}
+	
 }

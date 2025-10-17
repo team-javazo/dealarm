@@ -16,6 +16,10 @@ public interface ClickDAO {
 	 */
 	int upsertClickHistory(ClickDTO dto);
 	
-	// 키워드 별 클릭 통계 조회
+	// 개인 키워드 별 클릭 통계 조회
 	List<Map<String, Object>> getUserClick(String userId);
+	
+	// 통합 키워드 별 클릭 통계 조회
+	List<ClickDTO> keywordStats(Map<String,Object> params);
+	
 }
