@@ -328,11 +328,7 @@ public class MemberController {
    // 회원정보 수정 페이지 내용 삽입
    @PostMapping("/userupdate")
    public String userupdate(MemberDTO member, Model model) {
-	// update 처리전 비밀번호 암호화 실행 userPassword -> encodedPassword
-	  String userPassword = member.getPassword(); //user가 입력한 password
-	  String encodedPassword = encoder.encode(userPassword); //암호화 된 password
-	  member.setPassword(encodedPassword); //암호화된 비번을 setting
-	   //
+
       memberService.userupdate(member); // 수정 처리
       model.addAttribute("user", memberService.selectone(member.getId()));
       return "member/mypage";
