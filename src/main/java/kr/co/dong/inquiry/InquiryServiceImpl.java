@@ -11,20 +11,42 @@ public class InquiryServiceImpl implements InquiryService {
     private InquiryDAO dao;
 
     @Override
-    public void insert(InquiryDTO dto) { dao.insert(dto); }
+    public List<InquiryDTO> list() {
+        return dao.list();
+    }
 
     @Override
-    public List<InquiryDTO> list() { return dao.list(); }
+    public InquiryDTO detail(int id) {
+        return dao.detail(id);
+    }
 
     @Override
-    public InquiryDTO detail(int id) { return dao.detail(id); }
+    public void insert(InquiryDTO dto) {
+        dao.insert(dto);
+    }
 
     @Override
-    public void updateHit(int id) { dao.updateHit(id); }
+    public void update(InquiryDTO dto) {
+        dao.update(dto);
+    }
 
     @Override
-    public void updateStatus(int id, String status) { dao.updateStatus(id, status); }
+    public void updateHit(int id) {
+        dao.updateHit(id);
+    }
 
     @Override
-    public void insertAnswer(int id, String answer) { dao.insertAnswer(id, answer); }
+    public void insertAnswer(InquiryDTO dto) {
+        dao.insertAnswer(dto);
+    }
+
+    @Override
+    public void updateStatus(InquiryDTO dto) {
+        dao.updateStatus(dto);
+    }
+
+    @Override
+    public void delete(int id) {
+        dao.delete(id);
+    }
 }

@@ -8,44 +8,48 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InquiryDAOImpl implements InquiryDAO {
 
-    private static final String NS = "kr.co.dong.inquiry.InquiryDAO";
-
     @Inject
-    private SqlSession session;
+    private SqlSession sqlSession;
 
-    @Override
-    public void insert(InquiryDTO dto) {
-        session.insert(NS + ".insert", dto);
-    }
+    private static final String namespace = "kr.co.dong.inquiry.InquiryDAO";
 
     @Override
     public List<InquiryDTO> list() {
-        return session.selectList(NS + ".list");
+        return sqlSession.selectList(namespace + ".list");
     }
 
     @Override
     public InquiryDTO detail(int id) {
-        return session.selectOne(NS + ".detail", id);
+        return sqlSession.selectOne(namespace + ".detail", id);
+    }
+
+    @Override
+    public void insert(InquiryDTO dto) {
+        sqlSession.insert(namespace + ".insert", dto);
+    }
+
+    @Override
+    public void update(InquiryDTO dto) {
+        sqlSession.update(namespace + ".update", dto);
     }
 
     @Override
     public void updateHit(int id) {
-        session.update(NS + ".updateHit", id);
+        sqlSession.update(namespace + ".updateHit", id);
     }
 
     @Override
-    public void updateStatus(int id, String status) {
-        var param = new java.util.HashMap<String, Object>();
-        param.put("id", id);
-        param.put("status", status);
-        session.update(NS + ".updateStatus", param);
+    public void insertAnswer(InquiryDTO dto) {
+        sqlSession.update(namespace + ".insertAnswer", dto);
     }
 
     @Override
-    public void insertAnswer(int id, String answer) {
-        var param = new java.util.HashMap<String, Object>();
-        param.put("id", id);
-        param.put("answer", answer);
-        session.update(NS + ".insertAnswer", param);
+    public void updateStatus(InquiryDTO dto) {
+        sqlSession.update(namespace + ".updateStatus", dto);
+    }
+
+    @Override
+    public void delete(int id) {
+        sqlSession.delete(namespace + ".delete", id);
     }
 }

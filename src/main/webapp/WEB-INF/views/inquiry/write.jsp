@@ -40,7 +40,6 @@
 					<h2 class="fw-bold mb-1">문의 작성</h2>
 					<ol class="breadcrumb">
 						<li><a href="${pageContext.request.contextPath}/inquiry/list">문의 목록</a></li>
-						<li class="active">작성</li>
 					</ol>
 				</section>
 
@@ -84,9 +83,7 @@
 									<div class="cell">
 										<label>카테고리</label>
 										<select name="category" class="form-control">
-											<option value="">선택 (선택사항)</option>
 											<option value="일반문의">일반문의</option>
-											<option value="결제문의">결제문의</option>
 											<option value="버그제보">버그제보</option>
 											<option value="기능요청">기능요청</option>
 										</select>
@@ -132,10 +129,6 @@
 										<c:otherwise>OFF</c:otherwise>
 									</c:choose>
 								</span>
-							</div>
-							<div>
-								<a href="${pageContext.request.contextPath}/inquiry/dev/admin/on" class="btn btn-sm">관리자ON</a>
-								<a href="${pageContext.request.contextPath}/inquiry/dev/admin/off" class="btn btn-sm">OFF</a>
 							</div>
 						</div>
 					</div>

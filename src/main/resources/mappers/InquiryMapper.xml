@@ -1,49 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="kr.co.dong.inquiry.InquiryDAO">
 
-  <resultMap id="InquiryMap" type="kr.co.dong.inquiry.InquiryDTO">
-    <id property="id" column="id"/>
-    <result property="title" column="title"/>
-    <result property="writer" column="writer"/>
-    <result property="content" column="content"/>
-    <result property="category" column="category"/>
-    <result property="secret" column="secret"/>
-    <result property="regdate" column="regdate"/>
-    <result property="hit" column="hit"/>
-    <result property="answer" column="answer"/>
-    <result property="answer_date" column="answer_date"/>
-    <result property="status" column="status"/>
-  </resultMap>
-
-  <insert id="insert" parameterType="kr.co.dong.inquiry.InquiryDTO">
-    INSERT INTO inquiry
-    (title, writer, content, category, secret, regdate, hit, status)
-    VALUES (#{title}, #{writer}, #{content}, #{category}, #{secret}, NOW(), 0, '대기')
-  </insert>
-
-  <select id="list" resultMap="InquiryMap">
+  <!-- ✅ 목록 -->
+  <select id="list" resultType="kr.co.dong.inquiry.InquiryDTO">
     SELECT * FROM inquiry ORDER BY id DESC
   </select>
 
-  <select id="detail" parameterType="int" resultMap="InquiryMap">
+  <!-- ✅ 상세보기 -->
+  <select id="detail" parameterType="int" resultType="kr.co.dong.inquiry.InquiryDTO">
     SELECT * FROM inquiry WHERE id = #{id}
   </select>
 
+  <!-- ✅ 등록 -->
+  <insert id="insert" parameterType="kr.co.dong.inquiry.InquiryDTO">
+    INSERT INTO inquiry (title, writer, content, category, secret, regdate, hit, status)
+    VALUES (#{title}, #{writer}, #{content}, #{category}, #{secret}, NOW(), 0, '대기')
+  </insert>
+
+  <!-- ✅ 수정 -->
+  <update id="update" parameterType="kr.co.dong.inquiry.InquiryDTO">
+    UPDATE inquiry
+    SET title = #{title},
+        content = #{content},
+        category = #{category},
+        secret = #{secret}
+    WHERE id = #{id}
+  </update>
+
+  <!-- ✅ 조회수 증가 -->
   <update id="updateHit" parameterType="int">
     UPDATE inquiry SET hit = hit + 1 WHERE id = #{id}
   </update>
 
-  <update id="updateStatus" parameterType="map">
+  <!-- ✅ 답변 등록 -->
+  <update id="insertAnswer">
+    UPDATE inquiry
+    SET answer = #{answer}, status = '답변완료', answer_date = NOW()
+    WHERE id = #{id}
+  </update>
+
+  <!-- ✅ 상태 변경 -->
+  <update id="updateStatus">
     UPDATE inquiry SET status = #{status} WHERE id = #{id}
   </update>
 
-  <update id="insertAnswer" parameterType="map">
-    UPDATE inquiry
-    SET answer = #{answer}, answer_date = NOW()
-    WHERE id = #{id}
-  </update>
+  <!-- ✅ 삭제 (여기가 핵심) -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM inquiry WHERE id = #{id}
+  </delete>
 
 </mapper>
