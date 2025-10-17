@@ -1,20 +1,19 @@
 package kr.co.dong.deal;
 
-import java.sql.Date;
 
 public class DealMatchDTO {
 	private int id; 
 	private String user_id;  
 	private int deal_id; 
-	private Date matched_at;
+	private String matched_at;
 	
 	//deal_summary join용
 	private String title;
 	private String url;
 	private int price;
 	private String site;
-	private Date posted_at;
-	private Date created_at;
+	private String posted_at;
+	private String created_at;
 	private int likes;
 	private String img;
 	
@@ -24,7 +23,7 @@ public class DealMatchDTO {
 	
 
 
-	public DealMatchDTO(String title, String url, int price, String site, Date posted_at, Date created_at, int likes,
+	public DealMatchDTO(String title, String url, int price, String site, String posted_at, String created_at, int likes,
 			String img) {
 		super();
 		this.title = title;
@@ -40,8 +39,8 @@ public class DealMatchDTO {
 
 
 
-	public DealMatchDTO(int id, String user_id, int deal_id, Date matched_at, String title, String url, int price,
-			String site, Date posted_at, Date created_at, int likes, String img) {
+	public DealMatchDTO(int id, String user_id, int deal_id, String matched_at, String title, String url, int price,
+			String site, String posted_at, String created_at, int likes, String img) {
 		super();
 		this.id = id;
 		this.user_id = user_id;
@@ -88,12 +87,12 @@ public class DealMatchDTO {
 	}
 
 
-	public Date getMatched_at() {
+	public String getMatched_at() {
 		return matched_at;
 	}
 
 
-	public void setMatched_at(Date matched_at) {
+	public void setMatched_at(String matched_at) {
 		this.matched_at = matched_at;
 	}
 
@@ -138,22 +137,22 @@ public class DealMatchDTO {
 	}
 
 
-	public Date getPosted_at() {
+	public String getPosted_at() {
 		return posted_at;
 	}
 
 
-	public void setPosted_at(Date posted_at) {
+	public void setPosted_at(String posted_at) {
 		this.posted_at = posted_at;
 	}
 
 
-	public Date getCreated_at() {
+	public String getCreated_at() {
 		return created_at;
 	}
 
 
-	public void setCreated_at(Date created_at) {
+	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}
 
