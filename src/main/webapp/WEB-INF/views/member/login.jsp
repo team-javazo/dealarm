@@ -44,7 +44,9 @@
 					        	<input type="password" class="form-control" id="password" name="password" required>
 							</div>
 								    				  					
-		        			<button type="submit">로그인</button>
+							<div class="text-center">
+							    <button type="submit" class="btn btn-primary">로그인</button>
+							</div>
 	    				</form>
 	    				<!-- Naver 소셜 로그인  -->
 						<div style="text-align: center;">

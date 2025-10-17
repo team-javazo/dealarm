@@ -105,6 +105,7 @@
 		                 	</c:otherwise>
 					    </c:choose>
 		                 
+						<!-- 
 						<li class="nav-item d-flex align-items-center">
 				            <form class="d-flex align-items-center mb-0">
 		                        <button class="btn btn-outline-dark" type="submit">
@@ -113,7 +114,8 @@
 		                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
 		                        </button>
 		                    </form>
-		                </li> 
+		                </li>
+		                 --> 
 		                
 		                  
 	                </ul>   
