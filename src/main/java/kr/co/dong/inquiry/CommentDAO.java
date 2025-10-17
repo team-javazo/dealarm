@@ -1,9 +1,10 @@
 package kr.co.dong.inquiry;
+
 import java.util.List;
 
 public interface CommentDAO {
-    List<CommentDTO> list(long inquiryId);
-    void add(CommentDTO dto);
-    void deleteById(long id);
-    void deleteByOwner(long id, String writer);
+    List<CommentDTO> list(int inquiryId);
+    void insert(CommentDTO dto);           // ✅ add → insert 변경
+    void delete(int id);                   // ✅ deleteById → delete 변경
+    void deleteByOwner(int id, String writer);
 }

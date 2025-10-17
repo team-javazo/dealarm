@@ -1,65 +1,76 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8"/>
   <title>문의 수정</title>
   <link href="${pageContext.request.contextPath}/resources/css/styles.css" rel="stylesheet" />
+  <style>
+    body { font-family:"Pretendard",sans-serif; background:#f9fafb; margin:0; padding:0; }
+    .card { border:1px solid #e5e7eb; border-radius:12px; background:#fff; margin-bottom:16px; }
+    .card-header { padding:12px 16px; border-bottom:1px solid #eef0f3; font-weight:600; background:#f7fafc; }
+    .card-body { padding:16px; }
+    .btn { display:inline-block; border:1px solid #d1d5db; background:#fff; padding:6px 12px; border-radius:8px; text-decoration:none; color:#111; font-size:13px; }
+    .btn:hover { background:#f5f6f8; }
+    .btn-primary { background:#2563eb; border-color:#2563eb; color:#fff; }
+    .btn-primary:hover { background:#1d4ed8; }
+    input[type=text], textarea, select {
+      width:100%; padding:8px; border:1px solid #ddd; border-radius:6px; box-sizing:border-box;
+    }
+  </style>
 </head>
-<body style="margin:0; padding:0; display:flex; flex-direction:column; min-height:100vh;">
 
+<body style="display:flex; flex-direction:column; min-height:100vh;">
   <%@ include file="/WEB-INF/views/include/top_nav.jsp"%>
 
-  <div class="d-flex" style="flex:1 1 auto;">
+  <div class="d-flex" style="flex:1 0 auto;">
     <%@ include file="/WEB-INF/views/include/left_nav.jsp"%>
 
-    <div class="flex-grow-1" style="padding:24px;">
-      <div class="content-wrapper" style="background:#fff; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.05); padding:24px;">
-
-        <section class="content-header" style="margin-bottom:16px;">
-          <h2 class="fw-bold mb-1" style="border-bottom:2px solid #007bff; padding-bottom:8px;">문의 수정</h2>
+    <div class="flex-grow-1">
+      <div class="content-wrapper">
+        <section class="content-header">
+          <h2 class="fw-bold mb-1">문의 수정</h2>
           <ol class="breadcrumb">
-            <li><a href="${pageContext.request.contextPath}/"><i class="fa fa-home"></i> 홈</a></li>
             <li><a href="${pageContext.request.contextPath}/inquiry/list">문의 목록</a></li>
-            <li class="active">수정</li>
           </ol>
         </section>
 
         <section class="content">
-          <form method="post" action="${pageContext.request.contextPath}/inquiry/update">
-            <input type="hidden" name="id" value="${dto.id}"/>
+          <div class="card">
+            <div class="card-header">문의 내용 수정</div>
+            <div class="card-body">
+              <form action="${pageContext.request.contextPath}/inquiry/edit" method="post">
+                <input type="hidden" name="id" value="${dto.id}" />
 
-            <div class="form-group" style="margin-bottom:12px;">
-              <label>제목</label>
-              <input class="form-control" type="text" name="title" value="${dto.title}" required/>
-            </div>
+                <label>카테고리</label>
+                <select name="category" required>
+                  <option value="일반문의" <c:if test="${dto.category eq '일반문의'}">selected</c:if>>일반문의</option>
+                  <option value="버그제보" <c:if test="${dto.category eq '버그제보'}">selected</c:if>>버그제보</option>
+                  <option value="계정문의" <c:if test="${dto.category eq '계정문의'}">selected</c:if>>계정문의</option>
+                  <option value="기타" <c:if test="${dto.category eq '기타'}">selected</c:if>>기타</option>
+                </select>
 
-            <div class="form-group" style="margin-bottom:12px;">
-              <label>작성자</label>
-              <input class="form-control" type="text" value="${dto.writer}" readonly/>
-              <small class="text-muted">작성자는 변경될 수 없습니다.</small>
-            </div>
+                <label style="margin-top:10px;">제목</label>
+                <input type="text" name="title" value="${dto.title}" required />
 
-            <div class="form-group" style="margin-bottom:12px;">
-              <label>내용</label>
-              <textarea class="form-control" name="content" rows="8" required>${dto.content}</textarea>
-            </div>
+                <label style="margin-top:10px;">내용</label>
+                <textarea name="content" rows="8" required>${dto.content}</textarea>
 
-            <div class="form-group" style="margin-bottom:12px;">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" name="secret" value="true" <c:if test="${dto.secret}">checked</c:if> />
-                  비밀글
-                </label>
-              </div>
-            </div>
+                <label style="margin-top:10px;">비밀글 여부</label>
+                <select name="secret">
+                  <option value="false" <c:if test="${!dto.secret}">selected</c:if>>공개</option>
+                  <option value="true" <c:if test="${dto.secret}">selected</c:if>>비밀글</option>
+                </select>
 
-            <div class="text-end">
-              <a class="btn btn-default" href="${pageContext.request.contextPath}/inquiry/detail?id=${dto.id}&hit=false">취소</a>
-              <button class="btn btn-primary" type="submit">저장</button>
+                <div style="margin-top:20px; text-align:right;">
+                  <button type="submit" class="btn-primary">수정 완료</button>
+                  <c:url var="listUrl" value="/inquiry/list"/>
+                  <a href="${listUrl}" class="btn" style="margin-left:8px;">취소</a>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </section>
       </div>
 
