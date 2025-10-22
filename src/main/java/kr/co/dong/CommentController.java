@@ -1,4 +1,4 @@
-package kr.co.dong.inquiry;
+package kr.co.dong;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.PrintWriter;
 
+import kr.co.dong.inquiry.CommentDTO;
+import kr.co.dong.inquiry.CommentService;
 import kr.co.dong.member.MemberDTO;
 
 /**
@@ -57,10 +59,6 @@ public class CommentController {
             dto.setWriter(loginId);
             dto.setRole("user");
         }
-
-        // 기본 구조 보정
-        if (dto.getParentId() == null) dto.setParentId(0);
-        if (dto.getDepth() > 1) dto.setDepth(1);
 
         service.add(dto);
         return "redirect:/inquiry/detail?id=" + dto.getInquiryId();
