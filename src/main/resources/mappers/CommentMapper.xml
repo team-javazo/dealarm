@@ -8,24 +8,24 @@
   <select id="list" parameterType="int" resultType="kr.co.dong.inquiry.CommentDTO">
     SELECT * FROM comment
     WHERE inquiryId = #{inquiryId}
-    ORDER BY COALESCE(parentId, id), depth ASC, id ASC
+    ORDER BY COALESCE(id), depth ASC, id ASC
   </select>
 
   <!-- 댓글 등록 -->
   <insert id="insert" parameterType="kr.co.dong.inquiry.CommentDTO">
-    INSERT INTO comment (inquiryId, writer, content, parentId, depth, regdate)
-    VALUES (#{inquiryId}, #{writer}, #{content}, #{parentId}, #{depth}, NOW())
+    INSERT INTO comment (inquiryId, writer, content,regdate)
+    VALUES (#{inquiryId}, #{writer}, #{content}, NOW())
   </insert>
 
   <!-- 댓글 삭제 (관리자 전용) -->
   <delete id="delete" parameterType="int">
-    DELETE FROM comment WHERE id = #{id} OR parentId = #{id}
+    DELETE FROM comment WHERE id = #{id} 
   </delete>
 
   <!-- 댓글 삭제 (작성자 본인만) -->
   <delete id="deleteByOwner" parameterType="map">
     DELETE FROM comment 
-    WHERE (id = #{id} OR parentId = #{id})
+    WHERE (id = #{id} )
       AND writer = #{writer}
   </delete>
 

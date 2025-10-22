@@ -1,4 +1,4 @@
-package kr.co.dong.inquiry;
+package kr.co.dong;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -9,6 +9,9 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import kr.co.dong.inquiry.CommentService;
+import kr.co.dong.inquiry.InquiryService;
 
 /**
  * InquiryController
