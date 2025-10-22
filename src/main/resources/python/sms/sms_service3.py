@@ -16,15 +16,24 @@ from solapi.model import RequestMessage
 logging.basicConfig(level=logging.INFO, stream=sys.stderr,
                     format="%(asctime)s [%(levelname)s] %(message)s")
 
-# Spring Controller의 클릭 추적 엔드포인트 URL
-SPRING_TRACK_URL = "http://localhost:8080/dong/track"
+
 
 # ==================================================
 # 1) 환경 변수 로드
 # ==================================================
-dotenv_path = (Path(__file__).resolve().parent / ".env")
-load_dotenv(dotenv_path)
+BASE_DIR = Path(os.path.expanduser("~")) / "dealarm-data"
+dotenv_path = BASE_DIR / ".env"
 
+if dotenv_path.exists():
+    load_dotenv(dotenv_path)
+    logging.info(f"✅ 환경 변수 로드 완료: {dotenv_path}")
+else:
+    logging.warning(f"⚠️ .env 파일을 찾을 수 없습니다: {dotenv_path}")
+
+# Spring Controller의 클릭 추적 엔드포인트 URL
+SPRING_TRACK_URL = os.getenv("SPRING_TRACK_URL", "http://localhost:8080/track").strip()
+
+# Solapi 설정
 SOLAPI_API_KEY = os.getenv("SOLAPI_API_KEY", "").strip()
 SOLAPI_API_SECRET = os.getenv("SOLAPI_API_SECRET", "").strip()
 SOLAPI_FROM_NUMBER = os.getenv("SOLAPI_FROM_NUMBER", "").strip()

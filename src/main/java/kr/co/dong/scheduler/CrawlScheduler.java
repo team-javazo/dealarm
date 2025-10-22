@@ -42,7 +42,16 @@ public class CrawlScheduler {
 			// 임시 이미지 삭제 프로세스
 			try {
 				File imageDir = new File(IMAGE_DIR);
-
+				
+				if (!imageDir.exists()) {
+				    if (imageDir.mkdirs()) {
+				        System.out.println("📁 이미지 디렉토리 자동 생성됨: " + IMAGE_DIR);
+				    } else {
+				        System.err.println("❌ 이미지 디렉토리 생성 실패: " + IMAGE_DIR);
+				        return; // 생성 실패 시 이후 로직 중단
+				    }
+				}
+				  
 				if (imageDir.exists() && imageDir.isDirectory()) {
 					File[] files = imageDir.listFiles();
 
@@ -56,7 +65,7 @@ public class CrawlScheduler {
 						}
 						System.out.println("로컬 이미지 " + deletedCount + "개 삭제 완료 (경로: " + IMAGE_DIR + ")");
 					}
-				}
+				} 
 	        } catch (Exception e) {
 	        	System.err.println("❌ 로컬 이미지 파일 삭제 실패: " + e.getMessage());
 	        }
