@@ -19,8 +19,8 @@
 		<property name="driverClassName"
 			value="com.mysql.cj.jdbc.Driver" />
 		<property name="url"
-			value="jdbc:mysql://mbc-sw.iptime.org:4200/dealarm?useSSL=false&amp;connectTimeout=5000&amp;allowPublicKeyRetrieval=true" />
-		<property name="username" value="dealarm" />
+			value="jdbc:mysql://dealarm-rds.cjewccuwigd8.ap-northeast-2.rds.amazonaws.com:3306/dealarm?useSSL=false&amp;connectTimeout=5000&amp;allowPublicKeyRetrieval=true" />
+		<property name="username" value="admin" />
 		<property name="password" value="181818!*!*!*" />
 	</bean>
 
