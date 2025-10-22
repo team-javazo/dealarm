@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import kr.co.dong.inquiry.CommentService;
+import kr.co.dong.inquiry.InquiryDTO;
 import kr.co.dong.inquiry.InquiryService;
 
 /**
