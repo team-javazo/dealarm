@@ -1,5 +1,7 @@
 package kr.co.dong.sms;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.Map;
 @Service
 public class SmsDBServiceImpl implements SmsDBService {
 
+	private static final Logger log = LoggerFactory.getLogger(SmsDBServiceImpl.class);
+	
     @Autowired
     private final SmsApiService smsApiService;
     private final UserKeywordDAO userKeywordMapper;
@@ -34,14 +38,14 @@ public class SmsDBServiceImpl implements SmsDBService {
     public void processDeals() {
         // deal_summary 테이블에서 전체 거래 가져오기
         List<SmsDTO> deals = dealSummaryMapper.findAllDeals();
-        System.out.println("📦 불러온 deal 개수 = " + deals.size());
+        log.info("📦 불러온 deal 개수 = " + deals.size());
 
         for (SmsDTO deal : deals) {
-            System.out.println("👉 처리 중 dealId=" + deal.getDealId() + ", title=" + deal.getTitle());
+        	log.info("👉 처리 중 dealId=" + deal.getDealId() + ", title=" + deal.getTitle());
 
             // 🔎 키워드 매칭 결과 → userId + keyword 함께 가져오기
             List<SmsDTO> matchedUsers = userKeywordMapper.findMatchingUsers(deal.getTitle());
-            System.out.println("🔎 매칭된 유저 수 = " + matchedUsers.size());
+            log.info("🔎 매칭된 유저 수 = " + matchedUsers.size());
 
             if (matchedUsers == null || matchedUsers.isEmpty()) {
                 continue;
@@ -53,7 +57,7 @@ public class SmsDBServiceImpl implements SmsDBService {
 
                 SmsDTO user = memberMapper.findUserById(userId);
                 if (user == null || user.getPhone() == null) {
-                    System.out.println("⚠️ 유저 " + userId + " 의 전화번호 없음 → 스킵");
+                	log.warn("⚠️ 유저 " + userId + " 의 전화번호 없음 → 스킵");
                     continue;
                 }
 
@@ -68,7 +72,7 @@ public class SmsDBServiceImpl implements SmsDBService {
                 dto.setKeyword(keyword); // ✅ 키워드 포함
 
                 Map<String, Object> result = smsApiService.sendSms(dto);
-                System.out.println("📨 전송 결과: user=" + userId + ", keyword=" + keyword + " => " + result);
+                log.info("📨 전송 결과: user=" + userId + ", keyword=" + keyword + " => " + result);
             }
         }
     }

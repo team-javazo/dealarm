@@ -2,48 +2,61 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<!-- Appenders -->
-	<appender name="console" class="org.apache.log4j.ConsoleAppender">
-		<param name="Target" value="System.out" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
-		</layout>
-	</appender>
-	
-	<!-- Application Loggers -->
-	<logger name="kr.co.dong">
-		<level value="info" />
-	</logger>
-	
-	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework.core">
-		<level value="info" />
-	</logger>
-	
-	<logger name="org.springframework.beans">
-		<level value="info" />
-	</logger>
-	
-	<logger name="org.springframework.context">
-		<level value="info" />
-	</logger>
+    <!-- Appenders -->
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.out" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-5p: %c - %m%n" />
+        </layout>
+    </appender>
 
-	<logger name="org.springframework.web">
-		<level value="info" />
-	</logger>
+    <!-- 파일 출력 (자동 회전) -->
+    <appender name="rollingFile" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${user.home}/dealarm-data/logs/dealarm.log" />
+        <param name="Append" value="true" />
+        <param name="MaxFileSize" value="10MB" />
+        <param name="MaxBackupIndex" value="5" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1} - %m%n" />
+        </layout>
+    </appender>
 
-	<!-- Root Logger -->
-	<root>
-		<priority value="warn" />
-		<appender-ref ref="console" />
-	</root>
-	
-		<!-- SQl logo -->
-	<logger name="jdbc.sqlonly">
-		<level value="info" />
-	</logger>
-	<logger name="jdbc.resultsettable">
-		<level value="info" />
-	</logger>
-	
+    <!-- Application Loggers -->
+    <logger name="kr.co.dong">
+        <level value="info" />
+    </logger>
+
+    <!-- 3rdparty Loggers (원본 유지) -->
+    <logger name="org.springframework.core">
+        <level value="info" />
+    </logger>
+
+    <logger name="org.springframework.beans">
+        <level value="info" />
+    </logger>
+
+    <logger name="org.springframework.context">
+        <level value="info" />
+    </logger>
+
+    <logger name="org.springframework.web">
+        <level value="info" />
+    </logger>
+
+    <!-- Root Logger -->
+    <root>
+        <priority value="debug" />
+        <!-- 콘솔 무소음: console 연결 제거/주석 -->
+        <!-- <appender-ref ref="console" /> -->
+        <appender-ref ref="rollingFile" />
+    </root>
+
+    <!-- SQL 로그 (원본 유지) -->
+    <logger name="jdbc.sqlonly">
+        <level value="info" />
+    </logger>
+    <logger name="jdbc.resultsettable">
+        <level value="info" />
+    </logger>
+
 </log4j:configuration>

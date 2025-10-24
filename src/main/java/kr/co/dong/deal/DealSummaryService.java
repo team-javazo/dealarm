@@ -1,5 +1,7 @@
 package kr.co.dong.deal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -8,16 +10,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class DealSummaryService {
-
+	
+	private static final Logger log = LoggerFactory.getLogger(DealSummaryService.class);
+	
     @Inject
     private DealSummaryDAO dao;
 
     public boolean saveIfNotExists(DealSummaryDTO dto) {
         if (dto == null) return false;
-
+        
         // 1. URL 중복 체크
         if (dto.getUrl() != null && dao.existsByUrl(dto.getUrl())) {
-            System.out.println("⏩ 이미 존재(URL): " + dto.getTitle());
+        	log.info("⏩ 이미 존재(URL): " + dto.getTitle());
             return false;
         }
 
@@ -36,7 +40,7 @@ public class DealSummaryService {
         // 3. 토큰이 없으면 후보군 검색 불필요 — 바로 저장
         if (tokens.isEmpty()) {
             dao.insertDeal(dto);
-            System.out.println("✅ 저장 성공(토큰 없음): " + dto.getTitle());
+            log.info("✅ 저장 성공(토큰 없음): " + dto.getTitle());
             return true;
         }
 
@@ -48,14 +52,14 @@ public class DealSummaryService {
         // 5. 후보군에서 코사인 유사도 검사 (TitleSimilarityUtil, 기준 0.9)
         for (DealSummaryDTO existing : candidates) {
             if (TitleSimilarityUtil.isSameProduct(dto.getTitle(), existing.getTitle())) {
-                System.out.println("⏩ 이미 존재(제목 유사): " + dto.getTitle());
+            	log.info("⏩ 이미 존재(제목 유사): " + dto.getTitle());
                 return false; // 중복이면 저장하지 않음
             }
         }
 
         // 6. 최종 저장
         dao.insertDeal(dto);
-        System.out.println("✅ 저장 성공: " + dto.getTitle());
+        log.info("✅ 저장 성공: " + dto.getTitle());
         return true;
     }
 

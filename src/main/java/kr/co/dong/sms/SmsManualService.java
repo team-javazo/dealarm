@@ -1,6 +1,9 @@
 package kr.co.dong.sms;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,7 @@ import java.util.Map;
 @Service
 public class SmsManualService {
 
+	private static final Logger log = LoggerFactory.getLogger(SmsManualService.class);
     private final ObjectMapper mapper = new ObjectMapper();
     private static final String PYTHON_SCRIPT;
 
@@ -20,7 +24,7 @@ public class SmsManualService {
             PYTHON_SCRIPT = new ClassPathResource("python/sms/sms_service3.py")
                     .getFile()
                     .getAbsolutePath();
-            System.out.println("PYTHON_SCRIPT = " + PYTHON_SCRIPT);
+            log.info("PYTHON_SCRIPT = " + PYTHON_SCRIPT);
         } catch (Exception e) {
             throw new RuntimeException("❌ Python script not found in resources", e);
         }
