@@ -8,7 +8,7 @@
   <select id="list" parameterType="int" resultType="kr.co.dong.inquiry.CommentDTO">
     SELECT * FROM comment
     WHERE inquiryId = #{inquiryId}
-    ORDER BY COALESCE(id), depth ASC, id ASC
+    ORDER BY COALESCE(id), id ASC
   </select>
 
   <!-- 댓글 등록 -->
