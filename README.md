@@ -67,7 +67,6 @@ http://dealarm.ddns.net/
 - 등록된 키워드를 기반으로 **외부 커뮤니티·쇼핑몰**에서 데이터 자동 수집  
 - **Python 크롤러**(ppompu_crawler, quasar_crawler)가 실행되어 JSON으로 저장  
 - 제목 유사도(문자열 비교 알고리즘)를 이용해 **중복 딜 제거**  
-![크롤링 예시](./docs/images/news_search.png)
 
 ### ⏱ 스케줄러
 - Spring Scheduler가 5분 간격(`fixedDelay = 300000`)으로 자동 실행  
@@ -75,7 +74,6 @@ http://dealarm.ddns.net/
   - 크롤러 실행  
   - 오래된 DB 데이터 및 이미지 정리  
   - 오류 로그 관리  
-![스케줄러 로그 화면](./docs/images/admin_stats_home.png)
 
 ### 📩 알림 (SMS)
 - **Solapi SMS API**를 통해 매칭된 딜을 사용자에게 문자로 전송  
@@ -87,19 +85,19 @@ http://dealarm.ddns.net/
 - 문자 또는 사이트 내 링크 클릭 시 **ClickController**에 이벤트 기록  
 - 클릭 로그는 DB에 저장되어 개인화 점수 및 통계에 활용  
 - 관리자 페이지에서 **클릭 통계 / 키워드별 클릭률**을 시각화  
-![클릭 통계 화면](./docs/images/personal_stats.png)
 
 ### 📊 대시보드
 - 성별, 연령대별 인기 키워드 및 클릭률 통계 제공  
 - 사용자별 개인화된 맞춤 키워드 랭킹 표시  
 - **관리자 페이지(admin_stats_home.jsp)** 에서 전체 통계 관리 가능  
+![클릭 통계 화면](./docs/images/personal_stats.png)
 ![대시보드 화면](./docs/images/admin_click_stats.png)
 
 ### 💬 고객 문의 게시판
 - 상단 메뉴의 **[고객 문의]** 클릭 후 게시글 작성 가능  
 - 관리자는 문의사항에 대한 답변 등록 및 상태 관리 가능  
 - **InquiryController** / **CommentController**에서 처리  
-![고객 문의 화면](./docs/images/admin_user_manage.png)
+![고객 문의 화면](./docs/images/inquiry.png)
 
 ---
 
