@@ -11,43 +11,6 @@
 - **Infra/DevOps:** Tomcat (WAR 배포), AWS EC2, AWS RDS, 환경변수(.env) 연동, Scheduler (Spring)
 - **External APIs:** Solapi(SMS), Naver/Google 검색 API, Google Ads 키워드 API
 
-## 📁 Project Structure
-```
-dealarm_extract/
-├─ 2┴╢_╡⌠╢≈ppt.pptx
-├─ dealarm.zip
-├─ dealarm_└Γ╕«╜║╞«.xlsx
-├─ Javajo╚╕└╟╖╧.xlsx
-└─ WBS.png
-```
-
-
-### 📌 Controllers (추출)
-- (자동 탐색 결과 없음)
-
-
-### 🔗 Request Mappings (일부 자동 추출)
-- (주석 기반 매핑 탐색 결과 없음)
-
-
-### 🛠 Services
-- (자동 탐색 결과 없음)
-
-### 🗄 DAO/Repository
-- (자동 탐색 결과 없음)
-
-### 🔧 DB 설정 파일 위치(탐지)
-- (datasource 관련 설정 탐지 실패)
-
-### 🧩 JSP Views
-- (JSP 탐지 실패)
-
-### 🐍 Python Modules
-- (Python 모듈 탐지 실패)
-
-### 🧾 SQL / Schema Files
-- (SQL 파일 탐지 실패)
-
 ## ✨ Features
 
 - **회원관리**: 가입/로그인/권한/관리자 기능
@@ -102,166 +65,6 @@ dealarm_extract/
 - **크롤러 과부하**: 스케줄러 간격 조정, CPU/메모리 모니터링, 배치 분할
 - **이미지/임시파일 누적**: 주기적 정리(스케줄러), 경로 환경변수화
 
-## 📊 Archive Extraction
-
-- Extracted inner zips from:
-  - `/mnt/data/dealarm_extract/dealarm`
-
-
-## 🧭 Detection Summary
-
-{
-  "file_counts": {
-    ".pptx": 1,
-    ".zip": 1,
-    ".xlsx": 2,
-    ".png": 3,
-    "": 487,
-    ".xml": 32,
-    ".md": 1,
-    ".txt": 2,
-    ".idx": 37,
-    ".pack": 37,
-    ".iml": 1,
-    ".prefs": 6,
-    ".component": 1,
-    ".java": 63,
-    ".py": 8,
-    ".ico": 2,
-    ".css": 1,
-    ".jpg": 4,
-    ".js": 1,
-    ".jsp": 36,
-    ".war": 1,
-    ".class": 67,
-    ".mf": 1,
-    ".properties": 1
-  },
-  "controllers_found": 13,
-  "services_found": 11,
-  "daos_found": 22,
-  "jsp_count": 36,
-  "python_count": 8,
-  "sql_count": 0,
-  "has_pom": true,
-  "has_gradle": false
-}
-
-## 📂 File Lists (Detected)
-
-### Controllers
-- `dealarm/src/main/java/kr/co/dong/ClickController.java`
-- `dealarm/src/main/java/kr/co/dong/CommentController.java`
-- `dealarm/src/main/java/kr/co/dong/DealSummaryController.java`
-- `dealarm/src/main/java/kr/co/dong/ErrorController.java`
-- `dealarm/src/main/java/kr/co/dong/GlobalControllerAdvice.java`
-- `dealarm/src/main/java/kr/co/dong/HomeController.java`
-- `dealarm/src/main/java/kr/co/dong/InquiryController.java`
-- `dealarm/src/main/java/kr/co/dong/MemberController.java`
-- `dealarm/src/main/java/kr/co/dong/NewsController.java`
-- `dealarm/src/main/java/kr/co/dong/SmsController.java`
-- `dealarm/src/main/java/kr/co/dong/SmsTestController.java`
-- `dealarm/src/main/java/kr/co/dong/StatsController.java`
-- `dealarm/src/main/java/kr/co/dong/UserKeywordController.java`
-
-
-### Services
-- `dealarm/src/main/java/kr/co/dong/UserKeyword/UserKeywordServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/click/ClickServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealMatchServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealSummaryService.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/CommentServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/InquiryServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/member/MemberServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/news/NaverNewsService.java`
-- `dealarm/src/main/java/kr/co/dong/sms/SmsApiServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/sms/SmsDBServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/sms/SmsManualService.java`
-
-
-### DAOs/Repositories
-- `dealarm/src/main/java/kr/co/dong/UserKeyword/UserKeywordDAO.java`
-- `dealarm/src/main/java/kr/co/dong/UserKeyword/UserKeywordDAOImpl.java`
-- `dealarm/src/main/java/kr/co/dong/UserKeyword/UserKeywordServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/click/ClickDAO.java`
-- `dealarm/src/main/java/kr/co/dong/click/ClickDAOImpl.java`
-- `dealarm/src/main/java/kr/co/dong/click/ClickServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealMatchDAO.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealMatchDAOImpl.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealMatchServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealSummaryDAO.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealSummaryDAOImpl.java`
-- `dealarm/src/main/java/kr/co/dong/deal/DealSummaryService.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/CommentDAO.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/CommentDAOImpl.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/CommentServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/InquiryDAO.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/InquiryDAOImpl.java`
-- `dealarm/src/main/java/kr/co/dong/inquiry/InquiryServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/member/MemberDAO.java`
-- `dealarm/src/main/java/kr/co/dong/member/MemberDAOImpl.java`
-- `dealarm/src/main/java/kr/co/dong/member/MemberServiceImpl.java`
-- `dealarm/src/main/java/kr/co/dong/sms/SmsDBServiceImpl.java`
-
-
-### JSP Views (top)
-- `dealarm/src/main/webapp/WEB-INF/views/admin/adminpage.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/admin/adminupdate.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/admin/detail.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/admin/members.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/admin/stats.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/error/405.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/home.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/Graph.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/banner.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/dealMatch.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/footer.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/header.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/left_nav.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/newDeal.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/section.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/include/top_nav.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/inquiry/detail.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/inquiry/edit.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/inquiry/forbidden.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/inquiry/list.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/inquiry/list23.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/inquiry/update.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/inquiry/write.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/main.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/member/join.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/member/login.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/member/mypage.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/member/naverJoin.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/member/oauthLogin.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/member/temp.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/member/userupdate.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/newDeal.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/news.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/sms/manualForm.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/sms/manualResult.jsp`
-- `dealarm/src/main/webapp/WEB-INF/views/╝║╣╬╛▓╖╣▒Γ.jsp`
-
-
-### Python Modules (top)
-- `dealarm/src/main/resources/python/crawler/ppompu_crawler.py`
-- `dealarm/src/main/resources/python/crawler/quasar_crawler.py`
-- `dealarm/src/main/resources/python/sms/sms_service2.py`
-- `dealarm/src/main/resources/python/sms/sms_service3.py`
-- `dealarm/target/classes/python/crawler/ppompu_crawler.py`
-- `dealarm/target/classes/python/crawler/quasar_crawler.py`
-- `dealarm/target/classes/python/sms/sms_service2.py`
-- `dealarm/target/classes/python/sms/sms_service3.py`
-
-
-## ⏱ Scheduled Tasks (Detected)
-
-| File | Method | Args |
-|---|---|---|
-| `dealarm/src/main/java/kr/co/dong/scheduler/CrawlScheduler.java` | `deleteOldDeals` | `fixedDelay = 300000` |
-| `dealarm/src/main/java/kr/co/dong/scheduler/CrawlScheduler.java` | `runCrawlerAndReadJson` | `fixedDelay = 300000` |
-
-
 ## 📦 Maven Dependencies (from pom.xml)
 - org.springframework:spring-context:${org.springframework-version}
 - org.springframework:spring-webmvc:${org.springframework-version}
@@ -287,3 +90,70 @@ dealarm_extract/
 - com.github.scribejava:scribejava-core:2.8.1
 - org.springframework.security:spring-security-core:5.2.6.RELEASE
 - log4j:log4j:1.2.17
+
+
+## 🧭 User Guide (사용자 매뉴얼)
+
+### 1️⃣ 회원가입 / 로그인
+- 상단 메뉴에서 **[회원가입]** 버튼 클릭 후 필수 정보 입력
+- 네이버 등 **SNS 로그인**도 지원
+- 로그인 시 마이페이지, 키워드 관리, SMS 수신 설정 이용 가능
+
+### 2️⃣ 키워드 등록
+- **마이페이지 → 관심 키워드 관리** 메뉴 진입
+- 키워드 입력 후 [등록] 클릭 시 저장
+- 등록된 키워드는 **스케줄러**가 주기적으로 검색 대상에 포함
+
+### 3️⃣ 알림 수신
+- 매칭된 딜 발생 시 **Solapi SMS API**를 통해 문자 알림 전송
+- **수신 동의(ON)** 상태인 사용자에게만 발송
+- 문자 내 링크 클릭 시 해당 딜 상세 페이지로 이동
+
+### 4️⃣ 딜 확인 및 클릭
+- 사용자는 SMS 또는 메인 페이지에서 딜 상세 확인
+- 링크 클릭 시 **ClickController**를 통해 클릭 로그 수집
+- 클릭 데이터는 **통계 및 개인화 추천**에 반영됨
+
+### 5️⃣ 통계 및 추천
+- **메인 대시보드**에서 인기 키워드, 연령/성별별 트렌드 확인 가능
+- 개인화 점수 기반 추천딜 노출
+
+---
+
+## 🐍 Python Requirements
+
+이 패키지들은 크롤러(`crawler/…`) 및 SMS 모듈(`sms/…`)에서 사용됩니다.  
+로컬 환경에서 실행 시 Python 3.9+ 환경 및 venv 활성화 후 아래 명령으로 설치하세요:
+
+```bash
+pip install -r requirements.txt
+```
+
+### requirements.txt 예시
+```txt
+# ── Core dependencies ────────────────────────────────
+requests==2.31.0              # HTTP 통신
+beautifulsoup4==4.12.3        # HTML 파싱
+lxml==4.9.3                   # 빠른 파서 (선택)
+selenium==4.21.0              # 자동화 크롤링 (선택)
+pandas==2.2.2                 # 데이터 정리
+python-dotenv==1.0.1          # .env 환경 변수 로드
+schedule==1.2.1               # (선택) 파이썬 내 스케줄링
+PyMySQL==1.1.0                # MySQL 연동
+json5==0.9.25                 # JSON 확장 파싱
+logging==0.5.1.2              # 로그 출력
+
+# ── External API / SMS ───────────────────────────────
+solapi==0.2.6                 # Solapi SMS 전송
+
+# ── Utilities ─────────────────────────────────────────
+tqdm==4.66.4                  # 진행률 표시
+```
+
+> ⚙️ **설치 권장 경로:**  
+> `/opt/tomcat/webapps/ROOT/WEB-INF/classes/python/` 하위에서  
+> ```bash
+> python3 -m venv venv
+> source venv/bin/activate
+> pip install -r requirements.txt
+> ```
