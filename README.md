@@ -8,10 +8,10 @@ http://dealarm.ddns.net/
 
 - **Backend:** Java, Spring MVC, JSP, JSTL
 - **Frontend:** JSP (JSTL), HTML/CSS/JS
-- **Python:** Python (크롤러, SMS 연동), venv
+- **Python:** Python (크롤러, SMS 연동)
 - **DB:** MySQL (AWS RDS)
 - **Infra/DevOps:** Tomcat (WAR 배포), AWS EC2, AWS RDS, 환경변수(.env) 연동, Scheduler (Spring)
-- **External APIs:** Solapi(SMS), Naver/Google 검색 API, Google Ads 키워드 API
+- **External APIs:** Solapi(SMS), Naver 검색 API, Google Ads 키워드 API
 
 ## ✨ Features
 
@@ -24,6 +24,7 @@ http://dealarm.ddns.net/
 - **알림(SMS)**: Solapi 연동 — 키워드 매칭 결과 전송
 - **클릭 추적**: 링크 클릭 이벤트 수집 → 개인화/통계
 - **대시보드**: 인기/개인화 지표 제공 (성별/연령 필터 등)
+- **고객 문의 게시판**: 고객 문의사항을 접수하는 게시판
 
 ## 🔄 User & Data Flow
 
