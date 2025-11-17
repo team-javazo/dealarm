@@ -35,7 +35,7 @@ http://dealarm.ddns.net/
 5. 사용자가 링크 **클릭** → 서버에 **클릭 로그 축적**
 6. 통계/개인화 점수 반영 → 다음 추천과 대시보드에 활용
 
-## 🔄 DATABASE
+## 🗄️ DATABASE
 ![ERD](./docs/images/ERD.png)
 - **users** : 사용자 계정 정보와 권한, 활성 상태를 관리하는 기본 회원 테이블
 - **user_keywords** : 사용자가 등록한 관심 키워드를 저장하는 테이블
