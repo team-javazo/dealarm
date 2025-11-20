@@ -10,7 +10,7 @@ http://dealarm.ddns.net/
 - **Frontend:** JSP (JSTL), HTML/CSS/JS
 - **Python:** Python (크롤러, SMS 연동)
 - **DB:** MySQL (AWS RDS)
-- **Infra/DevOps:** Tomcat (WAR 배포), AWS EC2, AWS RDS, 환경변수(.env) 연동, Scheduler (Spring)
+- **Infra/DevOps:** Tomcat (WAR 배포), AWS EC2, AWS RDS, 환경변수(.env) 연동
 - **External APIs:** Solapi(SMS), Naver 검색 API, Google Ads 키워드 API
 
 ## ✨ Features
