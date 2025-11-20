@@ -1,5 +1,6 @@
 package kr.co.dong.oauth;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -14,6 +15,8 @@ import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class NaverLoginVO {
 
 
@@ -22,13 +25,32 @@ public class NaverLoginVO {
 	//response_type: 인증 과정에 대한 구분값. code로 값이 고정돼 있습니다.
 	//redirect_uri: 네이버 로그인 인증의 결과를 전달받을 콜백 URL(URL 인코딩). 애플리케이션을 등록할 때 Callback URL에 설정한 정보입니다.
 	//state: 애플리케이션이 생성한 상태 토큰
-	private final static String CLIENT_ID = "L8WsoQqkb7WHNNslEQLS"; //from 네이버
-    private final static String CLIENT_SECRET = "KQNhDlJwxh";
-    private final static String REDIRECT_URI = "http://dealarm.ddns.net/member/naverSuccess";
+	private final static String CLIENT_ID; //from 네이버
+    private final static String CLIENT_SECRET;
+    private final static String REDIRECT_URI;
     private final static String SESSION_STATE = "oauth_state";
     /* 프로필 조회 API URL */
     private final static String PROFILE_API_URL = "https://openapi.naver.com/v1/nid/me";
     
+    static {
+    	String osName = System.getProperty("os.name").toLowerCase();
+        String userHome = System.getProperty("user.home");
+        String envPath = userHome + File.separator + "dealarm-data";
+
+        Dotenv dotenv = Dotenv.configure()
+            .directory(envPath)
+            .filename(".env")
+            .load();
+        if (osName.contains("windows")) {
+            CLIENT_ID = dotenv.get("LOCAL_CLIENT_ID");
+            CLIENT_SECRET = dotenv.get("LOCAL_CLIENT_SECRET");
+            REDIRECT_URI = "http://localhost:8080/member/naverSuccess";
+        } else {
+            CLIENT_ID = dotenv.get("DOMAIN_CLIENT_ID");
+            CLIENT_SECRET = dotenv.get("DOMAIN_CLIENT_SECRET");
+            REDIRECT_URI = "http://dealarm.ddns.net/member/naverSuccess";
+        }
+    }
     /* 네이버 아이디로 인증  URL 생성  Method */
     public String getAuthorizationUrl(HttpSession session) {
 
