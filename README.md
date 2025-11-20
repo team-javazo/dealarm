@@ -1,6 +1,6 @@
 # Dealarm
 
-실시간 할인정보 공유 플랫폼 **Dealarm** 은 사용자가 등록한 키워드를 바탕으로 외부 쇼핑/뉴스/커뮤니티 등에서 **할인·딜 정보를 수집**하고, **스케줄러**로 주기 실행된 **크롤러**가 데이터를 정제·중복제거 후 **알림(SMS)** 으로 전달합니다. 사용자의 클릭을 **추적·집계**하여 개인화 추천과 대시보드 통계를 제공합니다.
+실시간 할인정보 공유 플랫폼 **Dealarm** 은 **크롤러**가 할인정보 데이터를 수집·정제 후 DB에 기록하고, 사용자가 등록한 키워드를 바탕으로 해당되는 정보를 **알림(SMS)** 으로 사용자에게 정보를 전달합니다. 이 일련의 과정을 **스케줄러**에 따라 반복시켜 실시간으로 할인정보를 전송합니다. 또한 사용자의 클릭을 **추적·집계**하여 개인화 추천과 대시보드 통계를 제공합니다.
 
 http://dealarm.ddns.net/
 
@@ -10,7 +10,7 @@ http://dealarm.ddns.net/
 - **Frontend:** JSP (JSTL), HTML/CSS/JS
 - **Python:** Python (크롤러, SMS 연동)
 - **DB:** MySQL (AWS RDS)
-- **Infra/DevOps:** Tomcat (WAR 배포), AWS EC2, AWS RDS, 환경변수(.env) 연동, Scheduler (Spring)
+- **Infra/DevOps:** Tomcat (WAR 배포), AWS EC2, AWS RDS, 환경변수(.env) 연동
 - **External APIs:** Solapi(SMS), Naver 검색 API, Google Ads 키워드 API
 
 ## ✨ Features
@@ -35,6 +35,16 @@ http://dealarm.ddns.net/
 5. 사용자가 링크 **클릭** → 서버에 **클릭 로그 축적**
 6. 통계/개인화 점수 반영 → 다음 추천과 대시보드에 활용
 
+## 🗄️ DATABASE
+![ERD](./docs/images/ERD.png)
+- **users** : 사용자 계정 정보와 권한, 활성 상태를 관리하는 기본 회원 테이블
+- **user_keywords** : 사용자가 등록한 관심 키워드를 저장하는 테이블
+- **deal_summary** : 크롤링된 할인 상품 정보를 저장하는 테이블
+- **deal_match** : 사용자 키워드와 할인 상품 간 매칭 기록을 관리하는 테이블
+- **click_count** : 사용자별 상품 클릭 기록과 횟수를 저장하는 테이블
+- **inquiry** : 사용자 문의와 관리자기능을 담당하는 게시판 테이블
+- **comment** : 문의글에 대한 댓글을 관리하는 테이블
+
 ## 🧭 User Guide (사용자 매뉴얼)
 ![홈화면](./docs/images/home.png)
 http://dealarm.ddns.net/
@@ -54,7 +64,6 @@ http://dealarm.ddns.net/
 ### 📰 키워드 기반 뉴스 추천
 - 등록한 키워드와 일치하거나 관련된 최신 기사를 자동으로 추천  
 - **네이버 뉴스 검색 API**를 활용하여 실시간 기사 수집  
-- 추천 뉴스는 **home.jsp** 또는 **news.jsp**에서 확인 가능  
 ![뉴스 추천 화면](./docs/images/keyword_news.png)
 
 ### 💡 관심 키워드 추천
@@ -127,8 +136,8 @@ http://dealarm.ddns.net/
 - **조현준**: 고객 문의 등록/수정/관리
 - **홍요셉**: 관리자(회원 상세/수정/삭제), 스케줄러 설계, 뉴스 추천(API)
 - **변정건**: 로그인/소셜 로그인, 암호화
-- **정지호**: DB 설계/관리, 파이썬 SMS 전송 모듈
-
+- **정지호**: DB 설계/관리, 파이썬 SMS 전송 모듈, 개인 클릭 통계 구현
+- **하성민**: 프론트엔드 전반, 관리자 회원 목록 조회, 알림 목록, 관리자 클릭 통계 구현
 ## 🧯 Troubleshooting
 
 - **.env 인식 실패**: 배포 경로/권한 확인 (`/opt/tomcat/dealarm-data/.env`), 서비스 재기동
